@@ -1,0 +1,6 @@
+#
+# Ignore
+#
+**/*Testing.*
+**/*Testing2.*
+
