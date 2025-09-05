@@ -22,11 +22,11 @@ import walkingkooka.reflect.PublicStaticHelperTesting;
 
 import java.lang.reflect.Method;
 
-public final class SpreadsheetTerminalStorageStoresTest implements PublicStaticHelperTesting<SpreadsheetTerminalStorageStores> {
+public final class SpreadsheetTerminalStoragesTest implements PublicStaticHelperTesting<SpreadsheetTerminalStorages> {
 
     @Override
-    public Class<SpreadsheetTerminalStorageStores> type() {
-        return SpreadsheetTerminalStorageStores.class;
+    public Class<SpreadsheetTerminalStorages> type() {
+        return SpreadsheetTerminalStorages.class;
     }
 
     @Override
