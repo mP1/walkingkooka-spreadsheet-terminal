@@ -20,14 +20,14 @@ package walkingkooka.spreadsheet.terminal.storage;
 import walkingkooka.reflect.PublicStaticHelper;
 
 /**
- * A collection of {@link walkingkooka.storage.StorageStore} for a spreadsheet terminal.
+ * A collection of {@link walkingkooka.storage.Storage} for a spreadsheet terminal.
  */
-public final class SpreadsheetTerminalStorageStores implements PublicStaticHelper {
+public final class SpreadsheetTerminalStorages implements PublicStaticHelper {
 
     /**
      * Stop creation
      */
-    private SpreadsheetTerminalStorageStores() {
+    private SpreadsheetTerminalStorages() {
         throw new UnsupportedOperationException();
     }
 }
