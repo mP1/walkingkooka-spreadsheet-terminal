@@ -22,6 +22,8 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.storage.StorageContext;
 import walkingkooka.terminal.TerminalContext;
 
+import java.util.Locale;
+
 public interface SpreadsheetTerminalStorageContext extends TerminalContext, StorageContext, SpreadsheetEngineContext {
 
     @Override
@@ -33,4 +35,7 @@ public interface SpreadsheetTerminalStorageContext extends TerminalContext, Stor
 
     @Override
     SpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name);
+
+    @Override
+    SpreadsheetTerminalStorageContext setLocale(final Locale locale);
 }
