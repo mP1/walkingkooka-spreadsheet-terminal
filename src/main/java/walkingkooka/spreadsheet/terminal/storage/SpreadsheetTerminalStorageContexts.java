@@ -18,11 +18,24 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.reflect.PublicStaticHelper;
+import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
+import walkingkooka.terminal.TerminalContext;
 
 /**
  * A collection of {@link walkingkooka.storage.StorageContext} for a spreadsheet terminal.
  */
 public final class SpreadsheetTerminalStorageContexts implements PublicStaticHelper {
+
+    /**
+     * {@see BasicSpreadsheetTerminalStorageContext}
+     */
+    public static SpreadsheetTerminalStorageContext basic(final SpreadsheetEngineContext spreadsheetEngineContext,
+                                                          final TerminalContext terminalContext) {
+        return BasicSpreadsheetTerminalStorageContext.with(
+            spreadsheetEngineContext,
+            terminalContext
+        );
+    }
 
     /**
      * {@see FakeSpreadsheetTerminalStorageContext}
