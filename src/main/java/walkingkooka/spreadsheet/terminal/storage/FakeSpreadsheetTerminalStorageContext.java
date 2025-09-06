@@ -21,6 +21,7 @@ import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.spreadsheet.engine.FakeSpreadsheetEngineContext;
 import walkingkooka.text.LineEnding;
 
+import java.util.Locale;
 import java.util.Optional;
 
 public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngineContext implements SpreadsheetTerminalStorageContext {
@@ -79,6 +80,11 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
 
     @Override
     public SpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
         throw new UnsupportedOperationException();
     }
 }
