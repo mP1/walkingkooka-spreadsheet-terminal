@@ -25,6 +25,13 @@ import walkingkooka.reflect.PublicStaticHelper;
 public final class SpreadsheetTerminalStorageContexts implements PublicStaticHelper {
 
     /**
+     * {@see FakeSpreadsheetTerminalStorageContext}
+     */
+    public static SpreadsheetTerminalStorageContext fake() {
+        return new FakeSpreadsheetTerminalStorageContext();
+    }
+
+    /**
      * Stop creation
      */
     private SpreadsheetTerminalStorageContexts() {
