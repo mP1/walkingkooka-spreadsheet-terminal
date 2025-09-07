@@ -166,9 +166,9 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
         final SpreadsheetExpressionReference cellOrLabels;
 
         switch (names.size()) {
-            case 1:
+            case 2:
                 cellOrLabels = context.convertOrFail(
-                    names.get(0)
+                    names.get(1)
                         .value(),
                     SpreadsheetExpressionReference.class
                 );
@@ -188,7 +188,9 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
             .stream()
             .map(
                 (SpreadsheetCell c) -> StorageValueInfo.with(
-                    StoragePath.parse(c.reference().text()),
+                    StoragePath.ROOT.append(
+                        StorageName.with(c.reference().text())
+                    ),
                     context.createdAuditInfo()
                 )
             ).collect(ImmutableList.collector());
