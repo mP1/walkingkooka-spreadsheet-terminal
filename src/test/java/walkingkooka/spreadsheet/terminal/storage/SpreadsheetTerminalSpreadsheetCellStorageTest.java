@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
 import walkingkooka.collect.set.Sets;
 import walkingkooka.net.AbsoluteUrl;
+import walkingkooka.net.email.EmailAddress;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetCell;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
@@ -53,10 +54,12 @@ import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
 import walkingkooka.storage.StoragePath;
 import walkingkooka.storage.StorageTesting;
 import walkingkooka.storage.StorageValue;
+import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
 import walkingkooka.text.cursor.TextCursor;
 import walkingkooka.tree.text.TextNode;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -237,6 +240,53 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
         );
     }
 
+    @Test
+    public void testList() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        final SpreadsheetCell a1 = SpreadsheetSelection.A1.setFormula(
+            SpreadsheetFormula.EMPTY.setText("=1")
+        );
+
+        final SpreadsheetCell a2 = SpreadsheetSelection.parseCell("A2")
+            .setFormula(
+                SpreadsheetFormula.EMPTY.setText("=2")
+            );
+
+        final SpreadsheetCell a3 = SpreadsheetSelection.parseCell("A3")
+            .setFormula(
+                SpreadsheetFormula.EMPTY.setText("=3")
+            );
+
+        SpreadsheetEngines.basic()
+            .saveCells(
+                Sets.of(
+                    a1,
+                    a2,
+                    a3
+                ),
+                context
+            );
+
+        final StoragePath path = StoragePath.parse("/A1:C2");
+
+        this.listAndCheck(
+            this.createStorage(),
+            path,
+            0,
+            2,
+            context,
+            StorageValueInfo.with(
+                StoragePath.parse("/A1"),
+                context.createdAuditInfo()
+            ),
+            StorageValueInfo.with(
+                StoragePath.parse("/A2"),
+                context.createdAuditInfo()
+            )
+        );
+    }
+
     @Override
     public SpreadsheetTerminalSpreadsheetCellStorage createStorage() {
         return SpreadsheetTerminalSpreadsheetCellStorage.with(SpreadsheetEngines.basic());
@@ -280,12 +330,24 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
             return this.engineContext.spreadsheetMetadata();
         }
 
-        @Override public <T> Either<T, String> convert(Object o, Class<T> aClass) {
+        @Override
+        public <T> Either<T, String> convert(Object o, Class<T> aClass) {
             return this.engineContext.convert(o, aClass);
         }
 
-        @Override public boolean canConvert(Object o, Class<?> aClass) {
+        @Override
+        public boolean canConvert(Object o, Class<?> aClass) {
             return this.engineContext.canConvert(o, aClass);
+        }
+
+        @Override
+        public LocalDateTime now() {
+            return this.engineContext.now();
+        }
+
+        @Override
+        public Optional<EmailAddress> user() {
+            return this.engineContext.user();
         }
 
         @Override
