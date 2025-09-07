@@ -18,11 +18,20 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.reflect.PublicStaticHelper;
+import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
+import walkingkooka.storage.Storage;
 
 /**
  * A collection of {@link walkingkooka.storage.Storage} for a spreadsheet terminal.
  */
 public final class SpreadsheetTerminalStorages implements PublicStaticHelper {
+
+    /**
+     * {@see SpreadsheetTerminalSpreadsheetLabelStorage}
+     */
+    public static Storage<SpreadsheetTerminalStorageContext> label(final SpreadsheetEngine engine) {
+        return SpreadsheetTerminalSpreadsheetLabelStorage.with(engine);
+    }
 
     /**
      * Stop creation
