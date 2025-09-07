@@ -143,9 +143,10 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
                 throw new IllegalArgumentException("Missing selection");
             case 2:
                 this.engine.deleteCells(
-                    SpreadsheetExpressionReference.parseExpressionReference(
+                    context.convertOrFail(
                         names.get(1)
-                            .value()
+                            .value(),
+                        SpreadsheetExpressionReference.class
                     ),
                     context
                 );
