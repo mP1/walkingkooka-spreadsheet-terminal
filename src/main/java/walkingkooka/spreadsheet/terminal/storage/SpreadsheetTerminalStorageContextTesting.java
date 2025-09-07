@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Miroslav Pokorny (github.com/mP1)
+ * Copyright 2025 Miroslav Pokorny (github.com/mP1)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,8 @@
 
 package walkingkooka.spreadsheet.terminal.storage;
 
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextTesting;
-import walkingkooka.storage.StorageContext;
 import walkingkooka.storage.StorageContextTesting;
-import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextTesting;
 
 public interface SpreadsheetTerminalStorageContextTesting<C extends SpreadsheetTerminalStorageContext> extends TerminalContextTesting<C>,
