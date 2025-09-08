@@ -27,6 +27,13 @@ import walkingkooka.storage.Storage;
 public final class SpreadsheetTerminalStorages implements PublicStaticHelper {
 
     /**
+     * {@see SpreadsheetTerminalSpreadsheetCellStorage}
+     */
+    public static Storage<SpreadsheetTerminalStorageContext> cell(final SpreadsheetEngine engine) {
+        return SpreadsheetTerminalSpreadsheetCellStorage.with(engine);
+    }
+
+    /**
      * {@see SpreadsheetTerminalSpreadsheetLabelStorage}
      */
     public static Storage<SpreadsheetTerminalStorageContext> label(final SpreadsheetEngine engine) {
