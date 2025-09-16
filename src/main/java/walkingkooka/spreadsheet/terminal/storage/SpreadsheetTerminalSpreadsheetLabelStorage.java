@@ -18,6 +18,8 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.collect.list.ImmutableList;
+import walkingkooka.net.header.MediaType;
+import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.engine.SpreadsheetDelta;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
@@ -46,6 +48,8 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
     static SpreadsheetTerminalSpreadsheetLabelStorage with(final SpreadsheetEngine engine) {
         return new SpreadsheetTerminalSpreadsheetLabelStorage(engine);
     }
+
+    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.OBJECT_LABEL;
 
     private SpreadsheetTerminalSpreadsheetLabelStorage(final SpreadsheetEngine engine) {
         super();
@@ -88,7 +92,7 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
                         null :
                         mappings
                 )
-            );
+            ).setContentType(MEDIA_TYPE);
         }
 
         return Optional.ofNullable(value);
@@ -111,7 +115,7 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
                     context
                 ).labels()
             )
-        );
+        ).setContentType(MEDIA_TYPE);
     }
 
     @Override
