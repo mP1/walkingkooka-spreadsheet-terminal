@@ -85,14 +85,13 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
             );
 
             final Set<SpreadsheetLabelMapping> mappings = delta.labels();
-            value = StorageValue.with(
-                path,
-                Optional.ofNullable(
-                    mappings.isEmpty() ?
-                        null :
-                        mappings
-                )
-            ).setContentType(MEDIA_TYPE);
+
+            if (false == mappings.isEmpty()) {
+                value = StorageValue.with(
+                    path,
+                    Optional.ofNullable(mappings)
+                ).setContentType(MEDIA_TYPE);
+            }
         }
 
         return Optional.ofNullable(value);
