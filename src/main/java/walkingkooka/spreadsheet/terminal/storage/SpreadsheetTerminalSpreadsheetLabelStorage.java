@@ -51,8 +51,8 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
     }
 
     @Override
-    Optional<StorageValue> load0(final StoragePath path,
-                                 final SpreadsheetTerminalStorageContext context) {
+    Optional<StorageValue> loadNonNull(final StoragePath path,
+                                       final SpreadsheetTerminalStorageContext context) {
         StorageValue value = null;
 
         final List<StorageName> names = path.namesList();
@@ -93,8 +93,8 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
 
 
     @Override
-    StorageValue save0(final StorageValue value,
-                       final SpreadsheetTerminalStorageContext context) {
+    StorageValue saveNonNull(final StorageValue value,
+                             final SpreadsheetTerminalStorageContext context) {
         SpreadsheetLabelMapping labelMapping = context.convertOrFail(
             value.value()
                 .orElse(null),
@@ -112,8 +112,8 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
     }
 
     @Override
-    void delete0(final StoragePath path,
-                 final SpreadsheetTerminalStorageContext context) {
+    void deleteNonNull(final StoragePath path,
+                       final SpreadsheetTerminalStorageContext context) {
         final List<StorageName> names = path.namesList();
         switch (names.size()) {
             case 0:
@@ -135,10 +135,10 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
     }
 
     @Override
-    List<StorageValueInfo> list0(final StoragePath path,
-                                 final int offset,
-                                 final int count,
-                                 final SpreadsheetTerminalStorageContext context) {
+    List<StorageValueInfo> listNonNull(final StoragePath path,
+                                       final int offset,
+                                       final int count,
+                                       final SpreadsheetTerminalStorageContext context) {
         final List<StorageName> names = path.namesList();
 
         final SpreadsheetLabelName labelName;

@@ -41,14 +41,14 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
         Objects.requireNonNull(path, "path");
         Objects.requireNonNull(context, "context");
 
-        return this.load0(
+        return this.loadNonNull(
             path,
             context
         );
     }
 
-    abstract Optional<StorageValue> load0(final StoragePath path,
-                                          final SpreadsheetTerminalStorageContext context);
+    abstract Optional<StorageValue> loadNonNull(final StoragePath path,
+                                                final SpreadsheetTerminalStorageContext context);
 
     @Override
     public final StorageValue save(final StorageValue value,
@@ -56,14 +56,14 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
         Objects.requireNonNull(value, "value");
         Objects.requireNonNull(context, "context");
 
-        return this.save0(
+        return this.saveNonNull(
             value,
             context
         );
     }
 
-    abstract StorageValue save0(final StorageValue value,
-                                final SpreadsheetTerminalStorageContext context);
+    abstract StorageValue saveNonNull(final StorageValue value,
+                                      final SpreadsheetTerminalStorageContext context);
 
     @Override
     public final void delete(final StoragePath path,
@@ -71,14 +71,14 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
         Objects.requireNonNull(path, "path");
         Objects.requireNonNull(context, "context");
 
-        this.delete0(
+        this.deleteNonNull(
             path,
             context
         );
     }
 
-    abstract void delete0(final StoragePath path,
-                          final SpreadsheetTerminalStorageContext context);
+    abstract void deleteNonNull(final StoragePath path,
+                                final SpreadsheetTerminalStorageContext context);
 
     @Override
     public final List<StorageValueInfo> list(final StoragePath path,
@@ -89,13 +89,18 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
         Store.checkOffsetAndCount(offset, count);
         Objects.requireNonNull(context, "context");
 
-        return this.list0(path, offset, count, context);
+        return this.listNonNull(
+            path,
+            offset,
+            count,
+            context
+        );
     }
 
-    abstract List<StorageValueInfo> list0(final StoragePath path,
-                                          final int offset,
-                                          final int count,
-                                          final SpreadsheetTerminalStorageContext context);
+    abstract List<StorageValueInfo> listNonNull(final StoragePath path,
+                                                final int offset,
+                                                final int count,
+                                                final SpreadsheetTerminalStorageContext context);
 
     final SpreadsheetEngine engine;
 }

@@ -56,8 +56,8 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
     }
 
     @Override
-    Optional<StorageValue> load0(final StoragePath path,
-                                 final SpreadsheetTerminalStorageContext context) {
+    Optional<StorageValue> loadNonNull(final StoragePath path,
+                                       final SpreadsheetTerminalStorageContext context) {
         StorageValue value = null;
 
         final List<StorageName> names = path.namesList();
@@ -111,8 +111,8 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
     private final static Set<SpreadsheetDeltaProperties> CELLS_ONLY = Sets.of(SpreadsheetDeltaProperties.CELLS);
 
     @Override
-    StorageValue save0(final StorageValue value,
-                       final SpreadsheetTerminalStorageContext context) {
+    StorageValue saveNonNull(final StorageValue value,
+                             final SpreadsheetTerminalStorageContext context) {
         SpreadsheetCellSet cells = context.convertOrFail(
             value.value()
                 .orElse(null),
@@ -134,8 +134,8 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
      * will be thrown.
      */
     @Override
-    void delete0(final StoragePath path,
-                 final SpreadsheetTerminalStorageContext context) {
+    void deleteNonNull(final StoragePath path,
+                       final SpreadsheetTerminalStorageContext context) {
         final List<StorageName> names = path.namesList();
         switch (names.size()) {
             case 0:
@@ -157,10 +157,10 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
     }
 
     @Override
-    List<StorageValueInfo> list0(final StoragePath path,
-                                 final int offset,
-                                 final int count,
-                                 final SpreadsheetTerminalStorageContext context) {
+    List<StorageValueInfo> listNonNull(final StoragePath path,
+                                       final int offset,
+                                       final int count,
+                                       final SpreadsheetTerminalStorageContext context) {
         final List<StorageName> names = path.namesList();
 
         final SpreadsheetExpressionReference cellOrLabels;
