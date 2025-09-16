@@ -101,12 +101,13 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
                 context
             );
 
-            value = StorageValue.with(
-                path,
-                Optional.of(
-                    delta.cells()
-                )
-            ).setContentType(MEDIA_TYPE);
+            final Set<SpreadsheetCell> cells = delta.cells();
+            if (false == cells.isEmpty()) {
+                value = StorageValue.with(
+                    path,
+                    Optional.of(cells)
+                ).setContentType(MEDIA_TYPE);
+            }
         }
 
         return Optional.ofNullable(value);

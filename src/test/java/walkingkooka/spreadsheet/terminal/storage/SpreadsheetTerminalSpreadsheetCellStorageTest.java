@@ -85,11 +85,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
         this.loadAndCheck(
             this.createStorage(),
             path,
-            context,
-            StorageValue.with(
-                path,
-                Optional.empty()
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
+            context
         );
     }
 
@@ -233,11 +229,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
         this.loadAndCheck(
             storage,
             path,
-            context,
-            StorageValue.with(
-                path,
-                Optional.empty()
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
+            context
         );
     }
 
