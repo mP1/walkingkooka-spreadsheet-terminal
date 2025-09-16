@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Base class for all {@link Storage} implementations, using an abstract template class that handles null parameter checking.
+ */
 abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminalStorageContext> {
 
     SpreadsheetTerminalStorage(final SpreadsheetEngine engine) {
