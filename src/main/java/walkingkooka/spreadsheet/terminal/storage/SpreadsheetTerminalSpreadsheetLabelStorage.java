@@ -30,6 +30,7 @@ import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,7 +48,9 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
     }
 
     private SpreadsheetTerminalSpreadsheetLabelStorage(final SpreadsheetEngine engine) {
-        super(engine);
+        super();
+
+        this.engine = Objects.requireNonNull(engine, "engine");
     }
 
     @Override
@@ -174,6 +177,8 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
                 )
             ).collect(ImmutableList.collector());
     }
+
+    private final SpreadsheetEngine engine;
 
     // Object...........................................................................................................
 
