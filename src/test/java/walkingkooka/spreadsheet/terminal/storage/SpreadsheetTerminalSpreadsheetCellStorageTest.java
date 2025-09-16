@@ -24,6 +24,7 @@ import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetCell;
+import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
@@ -88,7 +89,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
             StorageValue.with(
                 path,
                 Optional.empty()
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
         );
     }
 
@@ -121,7 +122,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                             .loadOrFail(cell.reference())
                     )
                 )
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
         );
     }
 
@@ -166,7 +167,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                             .loadOrFail(a2.reference())
                     )
                 )
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
         );
     }
 
@@ -203,7 +204,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                             .loadOrFail(cell.reference())
                     )
                 )
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
         );
     }
 
@@ -236,7 +237,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
             StorageValue.with(
                 path,
                 Optional.empty()
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
         );
     }
 
