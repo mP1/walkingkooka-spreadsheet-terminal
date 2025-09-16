@@ -23,6 +23,7 @@ import walkingkooka.collect.set.Sets;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.reflect.JavaVisibility;
+import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
@@ -85,7 +86,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
             StorageValue.with(
                 path,
                 StorageValue.NO_VALUE
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_LABEL)
         );
     }
 
@@ -114,7 +115,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                             .loadOrFail(LABEL)
                     )
                 )
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_LABEL)
         );
     }
 
@@ -136,7 +137,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                 Optional.of(
                     Sets.of(MAPPING)
                 )
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_LABEL)
         );
     }
 
@@ -165,7 +166,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
             StorageValue.with(
                 path,
                 Optional.empty()
-            )
+            ).setContentType(SpreadsheetMediaTypes.OBJECT_LABEL)
         );
     }
 
