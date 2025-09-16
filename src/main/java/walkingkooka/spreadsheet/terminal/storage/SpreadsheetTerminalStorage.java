@@ -17,7 +17,6 @@
 
 package walkingkooka.spreadsheet.terminal.storage;
 
-import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StoragePath;
 import walkingkooka.storage.StorageValue;
@@ -33,9 +32,8 @@ import java.util.Optional;
  */
 abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminalStorageContext> {
 
-    SpreadsheetTerminalStorage(final SpreadsheetEngine engine) {
+    SpreadsheetTerminalStorage() {
         super();
-        this.engine = Objects.requireNonNull(engine, "engine");
     }
 
     @Override
@@ -104,6 +102,4 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
                                                 final int offset,
                                                 final int count,
                                                 final SpreadsheetTerminalStorageContext context);
-
-    final SpreadsheetEngine engine;
 }
