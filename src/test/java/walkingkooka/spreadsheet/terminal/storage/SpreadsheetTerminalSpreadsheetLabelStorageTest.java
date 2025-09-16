@@ -82,11 +82,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
         this.loadAndCheck(
             this.createStorage(),
             path,
-            context,
-            StorageValue.with(
-                path,
-                StorageValue.NO_VALUE
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_LABEL)
+            context
         );
     }
 
@@ -162,11 +158,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
         this.loadAndCheck(
             storage,
             path,
-            context,
-            StorageValue.with(
-                path,
-                Optional.empty()
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_LABEL)
+            context
         );
     }
 
