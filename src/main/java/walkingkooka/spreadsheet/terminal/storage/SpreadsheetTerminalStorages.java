@@ -41,6 +41,13 @@ public final class SpreadsheetTerminalStorages implements PublicStaticHelper {
     }
 
     /**
+     * {@see SpreadsheetTerminalSpreadsheetMetadataStorage}
+     */
+    public static Storage<SpreadsheetTerminalStorageContext> metadata() {
+        return SpreadsheetTerminalSpreadsheetMetadataStorage.INSTANCE;
+    }
+
+    /**
      * Stop creation
      */
     private SpreadsheetTerminalStorages() {
