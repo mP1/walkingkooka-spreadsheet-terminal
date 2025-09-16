@@ -19,7 +19,9 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.collect.list.ImmutableList;
 import walkingkooka.collect.set.Sets;
+import walkingkooka.net.header.MediaType;
 import walkingkooka.spreadsheet.SpreadsheetCell;
+import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.engine.SpreadsheetDelta;
 import walkingkooka.spreadsheet.engine.SpreadsheetDeltaProperties;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
@@ -51,6 +53,8 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
     static SpreadsheetTerminalSpreadsheetCellStorage with(final SpreadsheetEngine engine) {
         return new SpreadsheetTerminalSpreadsheetCellStorage(engine);
     }
+
+    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.OBJECT_CELL;
 
     private SpreadsheetTerminalSpreadsheetCellStorage(final SpreadsheetEngine engine) {
         super();
@@ -102,7 +106,7 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
                 Optional.of(
                     delta.cells()
                 )
-            );
+            ).setContentType(MEDIA_TYPE);
         }
 
         return Optional.ofNullable(value);
@@ -129,7 +133,7 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
                     context
                 ).cells()
             )
-        );
+        ).setContentType(MEDIA_TYPE);
     }
 
     /**
