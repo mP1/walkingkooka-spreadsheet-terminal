@@ -305,22 +305,39 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
         @Override
         public SpreadsheetExpressionEvaluationContext spreadsheetExpressionEvaluationContext(final Optional<SpreadsheetCell> cell,
                                                                                              final SpreadsheetExpressionReferenceLoader loader) {
-            return this.engineContext.spreadsheetExpressionEvaluationContext(cell, loader);
+            return this.engineContext.spreadsheetExpressionEvaluationContext(
+                cell,
+                loader
+            );
         }
 
         @Override
-        public SpreadsheetCell formatValueAndStyle(SpreadsheetCell cell, Optional<SpreadsheetFormatterSelector> formatter) {
-            return this.engineContext.formatValueAndStyle(cell, formatter);
+        public SpreadsheetCell formatValueAndStyle(final SpreadsheetCell cell,
+                                                   final Optional<SpreadsheetFormatterSelector> formatter) {
+            return this.engineContext.formatValueAndStyle(
+                cell,
+                formatter
+            );
         }
 
         @Override
-        public Optional<TextNode> formatValue(SpreadsheetCell cell, Optional<Object> value, Optional<SpreadsheetFormatterSelector> formatter) {
-            return this.engineContext.formatValue(cell, value, formatter);
+        public Optional<TextNode> formatValue(final SpreadsheetCell cell,
+                                              final Optional<Object> value,
+                                              final Optional<SpreadsheetFormatterSelector> formatter) {
+            return this.engineContext.formatValue(
+                cell,
+                value,
+                formatter
+            );
         }
 
         @Override
-        public SpreadsheetFormulaParserToken parseFormula(TextCursor formula, Optional<SpreadsheetCell> cell) {
-            return this.engineContext.parseFormula(formula, cell);
+        public SpreadsheetFormulaParserToken parseFormula(final TextCursor formula,
+                                                          final Optional<SpreadsheetCell> cell) {
+            return this.engineContext.parseFormula(
+                formula,
+                cell
+            );
         }
 
         @Override
@@ -335,13 +352,21 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
         }
 
         @Override
-        public <T> Either<T, String> convert(Object o, Class<T> aClass) {
-            return this.engineContext.convert(o, aClass);
+        public <T> Either<T, String> convert(final Object value,
+                                             final Class<T> type) {
+            return this.engineContext.convert(
+                value,
+                type
+            );
         }
 
         @Override
-        public boolean canConvert(Object o, Class<?> aClass) {
-            return this.engineContext.canConvert(o, aClass);
+        public boolean canConvert(final Object value,
+                                  final Class<?> type) {
+            return this.engineContext.canConvert(
+                value,
+                type
+            );
         }
 
         @Override
