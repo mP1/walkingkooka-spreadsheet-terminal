@@ -22,6 +22,7 @@ import walkingkooka.Either;
 import walkingkooka.collect.set.Sets;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
+import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetCell;
 import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
@@ -38,6 +39,8 @@ import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
+import walkingkooka.spreadsheet.parser.SpreadsheetParser;
+import walkingkooka.spreadsheet.parser.SpreadsheetParserSelector;
 import walkingkooka.spreadsheet.reference.SpreadsheetExpressionReferenceLoader;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
 import walkingkooka.spreadsheet.security.store.SpreadsheetGroupStores;
@@ -58,9 +61,11 @@ import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
 import walkingkooka.text.cursor.TextCursor;
+import walkingkooka.tree.expression.Expression;
 import walkingkooka.tree.text.TextNode;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -319,6 +324,12 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
         }
 
         @Override
+        public Optional<Expression> toExpression(final SpreadsheetFormulaParserToken token) {
+            Objects.requireNonNull(token, "token");
+            return this.engineContext.toExpression(token);
+        }
+
+        @Override
         public SpreadsheetMetadata spreadsheetMetadata() {
             return this.engineContext.spreadsheetMetadata();
         }
@@ -382,6 +393,20 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
             ),
             TERMINAL_CONTEXT
         );
+
+        @Override
+        public ProviderContext providerContext() {
+            return SpreadsheetMetadataTesting.PROVIDER_CONTEXT;
+        }
+
+        @Override
+        public SpreadsheetParser spreadsheetParser(final SpreadsheetParserSelector selector,
+                                                   final ProviderContext context) {
+            return SpreadsheetMetadataTesting.SPREADSHEET_PARSER_PROVIDER.spreadsheetParser(
+                selector,
+                context
+            );
+        }
     }
 
     // class............................................................................................................
