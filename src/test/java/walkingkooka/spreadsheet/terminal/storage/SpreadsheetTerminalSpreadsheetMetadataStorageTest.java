@@ -87,7 +87,7 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
             StorageValue.with(
                 path,
                 Optional.of(metadata)
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_SPREADSHEET_METADATA)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_SPREADSHEET_METADATA)
         );
     }
 
@@ -131,7 +131,7 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
             StorageValue.with(
                 StoragePath.parse("/" + metadata.getOrFail(SpreadsheetMetadataPropertyName.SPREADSHEET_ID)),
                 Optional.of(metadata)
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_SPREADSHEET_METADATA)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_SPREADSHEET_METADATA)
         );
     }
 

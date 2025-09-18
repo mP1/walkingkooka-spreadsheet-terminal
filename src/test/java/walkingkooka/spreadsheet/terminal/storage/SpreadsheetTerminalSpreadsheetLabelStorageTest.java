@@ -111,7 +111,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                             .loadOrFail(LABEL)
                     )
                 )
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_LABEL)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
     }
 
@@ -133,7 +133,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                 Optional.of(
                     Sets.of(MAPPING)
                 )
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_LABEL)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
     }
 

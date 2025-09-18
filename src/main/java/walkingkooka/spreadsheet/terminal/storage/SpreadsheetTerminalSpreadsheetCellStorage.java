@@ -54,7 +54,7 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
         return new SpreadsheetTerminalSpreadsheetCellStorage(engine);
     }
 
-    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.OBJECT_CELL;
+    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.MEMORY_CELL;
 
     private SpreadsheetTerminalSpreadsheetCellStorage(final SpreadsheetEngine engine) {
         super();

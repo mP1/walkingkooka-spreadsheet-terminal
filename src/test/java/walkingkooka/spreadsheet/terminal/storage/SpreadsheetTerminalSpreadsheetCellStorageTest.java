@@ -32,7 +32,7 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
 import walkingkooka.spreadsheet.engine.collection.SpreadsheetCellSet;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionEvaluationContext;
-import walkingkooka.spreadsheet.format.SpreadsheetFormatterSelector;
+import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterSelector;
 import walkingkooka.spreadsheet.formula.SpreadsheetFormula;
 import walkingkooka.spreadsheet.formula.parser.SpreadsheetFormulaParserToken;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
@@ -40,7 +40,7 @@ import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
 import walkingkooka.spreadsheet.parser.SpreadsheetParser;
-import walkingkooka.spreadsheet.parser.SpreadsheetParserSelector;
+import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserSelector;
 import walkingkooka.spreadsheet.reference.SpreadsheetExpressionReferenceLoader;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
 import walkingkooka.spreadsheet.security.store.SpreadsheetGroupStores;
@@ -123,7 +123,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                             .loadOrFail(cell.reference())
                     )
                 )
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_CELL)
         );
     }
 
@@ -168,7 +168,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                             .loadOrFail(a2.reference())
                     )
                 )
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_CELL)
         );
     }
 
@@ -205,7 +205,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                             .loadOrFail(cell.reference())
                     )
                 )
-            ).setContentType(SpreadsheetMediaTypes.OBJECT_CELL)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_CELL)
         );
     }
 
