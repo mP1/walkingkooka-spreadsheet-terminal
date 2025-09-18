@@ -49,7 +49,7 @@ final class SpreadsheetTerminalSpreadsheetLabelStorage extends SpreadsheetTermin
         return new SpreadsheetTerminalSpreadsheetLabelStorage(engine);
     }
 
-    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.OBJECT_LABEL;
+    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.MEMORY_LABEL;
 
     private SpreadsheetTerminalSpreadsheetLabelStorage(final SpreadsheetEngine engine) {
         super();

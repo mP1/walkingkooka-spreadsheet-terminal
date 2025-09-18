@@ -43,7 +43,7 @@ final class SpreadsheetTerminalSpreadsheetMetadataStorage extends SpreadsheetTer
      */
     final static SpreadsheetTerminalSpreadsheetMetadataStorage INSTANCE = new SpreadsheetTerminalSpreadsheetMetadataStorage();
 
-    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.OBJECT_SPREADSHEET_METADATA;
+    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.MEMORY_SPREADSHEET_METADATA;
 
     private SpreadsheetTerminalSpreadsheetMetadataStorage() {
         super();
