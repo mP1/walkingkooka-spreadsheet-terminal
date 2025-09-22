@@ -23,7 +23,7 @@ import walkingkooka.net.email.EmailAddress;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
-import walkingkooka.spreadsheet.meta.SpreadsheetContext;
+import walkingkooka.spreadsheet.meta.FakeSpreadsheetContext;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -103,7 +103,7 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
                 SpreadsheetMetadataTesting.LOCALE_CONTEXT,
-                new SpreadsheetContext() {
+                new FakeSpreadsheetContext() {
                     @Override
                     public SpreadsheetMetadata createMetadata(final EmailAddress user,
                                                               final Optional<Locale> locale) {
