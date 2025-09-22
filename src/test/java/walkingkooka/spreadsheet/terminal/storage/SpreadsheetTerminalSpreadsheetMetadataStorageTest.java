@@ -21,13 +21,14 @@ import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
+import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.SpreadsheetName;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
-import walkingkooka.spreadsheet.meta.SpreadsheetContexts;
+import walkingkooka.spreadsheet.meta.FakeSpreadsheetContext;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -312,10 +313,14 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
                 SpreadsheetMetadataTesting.LOCALE_CONTEXT,
-                SpreadsheetContexts.fake(),
+                new FakeSpreadsheetContext() {
+                    @Override
+                    public ProviderContext providerContext() {
+                        return PROVIDER_CONTEXT;
+                    }
+                },
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
-                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER,
-                SpreadsheetMetadataTesting.PROVIDER_CONTEXT
+                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER
             ),
             TERMINAL_CONTEXT
         );

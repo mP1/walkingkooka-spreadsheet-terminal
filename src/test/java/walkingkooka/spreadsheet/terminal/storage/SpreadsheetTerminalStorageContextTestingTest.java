@@ -21,6 +21,7 @@ import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
+import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
@@ -185,10 +186,14 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
 
                         throw new UnsupportedOperationException();
                     }
+
+                    @Override
+                    public ProviderContext providerContext() {
+                        return PROVIDER_CONTEXT;
+                    }
                 },
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
-                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER,
-                SpreadsheetMetadataTesting.PROVIDER_CONTEXT
+                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER
             );
         }
 

@@ -20,6 +20,7 @@ package walkingkooka.spreadsheet.terminal.storage;
 import org.junit.jupiter.api.Test;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
+import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
@@ -133,10 +134,14 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
 
                         throw new UnsupportedOperationException();
                     }
+
+                    @Override
+                    public ProviderContext providerContext() {
+                        return PROVIDER_CONTEXT;
+                    }
                 },
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
-                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER,
-                SpreadsheetMetadataTesting.PROVIDER_CONTEXT
+                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER
             ),
             TERMINAL_CONTEXT
         );
