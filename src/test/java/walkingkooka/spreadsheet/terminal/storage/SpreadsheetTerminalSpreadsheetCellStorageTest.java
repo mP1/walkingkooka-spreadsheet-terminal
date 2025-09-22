@@ -35,6 +35,7 @@ import walkingkooka.spreadsheet.expression.SpreadsheetExpressionEvaluationContex
 import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterSelector;
 import walkingkooka.spreadsheet.formula.SpreadsheetFormula;
 import walkingkooka.spreadsheet.formula.parser.SpreadsheetFormulaParserToken;
+import walkingkooka.spreadsheet.meta.SpreadsheetContexts;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -412,6 +413,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
                 SpreadsheetMetadataTesting.LOCALE_CONTEXT,
+                SpreadsheetContexts.fake(),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
                 SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER,
                 SpreadsheetMetadataTesting.PROVIDER_CONTEXT
