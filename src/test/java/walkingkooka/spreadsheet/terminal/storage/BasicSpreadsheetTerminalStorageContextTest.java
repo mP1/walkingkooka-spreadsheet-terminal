@@ -19,8 +19,12 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
 import walkingkooka.net.AbsoluteUrl;
+import walkingkooka.net.email.EmailAddress;
 import walkingkooka.reflect.JavaVisibility;
+import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
+import walkingkooka.spreadsheet.meta.SpreadsheetContext;
+import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
@@ -38,6 +42,9 @@ import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
 import walkingkooka.storage.Storages;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -96,6 +103,37 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
                 SpreadsheetMetadataTesting.LOCALE_CONTEXT,
+                new SpreadsheetContext() {
+                    @Override
+                    public SpreadsheetMetadata createMetadata(final EmailAddress user,
+                                                              final Optional<Locale> locale) {
+                        Objects.requireNonNull(user, "user");
+                        Objects.requireNonNull(locale, "locale");
+
+                        throw new UnsupportedOperationException();
+                    }
+
+                    @Override
+                    public Optional<SpreadsheetMetadata> loadMetadata(final SpreadsheetId id) {
+                        Objects.requireNonNull(id, "id");
+
+                        throw new UnsupportedOperationException();
+                    }
+
+                    @Override
+                    public SpreadsheetMetadata saveMetadata(final SpreadsheetMetadata metadata) {
+                        Objects.requireNonNull(metadata, "metadata");
+
+                        throw new UnsupportedOperationException();
+                    }
+
+                    @Override
+                    public void deleteMetadata(final SpreadsheetId id) {
+                        Objects.requireNonNull(id, "id");
+
+                        throw new UnsupportedOperationException();
+                    }
+                },
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
                 SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER,
                 SpreadsheetMetadataTesting.PROVIDER_CONTEXT

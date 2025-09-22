@@ -28,6 +28,7 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
+import walkingkooka.spreadsheet.meta.SpreadsheetContexts;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -266,6 +267,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
                 SpreadsheetMetadataTesting.LOCALE_CONTEXT,
+                SpreadsheetContexts.fake(),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
                 SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER,
                 SpreadsheetMetadataTesting.PROVIDER_CONTEXT
