@@ -402,10 +402,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                     SpreadsheetGroupStores.treeMap(),
                     SpreadsheetLabelStores.treeMap(),
                     SpreadsheetLabelReferencesStores.treeMap(),
-                    SpreadsheetMetadataStores.treeMap(
-                        METADATA_EN_AU,
-                        NOW
-                    ),
+                    SpreadsheetMetadataStores.treeMap(),
                     SpreadsheetCellRangeStores.treeMap(),
                     SpreadsheetCellRangeStores.treeMap(),
                     SpreadsheetRowStores.treeMap(),

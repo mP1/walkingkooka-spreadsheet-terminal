@@ -54,7 +54,6 @@ import walkingkooka.store.Store;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -147,10 +146,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                     SpreadsheetGroupStores.treeMap(),
                     SpreadsheetLabelStores.treeMap(),
                     SpreadsheetLabelReferencesStores.treeMap(),
-                    SpreadsheetMetadataStores.treeMap(
-                        METADATA_EN_AU,
-                        LocalDateTime::now
-                    ),
+                    SpreadsheetMetadataStores.treeMap(),
                     SpreadsheetCellRangeStores.treeMap(),
                     SpreadsheetCellRangeStores.treeMap(),
                     SpreadsheetRowStores.treeMap(),
