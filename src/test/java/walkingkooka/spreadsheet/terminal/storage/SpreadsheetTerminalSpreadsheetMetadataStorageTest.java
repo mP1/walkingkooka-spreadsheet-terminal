@@ -29,6 +29,7 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.meta.FakeSpreadsheetContext;
+import walkingkooka.spreadsheet.meta.SpreadsheetContext;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -52,6 +53,7 @@ import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -312,8 +314,13 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
                 ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
-                SpreadsheetMetadataTesting.LOCALE_CONTEXT,
                 new FakeSpreadsheetContext() {
+
+                    @Override
+                    public SpreadsheetContext setLocale(final Locale locale) {
+                        return this;
+                    }
+
                     @Override
                     public ProviderContext providerContext() {
                         return PROVIDER_CONTEXT;
