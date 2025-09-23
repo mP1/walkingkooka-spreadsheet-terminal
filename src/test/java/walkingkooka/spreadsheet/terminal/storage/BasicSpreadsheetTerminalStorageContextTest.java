@@ -45,7 +45,6 @@ import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
 import walkingkooka.storage.Storages;
 import walkingkooka.store.Store;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -95,10 +94,7 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                     SpreadsheetGroupStores.treeMap(),
                     SpreadsheetLabelStores.treeMap(),
                     SpreadsheetLabelReferencesStores.treeMap(),
-                    SpreadsheetMetadataStores.treeMap(
-                        METADATA_EN_AU,
-                        LocalDateTime::now
-                    ),
+                    SpreadsheetMetadataStores.treeMap(),
                     SpreadsheetCellRangeStores.treeMap(),
                     SpreadsheetCellRangeStores.treeMap(),
                     SpreadsheetRowStores.treeMap(),

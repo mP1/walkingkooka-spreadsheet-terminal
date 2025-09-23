@@ -302,10 +302,7 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
                     SpreadsheetGroupStores.fake(),
                     SpreadsheetLabelStores.fake(),
                     SpreadsheetLabelReferencesStores.fake(),
-                    SpreadsheetMetadataStores.treeMap(
-                        METADATA_EN_AU,
-                        NOW
-                    ),
+                    SpreadsheetMetadataStores.treeMap(),
                     SpreadsheetCellRangeStores.fake(),
                     SpreadsheetCellRangeStores.fake(),
                     SpreadsheetRowStores.fake(),
