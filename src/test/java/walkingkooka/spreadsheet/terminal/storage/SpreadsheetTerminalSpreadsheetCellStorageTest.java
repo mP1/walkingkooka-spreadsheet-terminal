@@ -36,6 +36,7 @@ import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterSelector;
 import walkingkooka.spreadsheet.formula.SpreadsheetFormula;
 import walkingkooka.spreadsheet.formula.parser.SpreadsheetFormulaParserToken;
 import walkingkooka.spreadsheet.meta.FakeSpreadsheetContext;
+import walkingkooka.spreadsheet.meta.SpreadsheetContext;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -66,6 +67,7 @@ import walkingkooka.tree.expression.Expression;
 import walkingkooka.tree.text.TextNode;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -412,8 +414,13 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                 ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
-                SpreadsheetMetadataTesting.LOCALE_CONTEXT,
                 new FakeSpreadsheetContext() {
+
+                    @Override
+                    public SpreadsheetContext setLocale(final Locale locale) {
+                        return this;
+                    }
+
                     @Override
                     public ProviderContext providerContext() {
                         return PROVIDER_CONTEXT;

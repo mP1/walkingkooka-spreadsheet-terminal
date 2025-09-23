@@ -19,6 +19,8 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentValueName;
+import walkingkooka.locale.LocaleContext;
+import walkingkooka.locale.LocaleContextDelegator;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.plugin.ProviderContext;
@@ -27,7 +29,7 @@ import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
-import walkingkooka.spreadsheet.meta.FakeSpreadsheetContext;
+import walkingkooka.spreadsheet.meta.SpreadsheetContext;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -155,46 +157,59 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                 ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
-                SpreadsheetMetadataTesting.LOCALE_CONTEXT,
-                new FakeSpreadsheetContext() {
-                    @Override
-                    public SpreadsheetMetadata createMetadata(final EmailAddress user,
-                                                              final Optional<Locale> locale) {
-                        Objects.requireNonNull(user, "user");
-                        Objects.requireNonNull(locale, "locale");
-
-                        throw new UnsupportedOperationException();
-                    }
-
-                    @Override
-                    public Optional<SpreadsheetMetadata> loadMetadata(final SpreadsheetId id) {
-                        Objects.requireNonNull(id, "id");
-
-                        throw new UnsupportedOperationException();
-                    }
-
-                    @Override
-                    public SpreadsheetMetadata saveMetadata(final SpreadsheetMetadata metadata) {
-                        Objects.requireNonNull(metadata, "metadata");
-
-                        throw new UnsupportedOperationException();
-                    }
-
-                    @Override
-                    public void deleteMetadata(final SpreadsheetId id) {
-                        Objects.requireNonNull(id, "id");
-
-                        throw new UnsupportedOperationException();
-                    }
-
-                    @Override
-                    public ProviderContext providerContext() {
-                        return PROVIDER_CONTEXT;
-                    }
-                },
+                new TestSpreadsheetContext(),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
                 SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER
             );
+        }
+
+        final static class TestSpreadsheetContext implements SpreadsheetContext,
+            LocaleContextDelegator {
+
+            @Override
+            public SpreadsheetMetadata createMetadata(final EmailAddress user,
+                                                      final Optional<Locale> locale) {
+                Objects.requireNonNull(user, "user");
+                Objects.requireNonNull(locale, "locale");
+
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public Optional<SpreadsheetMetadata> loadMetadata(final SpreadsheetId id) {
+                Objects.requireNonNull(id, "id");
+
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public SpreadsheetMetadata saveMetadata(final SpreadsheetMetadata metadata) {
+                Objects.requireNonNull(metadata, "metadata");
+
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void deleteMetadata(final SpreadsheetId id) {
+                Objects.requireNonNull(id, "id");
+
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public LocaleContext localeContext() {
+                return LOCALE_CONTEXT;
+            }
+
+            @Override
+            public SpreadsheetContext setLocale(final Locale locale) {
+                return this;
+            }
+
+            @Override
+            public ProviderContext providerContext() {
+                return PROVIDER_CONTEXT;
+            }
         }
 
         // TerminalContextDelegator.....................................................................................
