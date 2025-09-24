@@ -24,9 +24,9 @@ import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
+import walkingkooka.spreadsheet.SpreadsheetGlobalContext;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
-import walkingkooka.spreadsheet.meta.SpreadsheetContext;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -103,7 +103,7 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                 ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
-                new TestSpreadsheetContext(),
+                new TestSpreadsheetGlobalContext(),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
                 SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER
             ),
@@ -111,7 +111,7 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
         );
     }
 
-    final static class TestSpreadsheetContext implements SpreadsheetContext,
+    final static class TestSpreadsheetGlobalContext implements SpreadsheetGlobalContext,
         LocaleContextDelegator {
 
         @Override
@@ -155,7 +155,7 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
         }
 
         @Override
-        public SpreadsheetContext setLocale(final Locale locale) {
+        public SpreadsheetGlobalContext setLocale(final Locale locale) {
             return this;
         }
 
