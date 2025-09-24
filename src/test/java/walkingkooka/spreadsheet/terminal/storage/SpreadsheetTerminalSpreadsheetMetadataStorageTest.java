@@ -23,13 +23,13 @@ import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
+import walkingkooka.spreadsheet.FakeSpreadsheetGlobalContext;
+import walkingkooka.spreadsheet.SpreadsheetGlobalContext;
 import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.SpreadsheetName;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
-import walkingkooka.spreadsheet.meta.FakeSpreadsheetContext;
-import walkingkooka.spreadsheet.meta.SpreadsheetContext;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
@@ -311,10 +311,10 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
                 ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
-                new FakeSpreadsheetContext() {
+                new FakeSpreadsheetGlobalContext() {
 
                     @Override
-                    public SpreadsheetContext setLocale(final Locale locale) {
+                    public SpreadsheetGlobalContext setLocale(final Locale locale) {
                         return this;
                     }
 
