@@ -397,9 +397,6 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
                     SpreadsheetId.with(1),
-                    (u, l) -> {
-                        throw new UnsupportedOperationException();
-                    },
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.treeMap(),
                         SpreadsheetCellReferencesStores.treeMap(),

@@ -296,9 +296,6 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
                     SpreadsheetId.with(1),
-                    (u, l) -> {
-                        throw new UnsupportedOperationException();
-                    },
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.fake(),
                         SpreadsheetCellReferencesStores.fake(),
