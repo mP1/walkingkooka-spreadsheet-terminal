@@ -23,6 +23,7 @@ import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
+import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
@@ -134,6 +135,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                 ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
+                    SpreadsheetId.with(1),
                     (u, l) -> {
                         throw new UnsupportedOperationException();
                     },
