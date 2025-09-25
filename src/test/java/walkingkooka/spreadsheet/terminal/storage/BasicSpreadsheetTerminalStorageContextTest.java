@@ -18,12 +18,14 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
+import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.locale.LocaleContext;
 import walkingkooka.locale.LocaleContextDelegator;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
+import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.SpreadsheetGlobalContext;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
@@ -86,26 +88,32 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                     SpreadsheetMetadataPropertyName.LOCALE,
                     LOCALE
                 ),
-                SpreadsheetStoreRepositories.basic(
-                    SpreadsheetCellStores.treeMap(),
-                    SpreadsheetCellReferencesStores.treeMap(),
-                    SpreadsheetColumnStores.treeMap(),
-                    SpreadsheetFormStores.treeMap(),
-                    SpreadsheetGroupStores.treeMap(),
-                    SpreadsheetLabelStores.treeMap(),
-                    SpreadsheetLabelReferencesStores.treeMap(),
-                    SpreadsheetMetadataStores.treeMap(),
-                    SpreadsheetCellRangeStores.treeMap(),
-                    SpreadsheetCellRangeStores.treeMap(),
-                    SpreadsheetRowStores.treeMap(),
-                    Storages.tree(),
-                    SpreadsheetUserStores.treeMap()
-                ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
-                SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
-                new TestSpreadsheetGlobalContext(),
-                SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
-                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER
+                SpreadsheetContexts.basic(
+                    (u, l) -> {
+                        throw new UnsupportedOperationException();
+                    },
+                    SpreadsheetStoreRepositories.basic(
+                        SpreadsheetCellStores.fake(),
+                        SpreadsheetCellReferencesStores.fake(),
+                        SpreadsheetColumnStores.fake(),
+                        SpreadsheetFormStores.fake(),
+                        SpreadsheetGroupStores.fake(),
+                        SpreadsheetLabelStores.fake(),
+                        SpreadsheetLabelReferencesStores.fake(),
+                        SpreadsheetMetadataStores.treeMap(),
+                        SpreadsheetCellRangeStores.fake(),
+                        SpreadsheetCellRangeStores.fake(),
+                        SpreadsheetRowStores.fake(),
+                        Storages.fake(),
+                        SpreadsheetUserStores.fake()
+                    ),
+                    SPREADSHEET_PROVIDER,
+                    EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
+                    LOCALE_CONTEXT,
+                    PROVIDER_CONTEXT
+                ),
+                SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             ),
             TERMINAL_CONTEXT
         );

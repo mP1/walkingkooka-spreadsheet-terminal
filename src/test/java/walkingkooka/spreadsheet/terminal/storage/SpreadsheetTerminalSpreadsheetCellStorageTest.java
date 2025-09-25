@@ -20,13 +20,13 @@ package walkingkooka.spreadsheet.terminal.storage;
 import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
 import walkingkooka.collect.set.Sets;
+import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
-import walkingkooka.spreadsheet.FakeSpreadsheetGlobalContext;
 import walkingkooka.spreadsheet.SpreadsheetCell;
-import walkingkooka.spreadsheet.SpreadsheetGlobalContext;
+import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
@@ -67,7 +67,6 @@ import walkingkooka.tree.expression.Expression;
 import walkingkooka.tree.text.TextNode;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -394,37 +393,32 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                     SpreadsheetMetadataPropertyName.LOCALE,
                     LOCALE
                 ),
-                SpreadsheetStoreRepositories.basic(
-                    SpreadsheetCellStores.treeMap(),
-                    SpreadsheetCellReferencesStores.treeMap(),
-                    SpreadsheetColumnStores.treeMap(),
-                    SpreadsheetFormStores.treeMap(),
-                    SpreadsheetGroupStores.treeMap(),
-                    SpreadsheetLabelStores.treeMap(),
-                    SpreadsheetLabelReferencesStores.treeMap(),
-                    SpreadsheetMetadataStores.treeMap(),
-                    SpreadsheetCellRangeStores.treeMap(),
-                    SpreadsheetCellRangeStores.treeMap(),
-                    SpreadsheetRowStores.treeMap(),
-                    Storages.tree(),
-                    SpreadsheetUserStores.treeMap()
-                ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
-                SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
-                new FakeSpreadsheetGlobalContext() {
-
-                    @Override
-                    public SpreadsheetGlobalContext setLocale(final Locale locale) {
-                        return this;
-                    }
-
-                    @Override
-                    public ProviderContext providerContext() {
-                        return PROVIDER_CONTEXT;
-                    }
-                },
-                SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
-                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER
+                SpreadsheetContexts.basic(
+                    (u, l) -> {
+                        throw new UnsupportedOperationException();
+                    },
+                    SpreadsheetStoreRepositories.basic(
+                        SpreadsheetCellStores.treeMap(),
+                        SpreadsheetCellReferencesStores.treeMap(),
+                        SpreadsheetColumnStores.treeMap(),
+                        SpreadsheetFormStores.treeMap(),
+                        SpreadsheetGroupStores.treeMap(),
+                        SpreadsheetLabelStores.treeMap(),
+                        SpreadsheetLabelReferencesStores.treeMap(),
+                        SpreadsheetMetadataStores.treeMap(),
+                        SpreadsheetCellRangeStores.treeMap(),
+                        SpreadsheetCellRangeStores.treeMap(),
+                        SpreadsheetRowStores.treeMap(),
+                        Storages.fake(),
+                        SpreadsheetUserStores.treeMap()
+                    ),
+                    SPREADSHEET_PROVIDER,
+                    EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
+                    LOCALE_CONTEXT,
+                    PROVIDER_CONTEXT
+                ),
+                SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             ),
             TERMINAL_CONTEXT
         );
