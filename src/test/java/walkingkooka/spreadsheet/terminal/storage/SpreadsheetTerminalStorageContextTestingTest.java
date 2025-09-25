@@ -136,9 +136,6 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
                     SpreadsheetId.with(1),
-                    (u, l) -> {
-                        throw new UnsupportedOperationException();
-                    },
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.treeMap(),
                         SpreadsheetCellReferencesStores.treeMap(),
