@@ -18,19 +18,14 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentContext;
+import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.environment.EnvironmentValueName;
-import walkingkooka.locale.LocaleContext;
-import walkingkooka.locale.LocaleContextDelegator;
 import walkingkooka.net.AbsoluteUrl;
-import walkingkooka.net.email.EmailAddress;
-import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
-import walkingkooka.spreadsheet.SpreadsheetGlobalContext;
-import walkingkooka.spreadsheet.SpreadsheetId;
+import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
-import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
@@ -50,13 +45,10 @@ import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
 import walkingkooka.spreadsheet.terminal.storage.SpreadsheetTerminalStorageContextTestingTest.TestSpreadsheetTerminalStorageContext;
 import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
 import walkingkooka.storage.Storages;
-import walkingkooka.store.Store;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
 
-import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 
 public final class SpreadsheetTerminalStorageContextTestingTest implements SpreadsheetTerminalStorageContextTesting<TestSpreadsheetTerminalStorageContext>,
@@ -112,21 +104,23 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         @Override
         public <T> SpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
                                                                          final T reference) {
-            ENVIRONMENT_CONTEXT.setEnvironmentValue(name, reference);
-            throw new UnsupportedOperationException();
+            this.environmentContext.setEnvironmentValue(name, reference);
+            return this;
         }
 
         @Override
         public SpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name) {
-            ENVIRONMENT_CONTEXT.removeEnvironmentValue(name);
-            throw new UnsupportedOperationException();
+            this.environmentContext.removeEnvironmentValue(name);
+            return this;
         }
 
         @Override
         public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
-            ENVIRONMENT_CONTEXT.setLocale(locale);
-            throw new UnsupportedOperationException();
+            this.environmentContext.setLocale(locale);
+            return this;
         }
+
+        private final EnvironmentContext environmentContext = EnvironmentContexts.map(ENVIRONMENT_CONTEXT);
 
         // SpreadsheetEngineContextDelegator............................................................................
 
@@ -138,86 +132,33 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                     SpreadsheetMetadataPropertyName.LOCALE,
                     LOCALE
                 ),
-                SpreadsheetStoreRepositories.basic(
-                    SpreadsheetCellStores.treeMap(),
-                    SpreadsheetCellReferencesStores.treeMap(),
-                    SpreadsheetColumnStores.treeMap(),
-                    SpreadsheetFormStores.treeMap(),
-                    SpreadsheetGroupStores.treeMap(),
-                    SpreadsheetLabelStores.treeMap(),
-                    SpreadsheetLabelReferencesStores.treeMap(),
-                    SpreadsheetMetadataStores.treeMap(),
-                    SpreadsheetCellRangeStores.treeMap(),
-                    SpreadsheetCellRangeStores.treeMap(),
-                    SpreadsheetRowStores.treeMap(),
-                    Storages.tree(),
-                    SpreadsheetUserStores.treeMap()
-                ),
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
-                SpreadsheetMetadataTesting.ENVIRONMENT_CONTEXT,
-                new TestSpreadsheetGlobalContext(),
-                SpreadsheetMetadataTesting.TERMINAL_CONTEXT,
-                SpreadsheetMetadataTesting.SPREADSHEET_PROVIDER
+                SpreadsheetContexts.basic(
+                    (u, l) -> {
+                        throw new UnsupportedOperationException();
+                    },
+                    SpreadsheetStoreRepositories.basic(
+                        SpreadsheetCellStores.treeMap(),
+                        SpreadsheetCellReferencesStores.treeMap(),
+                        SpreadsheetColumnStores.treeMap(),
+                        SpreadsheetFormStores.treeMap(),
+                        SpreadsheetGroupStores.treeMap(),
+                        SpreadsheetLabelStores.treeMap(),
+                        SpreadsheetLabelReferencesStores.treeMap(),
+                        SpreadsheetMetadataStores.treeMap(),
+                        SpreadsheetCellRangeStores.treeMap(),
+                        SpreadsheetCellRangeStores.treeMap(),
+                        SpreadsheetRowStores.treeMap(),
+                        Storages.fake(),
+                        SpreadsheetUserStores.treeMap()
+                    ),
+                    SPREADSHEET_PROVIDER,
+                    EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
+                    LOCALE_CONTEXT,
+                    PROVIDER_CONTEXT
+                ),
+                SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             );
-        }
-
-        final static class TestSpreadsheetGlobalContext implements SpreadsheetGlobalContext,
-            LocaleContextDelegator {
-
-            @Override
-            public SpreadsheetMetadata createMetadata(final EmailAddress user,
-                                                      final Optional<Locale> locale) {
-                Objects.requireNonNull(user, "user");
-                Objects.requireNonNull(locale, "locale");
-
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public Optional<SpreadsheetMetadata> loadMetadata(final SpreadsheetId id) {
-                Objects.requireNonNull(id, "id");
-
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public SpreadsheetMetadata saveMetadata(final SpreadsheetMetadata metadata) {
-                Objects.requireNonNull(metadata, "metadata");
-
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void deleteMetadata(final SpreadsheetId id) {
-                Objects.requireNonNull(id, "id");
-
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public List<SpreadsheetMetadata> findMetadataBySpreadsheetName(final String name,
-                                                                           final int offset,
-                                                                           final int count) {
-                Objects.requireNonNull(name, "name");
-                Store.checkOffsetAndCount(offset, count);
-
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public LocaleContext localeContext() {
-                return LOCALE_CONTEXT;
-            }
-
-            @Override
-            public SpreadsheetGlobalContext setLocale(final Locale locale) {
-                return this;
-            }
-
-            @Override
-            public ProviderContext providerContext() {
-                return PROVIDER_CONTEXT;
-            }
         }
 
         // TerminalContextDelegator.....................................................................................
