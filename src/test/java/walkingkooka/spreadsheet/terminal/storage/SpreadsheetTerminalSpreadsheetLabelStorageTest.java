@@ -27,14 +27,22 @@ import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
+import walkingkooka.spreadsheet.compare.provider.SpreadsheetComparatorAliasSet;
+import walkingkooka.spreadsheet.convert.provider.SpreadsheetConvertersConverterProviders;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
+import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
+import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
+import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
+import walkingkooka.spreadsheet.importer.provider.SpreadsheetImporterAliasSet;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
+import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStore;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
+import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserAliasSet;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
@@ -55,6 +63,8 @@ import walkingkooka.storage.StorageTesting;
 import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
+import walkingkooka.validation.form.provider.FormHandlerAliasSet;
+import walkingkooka.validation.provider.ValidatorAliasSet;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -241,16 +251,53 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
             return this.engineContext;
         }
 
-        private final SpreadsheetEngineContext engineContext = BasicSpreadsheetTerminalStorageContext.with(
-            SpreadsheetEngineContexts.basic(
+        private final SpreadsheetEngineContext engineContext = createSpreadsheetEngineContext();
+
+        private SpreadsheetEngineContext createSpreadsheetEngineContext() {
+            final SpreadsheetId id = SpreadsheetId.with(1);
+            final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
+                SpreadsheetMetadataPropertyName.LOCALE,
+                LOCALE
+            ).set(
+                SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
+                id
+            ).set(
+                SpreadsheetMetadataPropertyName.COMPARATORS,
+                SpreadsheetComparatorAliasSet.EMPTY
+            ).set(
+                SpreadsheetMetadataPropertyName.CONVERTERS,
+                SpreadsheetConvertersConverterProviders.ALL.aliasSet()
+            ).set(
+                SpreadsheetMetadataPropertyName.EXPORTERS,
+                SpreadsheetExporterAliasSet.EMPTY
+            ).set(
+                SpreadsheetMetadataPropertyName.FORM_HANDLERS,
+                FormHandlerAliasSet.EMPTY
+            ).set(
+                SpreadsheetMetadataPropertyName.FORMATTERS,
+                SpreadsheetFormatterAliasSet.EMPTY
+            ).set(
+                SpreadsheetMetadataPropertyName.FUNCTIONS,
+                SpreadsheetExpressionFunctions.EMPTY_ALIAS_SET
+            ).set(
+                SpreadsheetMetadataPropertyName.IMPORTERS,
+                SpreadsheetImporterAliasSet.EMPTY
+            ).set(
+                SpreadsheetMetadataPropertyName.PARSERS,
+                SpreadsheetParserAliasSet.EMPTY
+            ).set(
+                SpreadsheetMetadataPropertyName.VALIDATORS,
+                ValidatorAliasSet.EMPTY
+            );
+            final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
+            metadataStore.save(metadata);
+
+            return SpreadsheetEngineContexts.basic(
                 AbsoluteUrl.parseAbsolute("https://example.com"),
-                METADATA_EN_AU.set(
-                    SpreadsheetMetadataPropertyName.LOCALE,
-                    LOCALE
-                ),
+                metadata,
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
-                    SpreadsheetId.with(1),
+                    id,
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.treeMap(),
                         SpreadsheetCellReferencesStores.treeMap(),
@@ -259,7 +306,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                         SpreadsheetGroupStores.treeMap(),
                         SpreadsheetLabelStores.treeMap(),
                         SpreadsheetLabelReferencesStores.treeMap(),
-                        SpreadsheetMetadataStores.treeMap(),
+                        metadataStore,
                         SpreadsheetCellRangeStores.treeMap(),
                         SpreadsheetCellRangeStores.treeMap(),
                         SpreadsheetRowStores.treeMap(),
@@ -272,9 +319,8 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                     PROVIDER_CONTEXT
                 ),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT
-            ),
-            TERMINAL_CONTEXT
-        );
+            );
+        }
     }
 
     // class............................................................................................................

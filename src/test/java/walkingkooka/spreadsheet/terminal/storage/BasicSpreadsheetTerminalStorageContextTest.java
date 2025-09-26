@@ -19,20 +19,23 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
 import walkingkooka.environment.EnvironmentContexts;
-import walkingkooka.locale.LocaleContext;
-import walkingkooka.locale.LocaleContextDelegator;
 import walkingkooka.net.AbsoluteUrl;
-import walkingkooka.net.email.EmailAddress;
-import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
-import walkingkooka.spreadsheet.SpreadsheetGlobalContext;
 import walkingkooka.spreadsheet.SpreadsheetId;
+import walkingkooka.spreadsheet.compare.provider.SpreadsheetComparatorAliasSet;
+import walkingkooka.spreadsheet.convert.provider.SpreadsheetConvertersConverterProviders;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
+import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
+import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
+import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
+import walkingkooka.spreadsheet.importer.provider.SpreadsheetImporterAliasSet;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
+import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStore;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
+import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserAliasSet;
 import walkingkooka.spreadsheet.security.store.SpreadsheetGroupStores;
 import walkingkooka.spreadsheet.security.store.SpreadsheetUserStores;
 import walkingkooka.spreadsheet.store.SpreadsheetCellRangeStores;
@@ -45,12 +48,8 @@ import walkingkooka.spreadsheet.store.SpreadsheetRowStores;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
 import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
 import walkingkooka.storage.Storages;
-import walkingkooka.store.Store;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
+import walkingkooka.validation.form.provider.FormHandlerAliasSet;
+import walkingkooka.validation.provider.ValidatorAliasSet;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -81,30 +80,65 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
 
     @Override
     public BasicSpreadsheetTerminalStorageContext createContext() {
+        final SpreadsheetId id = SpreadsheetId.with(1);
+        final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
+            SpreadsheetMetadataPropertyName.LOCALE,
+            LOCALE
+        ).set(
+            SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
+            id
+        ).set(
+            SpreadsheetMetadataPropertyName.COMPARATORS,
+            SpreadsheetComparatorAliasSet.EMPTY
+        ).set(
+            SpreadsheetMetadataPropertyName.CONVERTERS,
+            SpreadsheetConvertersConverterProviders.ALL.aliasSet()
+        ).set(
+            SpreadsheetMetadataPropertyName.EXPORTERS,
+            SpreadsheetExporterAliasSet.EMPTY
+        ).set(
+            SpreadsheetMetadataPropertyName.FORM_HANDLERS,
+            FormHandlerAliasSet.EMPTY
+        ).set(
+            SpreadsheetMetadataPropertyName.FORMATTERS,
+            SpreadsheetFormatterAliasSet.EMPTY
+        ).set(
+            SpreadsheetMetadataPropertyName.FUNCTIONS,
+            SpreadsheetExpressionFunctions.EMPTY_ALIAS_SET
+        ).set(
+            SpreadsheetMetadataPropertyName.IMPORTERS,
+            SpreadsheetImporterAliasSet.EMPTY
+        ).set(
+            SpreadsheetMetadataPropertyName.PARSERS,
+            SpreadsheetParserAliasSet.EMPTY
+        ).set(
+            SpreadsheetMetadataPropertyName.VALIDATORS,
+            ValidatorAliasSet.EMPTY
+        );
+        final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
+        metadataStore.save(metadata);
+
         return BasicSpreadsheetTerminalStorageContext.with(
             SpreadsheetEngineContexts.basic(
                 AbsoluteUrl.parseAbsolute("https://example.com"),
-                METADATA_EN_AU.set(
-                    SpreadsheetMetadataPropertyName.LOCALE,
-                    LOCALE
-                ),
+                metadata,
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
-                    SpreadsheetId.with(1),
+                    id,
                     SpreadsheetStoreRepositories.basic(
-                        SpreadsheetCellStores.fake(),
-                        SpreadsheetCellReferencesStores.fake(),
-                        SpreadsheetColumnStores.fake(),
-                        SpreadsheetFormStores.fake(),
-                        SpreadsheetGroupStores.fake(),
-                        SpreadsheetLabelStores.fake(),
-                        SpreadsheetLabelReferencesStores.fake(),
-                        SpreadsheetMetadataStores.treeMap(),
-                        SpreadsheetCellRangeStores.fake(),
-                        SpreadsheetCellRangeStores.fake(),
-                        SpreadsheetRowStores.fake(),
+                        SpreadsheetCellStores.treeMap(),
+                        SpreadsheetCellReferencesStores.treeMap(),
+                        SpreadsheetColumnStores.treeMap(),
+                        SpreadsheetFormStores.treeMap(),
+                        SpreadsheetGroupStores.treeMap(),
+                        SpreadsheetLabelStores.treeMap(),
+                        SpreadsheetLabelReferencesStores.treeMap(),
+                        metadataStore,
+                        SpreadsheetCellRangeStores.treeMap(),
+                        SpreadsheetCellRangeStores.treeMap(),
+                        SpreadsheetRowStores.treeMap(),
                         Storages.fake(),
-                        SpreadsheetUserStores.fake()
+                        SpreadsheetUserStores.treeMap()
                     ),
                     SPREADSHEET_PROVIDER,
                     EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
@@ -115,65 +149,6 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
             ),
             TERMINAL_CONTEXT
         );
-    }
-
-    final static class TestSpreadsheetGlobalContext implements SpreadsheetGlobalContext,
-        LocaleContextDelegator {
-
-        @Override
-        public SpreadsheetMetadata createMetadata(final EmailAddress user,
-                                                  final Optional<Locale> locale) {
-            Objects.requireNonNull(user, "user");
-            Objects.requireNonNull(locale, "locale");
-
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Optional<SpreadsheetMetadata> loadMetadata(final SpreadsheetId id) {
-            Objects.requireNonNull(id, "id");
-
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public SpreadsheetMetadata saveMetadata(final SpreadsheetMetadata metadata) {
-            Objects.requireNonNull(metadata, "metadata");
-
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void deleteMetadata(final SpreadsheetId id) {
-            Objects.requireNonNull(id, "id");
-
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public List<SpreadsheetMetadata> findMetadataBySpreadsheetName(final String name,
-                                                                       final int offset,
-                                                                       final int count) {
-            Objects.requireNonNull(name, "name");
-            Store.checkOffsetAndCount(offset, count);
-
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public SpreadsheetGlobalContext setLocale(final Locale locale) {
-            return this;
-        }
-
-        @Override
-        public LocaleContext localeContext() {
-            return LOCALE_CONTEXT;
-        }
-
-        @Override
-        public ProviderContext providerContext() {
-            return PROVIDER_CONTEXT;
-        }
     }
 
     @Override
