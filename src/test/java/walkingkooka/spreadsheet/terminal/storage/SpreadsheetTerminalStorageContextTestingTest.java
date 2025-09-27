@@ -21,6 +21,7 @@ import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.AbsoluteUrl;
+import walkingkooka.net.email.EmailAddress;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.SpreadsheetId;
@@ -129,6 +130,12 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         @Override
         public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
             this.environmentContext.setLocale(locale);
+            return this;
+        }
+
+        @Override
+        public SpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
+            this.environmentContext.setUser(user);
             return this;
         }
 

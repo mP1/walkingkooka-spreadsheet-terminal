@@ -18,11 +18,13 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentValueName;
+import walkingkooka.net.email.EmailAddress;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.storage.StorageContext;
 import walkingkooka.terminal.TerminalContext;
 
 import java.util.Locale;
+import java.util.Optional;
 
 public interface SpreadsheetTerminalStorageContext extends TerminalContext, StorageContext, SpreadsheetEngineContext {
 
@@ -38,4 +40,7 @@ public interface SpreadsheetTerminalStorageContext extends TerminalContext, Stor
 
     @Override
     SpreadsheetTerminalStorageContext setLocale(final Locale locale);
+
+    @Override
+    SpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user);
 }
