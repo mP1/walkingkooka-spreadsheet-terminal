@@ -19,6 +19,7 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentValueName;
+import walkingkooka.net.email.EmailAddress;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
@@ -92,6 +93,12 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
     @Override
     public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
         this.spreadsheetEngineContext.setLocale(locale);
+        return this;
+    }
+
+    @Override
+    public SpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
+        this.spreadsheetEngineContext.setUser(user);
         return this;
     }
 

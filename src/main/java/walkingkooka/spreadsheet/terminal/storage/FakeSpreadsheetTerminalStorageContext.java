@@ -18,6 +18,7 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentValueName;
+import walkingkooka.net.email.EmailAddress;
 import walkingkooka.spreadsheet.engine.FakeSpreadsheetEngineContext;
 import walkingkooka.text.LineEnding;
 
@@ -85,6 +86,11 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
 
     @Override
     public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
         throw new UnsupportedOperationException();
     }
 }
