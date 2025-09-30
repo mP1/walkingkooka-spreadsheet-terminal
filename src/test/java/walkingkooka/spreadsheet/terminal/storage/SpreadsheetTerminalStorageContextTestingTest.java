@@ -184,7 +184,6 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
             metadataStore.save(metadata);
 
             return SpreadsheetEngineContexts.basic(
-                AbsoluteUrl.parseAbsolute("https://example.com"),
                 metadata,
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(

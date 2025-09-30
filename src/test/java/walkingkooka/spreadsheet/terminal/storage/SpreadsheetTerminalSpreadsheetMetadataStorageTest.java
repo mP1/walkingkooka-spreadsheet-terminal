@@ -338,10 +338,10 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
             metadataStore.save(metadata);
 
             return SpreadsheetEngineContexts.basic(
-                AbsoluteUrl.parseAbsolute("https://example.com"),
                 metadata,
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
+                    AbsoluteUrl.parseAbsolute("https://example.com"),
                     id,
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.treeMap(),

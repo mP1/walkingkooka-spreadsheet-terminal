@@ -120,7 +120,6 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
 
         return BasicSpreadsheetTerminalStorageContext.with(
             SpreadsheetEngineContexts.basic(
-                AbsoluteUrl.parseAbsolute("https://example.com"),
                 metadata,
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
