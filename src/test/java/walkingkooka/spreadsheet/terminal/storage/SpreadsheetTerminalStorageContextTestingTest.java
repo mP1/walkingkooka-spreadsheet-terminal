@@ -188,6 +188,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                 metadata,
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
+                    AbsoluteUrl.parseAbsolute("https://example.com"),
                     id,
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.treeMap(),
