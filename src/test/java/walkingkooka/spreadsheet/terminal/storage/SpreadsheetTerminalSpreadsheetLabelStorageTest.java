@@ -297,6 +297,7 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                 metadata,
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
+                    AbsoluteUrl.parseAbsolute("https://example.com"),
                     id,
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.treeMap(),

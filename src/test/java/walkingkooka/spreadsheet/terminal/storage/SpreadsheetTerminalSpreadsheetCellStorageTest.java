@@ -443,6 +443,7 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                 metadata,
                 SpreadsheetMetadataPropertyName.SCRIPTING_FUNCTIONS,
                 SpreadsheetContexts.basic(
+                    AbsoluteUrl.parseAbsolute("https://example.com"),
                     id,
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.treeMap(),
