@@ -440,7 +440,6 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
             metadataStore.save(metadata);
 
             return SpreadsheetEngineContexts.basic(
-                metadata,
                 SpreadsheetEngineContextMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     AbsoluteUrl.parseAbsolute("https://example.com"),
