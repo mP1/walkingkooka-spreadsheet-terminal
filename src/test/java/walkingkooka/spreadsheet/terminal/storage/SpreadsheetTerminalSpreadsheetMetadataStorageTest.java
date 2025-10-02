@@ -359,6 +359,11 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
                         SpreadsheetUserStores.treeMap()
                     ),
                     SPREADSHEET_PROVIDER,
+                    (c) -> SpreadsheetEngineContexts.basic(
+                        SpreadsheetEngineContextMode.FORMULA,
+                        c,
+                        TERMINAL_CONTEXT
+                    ),
                     EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
                     LOCALE_CONTEXT,
                     PROVIDER_CONTEXT
