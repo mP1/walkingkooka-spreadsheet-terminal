@@ -20,11 +20,15 @@ package walkingkooka.spreadsheet.terminal.storage;
 import org.junit.jupiter.api.Test;
 import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.net.AbsoluteUrl;
+import walkingkooka.net.http.server.HttpHandler;
+import walkingkooka.net.http.server.HttpRequestAttribute;
 import walkingkooka.reflect.JavaVisibility;
+import walkingkooka.route.Router;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.compare.provider.SpreadsheetComparatorAliasSet;
 import walkingkooka.spreadsheet.convert.provider.SpreadsheetConvertersConverterProviders;
+import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextMode;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
@@ -51,6 +55,9 @@ import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
 import walkingkooka.storage.Storages;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
+
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -146,6 +153,12 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                         c,
                         TERMINAL_CONTEXT
                     ),
+                    (SpreadsheetEngineContext c) -> new Router<>() {
+                        @Override
+                        public Optional<HttpHandler> route(final Map<HttpRequestAttribute<?>, Object> parameters) {
+                            throw new UnsupportedOperationException();
+                        }
+                    },
                     EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
                     LOCALE_CONTEXT,
                     PROVIDER_CONTEXT
