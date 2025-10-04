@@ -23,7 +23,10 @@ import walkingkooka.collect.set.Sets;
 import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
+import walkingkooka.net.http.server.HttpHandler;
+import walkingkooka.net.http.server.HttpRequestAttribute;
 import walkingkooka.reflect.JavaVisibility;
+import walkingkooka.route.Router;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
@@ -68,6 +71,7 @@ import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -319,6 +323,12 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                         c,
                         TERMINAL_CONTEXT
                     ),
+                    (SpreadsheetEngineContext c) -> new Router<>() {
+                        @Override
+                        public Optional<HttpHandler> route(final Map<HttpRequestAttribute<?>, Object> parameters) {
+                            throw new UnsupportedOperationException();
+                        }
+                    },
                     EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
                     LOCALE_CONTEXT,
                     PROVIDER_CONTEXT
