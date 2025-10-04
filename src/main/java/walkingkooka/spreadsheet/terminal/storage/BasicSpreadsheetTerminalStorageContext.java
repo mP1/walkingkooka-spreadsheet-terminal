@@ -114,6 +114,12 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
     // TerminalContextDelegator.........................................................................................
 
     @Override
+    public SpreadsheetTerminalStorageContext quitTerminal() {
+        this.terminalContext.quitTerminal();
+        return this;
+    }
+
+    @Override
     public TerminalContext terminalContext() {
         return this.terminalContext;
     }

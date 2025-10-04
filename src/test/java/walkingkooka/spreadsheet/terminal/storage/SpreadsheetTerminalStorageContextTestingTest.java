@@ -231,6 +231,12 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         // TerminalContextDelegator.....................................................................................
 
         @Override
+        public SpreadsheetTerminalStorageContext quitTerminal() {
+            TERMINAL_CONTEXT.quitTerminal();
+            return this;
+        }
+
+        @Override
         public TerminalContext terminalContext() {
             return TERMINAL_CONTEXT;
         }
