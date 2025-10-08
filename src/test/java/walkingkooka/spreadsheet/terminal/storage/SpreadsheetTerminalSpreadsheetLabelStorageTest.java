@@ -312,7 +312,6 @@ public final class SpreadsheetTerminalSpreadsheetLabelStorageTest implements Sto
                         SpreadsheetLabelReferencesStores.treeMap(),
                         metadataStore,
                         SpreadsheetCellRangeStores.treeMap(),
-                        SpreadsheetCellRangeStores.treeMap(),
                         SpreadsheetRowStores.treeMap(),
                         Storages.fake(),
                         SpreadsheetUserStores.treeMap()
