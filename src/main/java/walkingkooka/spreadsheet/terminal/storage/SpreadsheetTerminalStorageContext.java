@@ -45,5 +45,5 @@ public interface SpreadsheetTerminalStorageContext extends TerminalContext, Stor
     SpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user);
 
     @Override
-    SpreadsheetTerminalStorageContext quitTerminal();
+    SpreadsheetTerminalStorageContext exitTerminal();
 }
