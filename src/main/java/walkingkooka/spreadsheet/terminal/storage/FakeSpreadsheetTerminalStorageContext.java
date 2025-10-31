@@ -68,7 +68,7 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
     }
 
     @Override
-    public SpreadsheetTerminalStorageContext quitTerminal() {
+    public SpreadsheetTerminalStorageContext exitTerminal() {
         throw new UnsupportedOperationException();
     }
 
