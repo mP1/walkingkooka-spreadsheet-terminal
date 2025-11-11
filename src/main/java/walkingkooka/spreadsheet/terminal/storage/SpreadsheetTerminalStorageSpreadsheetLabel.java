@@ -18,16 +18,12 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.collect.list.ImmutableList;
-import walkingkooka.collect.set.Sets;
 import walkingkooka.net.header.MediaType;
-import walkingkooka.spreadsheet.SpreadsheetCell;
 import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.engine.SpreadsheetDelta;
-import walkingkooka.spreadsheet.engine.SpreadsheetDeltaProperties;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineEvaluation;
-import walkingkooka.spreadsheet.engine.collection.SpreadsheetCellSet;
-import walkingkooka.spreadsheet.reference.SpreadsheetExpressionReference;
+import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
+import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.store.SpreadsheetCellStore;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StorageName;
@@ -41,22 +37,21 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * A {@link Storage} that maps cells to a {@link Storage}, for the current spreadsheet.
+ * A {@link Storage} that maps {@link SpreadsheetLabelMapping} to a {@link Storage}, for the current spreadsheet.
  * <pre>
- * /cell/SpreadsheetExpressionReference
- * /cell/SpreadsheetExpressionReference/compute-if-necessary
+ * /label/SpreadsheetLabelName
  * </pre>
  * for the {@link StorageValue}.
  */
-final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTerminalStorage {
+final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTerminalStorage {
 
-    static SpreadsheetTerminalSpreadsheetCellStorage with(final SpreadsheetEngine engine) {
-        return new SpreadsheetTerminalSpreadsheetCellStorage(engine);
+    static SpreadsheetTerminalStorageSpreadsheetLabel with(final SpreadsheetEngine engine) {
+        return new SpreadsheetTerminalStorageSpreadsheetLabel(engine);
     }
 
-    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.MEMORY_CELL;
+    private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.MEMORY_LABEL;
 
-    private SpreadsheetTerminalSpreadsheetCellStorage(final SpreadsheetEngine engine) {
+    private SpreadsheetTerminalStorageSpreadsheetLabel(final SpreadsheetEngine engine) {
         super();
 
         this.engine = Objects.requireNonNull(engine, "engine");
@@ -69,43 +64,32 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
 
         final List<StorageName> names = path.namesList();
 
-        SpreadsheetExpressionReference cellOrLabels = null;
-        SpreadsheetEngineEvaluation evaluation = SpreadsheetEngineEvaluation.COMPUTE_IF_NECESSARY;
+        SpreadsheetLabelName labelName = null;
 
-        // SLASH A1 compute-if-necessary
         switch (names.size()) {
             case 2:
-            case 3:
-                cellOrLabels = context.convertOrFail(
+                labelName = context.convertOrFail(
                     names.get(1)
                         .value(),
-                    SpreadsheetExpressionReference.class
+                    SpreadsheetLabelName.class
                 );
                 break;
             default:
                 break;
         }
 
-        if (3 == names.size()) {
-            evaluation = SpreadsheetEngineEvaluation.parse(
-                names.get(2)
-                    .value()
-            );
-        }
-
-        if (null != cellOrLabels) {
-            final SpreadsheetDelta delta = this.engine.loadCells(
-                cellOrLabels,
-                evaluation,
-                CELLS_ONLY,
+        if (null != labelName) {
+            final SpreadsheetDelta delta = this.engine.loadLabel(
+                labelName,
                 context
             );
 
-            final Set<SpreadsheetCell> cells = delta.cells();
-            if (false == cells.isEmpty()) {
+            final Set<SpreadsheetLabelMapping> mappings = delta.labels();
+
+            if (false == mappings.isEmpty()) {
                 value = StorageValue.with(
                     path,
-                    Optional.of(cells)
+                    Optional.ofNullable(mappings)
                 ).setContentType(MEDIA_TYPE);
             }
         }
@@ -113,34 +97,26 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
         return Optional.ofNullable(value);
     }
 
-    /**
-     * Select only cells to appear in the response.
-     */
-    private final static Set<SpreadsheetDeltaProperties> CELLS_ONLY = Sets.of(SpreadsheetDeltaProperties.CELLS);
 
     @Override
     StorageValue saveNonNull(final StorageValue value,
                              final SpreadsheetTerminalStorageContext context) {
-        SpreadsheetCellSet cells = context.convertOrFail(
+        SpreadsheetLabelMapping labelMapping = context.convertOrFail(
             value.value()
                 .orElse(null),
-            SpreadsheetCellSet.class
+            SpreadsheetLabelMapping.class
         );
 
         return value.setValue(
             Optional.of(
-                this.engine.saveCells(
-                    cells,
+                this.engine.saveLabel(
+                    labelMapping,
                     context
-                ).cells()
+                ).labels()
             )
         ).setContentType(MEDIA_TYPE);
     }
 
-    /**
-     * Deletes the given cells. Note if the path contains additional components a {@link IllegalArgumentException}
-     * will be thrown.
-     */
     @Override
     void deleteNonNull(final StoragePath path,
                        final SpreadsheetTerminalStorageContext context) {
@@ -150,11 +126,11 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
             case 1:
                 throw new IllegalArgumentException("Missing selection");
             case 2:
-                this.engine.deleteCells(
+                this.engine.deleteLabel(
                     context.convertOrFail(
                         names.get(1)
                             .value(),
-                        SpreadsheetExpressionReference.class
+                        SpreadsheetLabelName.class
                     ),
                     context
                 );
@@ -171,33 +147,34 @@ final class SpreadsheetTerminalSpreadsheetCellStorage extends SpreadsheetTermina
                                        final SpreadsheetTerminalStorageContext context) {
         final List<StorageName> names = path.namesList();
 
-        final SpreadsheetExpressionReference cellOrLabels;
+        final SpreadsheetLabelName labelName;
 
         switch (names.size()) {
             case 2:
-                cellOrLabels = context.convertOrFail(
+                labelName = context.convertOrFail(
                     names.get(1)
                         .value(),
-                    SpreadsheetExpressionReference.class
+                    SpreadsheetLabelName.class
                 );
                 break;
             default:
                 throw new IllegalArgumentException("Invalid path");
         }
 
-        final SpreadsheetDelta delta = this.engine.loadCells(
-            cellOrLabels,
-            SpreadsheetEngineEvaluation.SKIP_EVALUATE,
-            CELLS_ONLY,
+        final SpreadsheetDelta delta = this.engine.loadLabel(
+            labelName,
             context
         );
 
-        return delta.cells()
+        return delta.labels()
             .stream()
             .map(
-                (SpreadsheetCell c) -> StorageValueInfo.with(
+                (SpreadsheetLabelMapping m) -> StorageValueInfo.with(
                     StoragePath.ROOT.append(
-                        StorageName.with(c.reference().text())
+                        StorageName.with(
+                            m.label()
+                                .text()
+                        )
                     ),
                     context.createdAuditInfo()
                 )

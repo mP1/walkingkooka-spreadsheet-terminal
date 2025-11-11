@@ -72,7 +72,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements StorageTesting<SpreadsheetTerminalSpreadsheetMetadataStorage, SpreadsheetTerminalStorageContext>,
+public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements StorageTesting<SpreadsheetTerminalStorageSpreadsheetMetadata, SpreadsheetTerminalStorageContext>,
     SpreadsheetMetadataTesting {
 
     @Test
@@ -161,7 +161,7 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
             .metadatas()
             .save(METADATA_EN_AU);
 
-        final SpreadsheetTerminalSpreadsheetMetadataStorage storage = this.createStorage();
+        final SpreadsheetTerminalStorageSpreadsheetMetadata storage = this.createStorage();
         final StoragePath path = StoragePath.parse("/" + metadata.getOrFail(SpreadsheetMetadataPropertyName.SPREADSHEET_ID));
 
         storage.delete(
@@ -180,7 +180,7 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
     public void testList() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
-        final SpreadsheetTerminalSpreadsheetMetadataStorage storage = this.createStorage();
+        final SpreadsheetTerminalStorageSpreadsheetMetadata storage = this.createStorage();
 
         final StorageValue value1 = storage.save(
             StorageValue.with(
@@ -251,8 +251,8 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
     }
 
     @Override
-    public SpreadsheetTerminalSpreadsheetMetadataStorage createStorage() {
-        return SpreadsheetTerminalSpreadsheetMetadataStorage.INSTANCE;
+    public SpreadsheetTerminalStorageSpreadsheetMetadata createStorage() {
+        return SpreadsheetTerminalStorageSpreadsheetMetadata.INSTANCE;
     }
 
     @Override
@@ -385,8 +385,8 @@ public final class SpreadsheetTerminalSpreadsheetMetadataStorageTest implements 
     // class............................................................................................................
 
     @Override
-    public Class<SpreadsheetTerminalSpreadsheetMetadataStorage> type() {
-        return SpreadsheetTerminalSpreadsheetMetadataStorage.class;
+    public Class<SpreadsheetTerminalStorageSpreadsheetMetadata> type() {
+        return SpreadsheetTerminalStorageSpreadsheetMetadata.class;
     }
 
     @Override

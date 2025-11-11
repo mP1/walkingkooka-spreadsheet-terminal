@@ -27,24 +27,24 @@ import walkingkooka.storage.Storage;
 public final class SpreadsheetTerminalStorages implements PublicStaticHelper {
 
     /**
-     * {@see SpreadsheetTerminalSpreadsheetCellStorage}
+     * {@see SpreadsheetTerminalStorageSpreadsheetCell}
      */
     public static Storage<SpreadsheetTerminalStorageContext> cell(final SpreadsheetEngine engine) {
-        return SpreadsheetTerminalSpreadsheetCellStorage.with(engine);
+        return SpreadsheetTerminalStorageSpreadsheetCell.with(engine);
     }
 
     /**
-     * {@see SpreadsheetTerminalSpreadsheetLabelStorage}
+     * {@see SpreadsheetTerminalStorageSpreadsheetLabel}
      */
     public static Storage<SpreadsheetTerminalStorageContext> label(final SpreadsheetEngine engine) {
-        return SpreadsheetTerminalSpreadsheetLabelStorage.with(engine);
+        return SpreadsheetTerminalStorageSpreadsheetLabel.with(engine);
     }
 
     /**
-     * {@see SpreadsheetTerminalSpreadsheetMetadataStorage}
+     * {@see SpreadsheetTerminalStorageSpreadsheetMetadata}
      */
     public static Storage<SpreadsheetTerminalStorageContext> metadata() {
-        return SpreadsheetTerminalSpreadsheetMetadataStorage.INSTANCE;
+        return SpreadsheetTerminalStorageSpreadsheetMetadata.INSTANCE;
     }
 
     /**
