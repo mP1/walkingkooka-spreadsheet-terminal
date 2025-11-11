@@ -25,10 +25,8 @@ import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
-import walkingkooka.plugin.ProviderContext;
 import walkingkooka.reflect.JavaVisibility;
 import walkingkooka.route.Router;
-import walkingkooka.spreadsheet.SpreadsheetCell;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
@@ -39,24 +37,18 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextMode;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
-import walkingkooka.spreadsheet.engine.collection.SpreadsheetCellSet;
 import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
-import walkingkooka.spreadsheet.expression.SpreadsheetExpressionEvaluationContext;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
 import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
-import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterSelector;
-import walkingkooka.spreadsheet.formula.SpreadsheetFormula;
-import walkingkooka.spreadsheet.formula.parser.SpreadsheetFormulaParserToken;
 import walkingkooka.spreadsheet.importer.provider.SpreadsheetImporterAliasSet;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStore;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
-import walkingkooka.spreadsheet.parser.SpreadsheetParser;
 import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserAliasSet;
-import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserSelector;
-import walkingkooka.spreadsheet.reference.SpreadsheetExpressionReferenceLoader;
+import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
+import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
 import walkingkooka.spreadsheet.security.store.SpreadsheetGroupStores;
 import walkingkooka.spreadsheet.security.store.SpreadsheetUserStores;
@@ -75,35 +67,35 @@ import walkingkooka.storage.StorageTesting;
 import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
-import walkingkooka.text.cursor.TextCursor;
-import walkingkooka.tree.expression.Expression;
-import walkingkooka.tree.text.TextNode;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements StorageTesting<SpreadsheetTerminalSpreadsheetCellStorage, SpreadsheetTerminalStorageContext>,
+public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements StorageTesting<SpreadsheetTerminalStorageSpreadsheetLabel, SpreadsheetTerminalStorageContext>,
     SpreadsheetMetadataTesting {
+
+    private final static SpreadsheetLabelName LABEL = SpreadsheetSelection.labelName("Label123");
+
+    private final static SpreadsheetLabelMapping MAPPING = LABEL.setLabelMappingReference(SpreadsheetSelection.A1);
 
     @Test
     public void testWithNullSpreadsheetEngineFails() {
         assertThrows(
             NullPointerException.class,
-            () -> SpreadsheetTerminalSpreadsheetCellStorage.with(null)
+            () -> SpreadsheetTerminalStorageSpreadsheetLabel.with(null)
         );
     }
 
     @Test
-    public void testLoadMissingCell() {
+    public void testLoadMissingLabel() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
-        final StoragePath path = StoragePath.parse("/A1");
+        final StoragePath path = StoragePath.parse("/" + LABEL);
 
         this.loadAndCheck(
             this.createStorage(),
@@ -113,20 +105,16 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
     }
 
     @Test
-    public void testLoadCell() {
+    public void testLoad() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
-        final SpreadsheetCell cell = SpreadsheetSelection.A1.setFormula(
-            SpreadsheetFormula.EMPTY.setText("=1")
-        );
-
         SpreadsheetEngines.basic()
-            .saveCell(
-                cell,
+            .saveLabel(
+                MAPPING,
                 context
             );
 
-        final StoragePath path = StoragePath.parse("/A1");
+        final StoragePath path = StoragePath.parse("/" + LABEL);
 
         this.loadAndCheck(
             this.createStorage(),
@@ -135,58 +123,13 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
             StorageValue.with(
                 path,
                 Optional.of(
-                    SpreadsheetCellSet.EMPTY.concat(
+                    Sets.of(
                         context.storeRepository()
-                            .cells()
-                            .loadOrFail(cell.reference())
+                            .labels()
+                            .loadOrFail(LABEL)
                     )
                 )
-            ).setContentType(SpreadsheetMediaTypes.MEMORY_CELL)
-        );
-    }
-
-    @Test
-    public void testLoadCellRange() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
-
-        final SpreadsheetCell a1 = SpreadsheetSelection.A1.setFormula(
-            SpreadsheetFormula.EMPTY.setText("=1")
-        );
-
-        final SpreadsheetCell a2 = SpreadsheetSelection.parseCell("A2")
-            .setFormula(
-                SpreadsheetFormula.EMPTY.setText("=2")
-            );
-
-        SpreadsheetEngines.basic()
-            .saveCells(
-                Sets.of(
-                    a1,
-                    a2
-                ),
-                context
-            );
-
-        final StoragePath path = StoragePath.parse("/A1:A2");
-
-        this.loadAndCheck(
-            this.createStorage(),
-            path,
-            context,
-            StorageValue.with(
-                path,
-                Optional.of(
-                    SpreadsheetCellSet.EMPTY.concat(
-                        context.storeRepository()
-                            .cells()
-                            .loadOrFail(a1.reference())
-                    ).concat(
-                        context.storeRepository()
-                            .cells()
-                            .loadOrFail(a2.reference())
-                    )
-                )
-            ).setContentType(SpreadsheetMediaTypes.MEMORY_CELL)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
     }
 
@@ -194,36 +137,21 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
     public void testSave() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
-
-        final SpreadsheetCell cell = SpreadsheetEngines.basic()
-            .saveCell(
-                SpreadsheetSelection.A1.setFormula(
-                    SpreadsheetFormula.EMPTY.setText("=1")
-                ),
-                context
-            ).cells()
-            .iterator()
-            .next();
-
-        final StoragePath path = StoragePath.parse("/A1");
+        final StoragePath path = StoragePath.parse("/" + LABEL);
 
         this.saveAndCheck(
             this.createStorage(),
             StorageValue.with(
                 path,
-                Optional.of(cell)
+                Optional.of(MAPPING)
             ),
             context,
             StorageValue.with(
                 path,
                 Optional.of(
-                    SpreadsheetCellSet.EMPTY.concat(
-                        context.storeRepository()
-                            .cells()
-                            .loadOrFail(cell.reference())
-                    )
+                    Sets.of(MAPPING)
                 )
-            ).setContentType(SpreadsheetMediaTypes.MEMORY_CELL)
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
     }
 
@@ -231,19 +159,15 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
     public void testDelete() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
-        final SpreadsheetCell cell = SpreadsheetSelection.A1.setFormula(
-            SpreadsheetFormula.EMPTY.setText("=1")
-        );
-
         SpreadsheetEngines.basic()
-            .saveCell(
-                cell,
+            .saveLabel(
+                MAPPING,
                 context
             );
 
-        final StoragePath path = StoragePath.parse("/A1");
+        final StoragePath path = StoragePath.parse("/" + LABEL);
 
-        final SpreadsheetTerminalSpreadsheetCellStorage storage = this.createStorage();
+        final SpreadsheetTerminalStorageSpreadsheetLabel storage = this.createStorage();
         storage.delete(
             path,
             context
@@ -260,31 +184,13 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
     public void testList() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
-        final SpreadsheetCell a1 = SpreadsheetSelection.A1.setFormula(
-            SpreadsheetFormula.EMPTY.setText("=1")
-        );
-
-        final SpreadsheetCell a2 = SpreadsheetSelection.parseCell("A2")
-            .setFormula(
-                SpreadsheetFormula.EMPTY.setText("=2")
-            );
-
-        final SpreadsheetCell a3 = SpreadsheetSelection.parseCell("A3")
-            .setFormula(
-                SpreadsheetFormula.EMPTY.setText("=3")
-            );
-
         SpreadsheetEngines.basic()
-            .saveCells(
-                Sets.of(
-                    a1,
-                    a2,
-                    a3
-                ),
+            .saveLabel(
+                MAPPING,
                 context
             );
 
-        final StoragePath path = StoragePath.parse("/A1:C2");
+        final StoragePath path = StoragePath.parse("/" + LABEL);
 
         this.listAndCheck(
             this.createStorage(),
@@ -293,19 +199,15 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
             2,
             context,
             StorageValueInfo.with(
-                StoragePath.parse("/A1"),
-                context.createdAuditInfo()
-            ),
-            StorageValueInfo.with(
-                StoragePath.parse("/A2"),
+                StoragePath.parse("/" + LABEL),
                 context.createdAuditInfo()
             )
         );
     }
 
     @Override
-    public SpreadsheetTerminalSpreadsheetCellStorage createStorage() {
-        return SpreadsheetTerminalSpreadsheetCellStorage.with(SpreadsheetEngines.basic());
+    public SpreadsheetTerminalStorageSpreadsheetLabel createStorage() {
+        return SpreadsheetTerminalStorageSpreadsheetLabel.with(SpreadsheetEngines.basic());
     }
 
     @Override
@@ -321,61 +223,13 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
         }
 
         @Override
-        public SpreadsheetExpressionEvaluationContext spreadsheetExpressionEvaluationContext(final Optional<SpreadsheetCell> cell,
-                                                                                             final SpreadsheetExpressionReferenceLoader loader) {
-            return this.engineContext.spreadsheetExpressionEvaluationContext(
-                cell,
-                loader
-            );
-        }
-
-        @Override
-        public SpreadsheetCell formatValueAndStyle(final SpreadsheetCell cell,
-                                                   final Optional<SpreadsheetFormatterSelector> formatter) {
-            return this.engineContext.formatValueAndStyle(
-                cell,
-                formatter
-            );
-        }
-
-        @Override
-        public Optional<TextNode> formatValue(final SpreadsheetCell cell,
-                                              final Optional<Object> value,
-                                              final Optional<SpreadsheetFormatterSelector> formatter) {
-            return this.engineContext.formatValue(
-                cell,
-                value,
-                formatter
-            );
-        }
-
-        @Override
-        public SpreadsheetFormulaParserToken parseFormula(final TextCursor formula,
-                                                          final Optional<SpreadsheetCell> cell) {
-            return this.engineContext.parseFormula(
-                formula,
-                cell
-            );
-        }
-
-        @Override
-        public Optional<Expression> toExpression(final SpreadsheetFormulaParserToken token) {
-            Objects.requireNonNull(token, "token");
-            return this.engineContext.toExpression(token);
-        }
-
-        @Override
         public SpreadsheetMetadata spreadsheetMetadata() {
             return this.engineContext.spreadsheetMetadata();
         }
 
         @Override
-        public <T> Either<T, String> convert(final Object value,
-                                             final Class<T> type) {
-            return this.engineContext.convert(
-                value,
-                type
-            );
+        public <T> Either<T, String> convert(Object o, Class<T> aClass) {
+            return this.engineContext.convert(o, aClass);
         }
 
         @Override
@@ -481,27 +335,13 @@ public final class SpreadsheetTerminalSpreadsheetCellStorageTest implements Stor
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             );
         }
-
-        @Override
-        public ProviderContext providerContext() {
-            return SpreadsheetMetadataTesting.PROVIDER_CONTEXT;
-        }
-
-        @Override
-        public SpreadsheetParser spreadsheetParser(final SpreadsheetParserSelector selector,
-                                                   final ProviderContext context) {
-            return SpreadsheetMetadataTesting.SPREADSHEET_PARSER_PROVIDER.spreadsheetParser(
-                selector,
-                context
-            );
-        }
     }
 
     // class............................................................................................................
 
     @Override
-    public Class<SpreadsheetTerminalSpreadsheetCellStorage> type() {
-        return SpreadsheetTerminalSpreadsheetCellStorage.class;
+    public Class<SpreadsheetTerminalStorageSpreadsheetLabel> type() {
+        return SpreadsheetTerminalStorageSpreadsheetLabel.class;
     }
 
     @Override
