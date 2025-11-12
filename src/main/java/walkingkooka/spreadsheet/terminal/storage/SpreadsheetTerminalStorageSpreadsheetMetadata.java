@@ -66,9 +66,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
 
         switch (storageNames.size()) {
             case 2:
-                return context.storeRepository()
-                    .metadatas()
-                    .load(
+                return context.loadMetadata(
                         context.convertOrFail(
                             storageNames.get(1)
                                 .value(),
@@ -100,15 +98,13 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                 throw new IllegalArgumentException("Invalid path");
         }
 
-        final SpreadsheetMetadata saved = context.storeRepository()
-            .metadatas()
-            .save(
-                context.convertOrFail(
-                    value.value()
-                        .orElseThrow(() -> new IllegalArgumentException("Missing " + SpreadsheetMetadata.class.getSimpleName())),
-                    SpreadsheetMetadata.class
-                )
-            );
+        final SpreadsheetMetadata saved = context.saveMetadata(
+            context.convertOrFail(
+                value.value()
+                    .orElseThrow(() -> new IllegalArgumentException("Missing " + SpreadsheetMetadata.class.getSimpleName())),
+                SpreadsheetMetadata.class
+            )
+        );
 
         return value.setPath(
             StoragePath.ROOT.append(
@@ -133,9 +129,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
             case 1:
                 throw new IllegalArgumentException("Missing " + SpreadsheetId.class.getSimpleName());
             case 2:
-                final SpreadsheetMetadataStore store = context.storeRepository()
-                    .metadatas();
-                store.delete(
+                context.deleteMetadata(
                     context.convertOrFail(
                         names.get(1)
                             .value(),
@@ -172,9 +166,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                 throw new IllegalArgumentException("Invalid path");
         }
 
-        return context.storeRepository()
-            .metadatas()
-            .findByName(
+        return context.findMetadataBySpreadsheetName(
                 name,
                 offset,
                 count
