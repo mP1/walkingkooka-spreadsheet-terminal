@@ -67,6 +67,7 @@ import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -294,6 +295,32 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
         @Override
         public Optional<EmailAddress> user() {
             return this.engineContext.user();
+        }
+
+        @Override
+        public Optional<SpreadsheetMetadata> loadMetadata(final SpreadsheetId id) {
+            return this.engineContext.loadMetadata(id);
+        }
+
+        @Override
+        public SpreadsheetMetadata saveMetadata(final SpreadsheetMetadata metadata) {
+            return this.engineContext.saveMetadata(metadata);
+        }
+
+        @Override
+        public void deleteMetadata(final SpreadsheetId id) {
+            this.engineContext.deleteMetadata(id);
+        }
+
+        @Override
+        public List<SpreadsheetMetadata> findMetadataBySpreadsheetName(final String name,
+                                                                       final int offset,
+                                                                       final int count) {
+            return this.engineContext.findMetadataBySpreadsheetName(
+                name,
+                offset,
+                count
+            );
         }
 
         @Override
