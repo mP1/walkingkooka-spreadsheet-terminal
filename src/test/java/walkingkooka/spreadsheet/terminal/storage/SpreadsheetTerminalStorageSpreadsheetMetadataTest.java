@@ -20,7 +20,7 @@ package walkingkooka.spreadsheet.terminal.storage;
 import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
 import walkingkooka.environment.EnvironmentContexts;
-import walkingkooka.net.AbsoluteUrl;
+import walkingkooka.net.Url;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
@@ -372,7 +372,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
             return SpreadsheetEngineContexts.basic(
                 SpreadsheetEngineContextMode.SCRIPTING,
                 SpreadsheetContexts.basic(
-                    AbsoluteUrl.parseAbsolute("https://example.com"),
+                    Url.parseAbsolute("https://example.com"),
                     id,
                     SpreadsheetStoreRepositories.basic(
                         SpreadsheetCellStores.treeMap(),
