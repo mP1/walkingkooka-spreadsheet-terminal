@@ -57,6 +57,7 @@ import walkingkooka.spreadsheet.store.SpreadsheetLabelReferencesStores;
 import walkingkooka.spreadsheet.store.SpreadsheetLabelStores;
 import walkingkooka.spreadsheet.store.SpreadsheetRowStores;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
+import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
 import walkingkooka.spreadsheet.terminal.storage.SpreadsheetTerminalStorageContextTestingTest.TestSpreadsheetTerminalStorageContext;
 import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
 import walkingkooka.storage.Storages;
@@ -188,25 +189,27 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
             final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
             metadataStore.save(metadata);
 
+            final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.basic(
+                SpreadsheetCellStores.treeMap(),
+                SpreadsheetCellReferencesStores.treeMap(),
+                SpreadsheetColumnStores.treeMap(),
+                SpreadsheetFormStores.treeMap(),
+                SpreadsheetGroupStores.treeMap(),
+                SpreadsheetLabelStores.treeMap(),
+                SpreadsheetLabelReferencesStores.treeMap(),
+                metadataStore,
+                SpreadsheetCellRangeStores.treeMap(),
+                SpreadsheetRowStores.treeMap(),
+                Storages.fake(),
+                SpreadsheetUserStores.treeMap()
+            );
+
             return SpreadsheetEngineContexts.basic(
                 SpreadsheetEngineContextMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     AbsoluteUrl.parseAbsolute("https://example.com"),
                     id,
-                    SpreadsheetStoreRepositories.basic(
-                        SpreadsheetCellStores.treeMap(),
-                        SpreadsheetCellReferencesStores.treeMap(),
-                        SpreadsheetColumnStores.treeMap(),
-                        SpreadsheetFormStores.treeMap(),
-                        SpreadsheetGroupStores.treeMap(),
-                        SpreadsheetLabelStores.treeMap(),
-                        SpreadsheetLabelReferencesStores.treeMap(),
-                        metadataStore,
-                        SpreadsheetCellRangeStores.treeMap(),
-                        SpreadsheetRowStores.treeMap(),
-                        Storages.fake(),
-                        SpreadsheetUserStores.treeMap()
-                    ),
+                    (idid) -> repo,
                     SPREADSHEET_PROVIDER,
                     (c) -> SpreadsheetEngineContexts.basic(
                         SpreadsheetEngineContextMode.FORMULA,
