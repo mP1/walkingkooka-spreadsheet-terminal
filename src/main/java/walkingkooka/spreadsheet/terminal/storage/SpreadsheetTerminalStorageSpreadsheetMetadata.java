@@ -164,6 +164,10 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
         final String name;
 
         switch (names.size()) {
+            case 0:
+            case 1:
+                name = "";
+                break;
             case 2:
                 name = context.convertOrFail(
                     names.get(1)
