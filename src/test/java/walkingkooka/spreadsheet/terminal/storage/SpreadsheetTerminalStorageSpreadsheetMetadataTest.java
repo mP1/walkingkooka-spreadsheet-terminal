@@ -173,6 +173,28 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
     }
 
     @Test
+    public void testSaveWithStorageValueMissingSpreadsheetMetadataFails() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        final IllegalArgumentException thrown = assertThrows(
+            IllegalArgumentException.class,
+            () -> this.createStorage()
+                .save(
+                    StorageValue.with(
+                        StoragePath.ROOT,
+                        Optional.empty()
+                    ),
+                    context
+                )
+        );
+
+        this.checkEquals(
+            "Missing SpreadsheetMetadata",
+            thrown.getMessage()
+        );
+    }
+
+    @Test
     public void testSave() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
