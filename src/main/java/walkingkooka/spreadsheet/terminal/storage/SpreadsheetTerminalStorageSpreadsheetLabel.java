@@ -75,7 +75,7 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
                 );
                 break;
             default:
-                break;
+                throw new IllegalArgumentException("Invalid path after label name");
         }
 
         if (null != labelName) {

@@ -92,6 +92,23 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
     }
 
     @Test
+    public void testLoadWithExtraPathFails() {
+        final IllegalArgumentException thrown = assertThrows(
+            IllegalArgumentException.class,
+            () -> this.createStorage()
+                .load(
+                    StoragePath.parse("/" + LABEL + "/extra"),
+                    new TestSpreadsheetTerminalStorageContext()
+                )
+        );
+
+        this.checkEquals(
+            "Invalid path after label name",
+            thrown.getMessage()
+        );
+    }
+
+    @Test
     public void testLoadMissingLabel() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
