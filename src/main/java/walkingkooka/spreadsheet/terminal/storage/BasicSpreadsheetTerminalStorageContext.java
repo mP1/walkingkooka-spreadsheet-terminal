@@ -20,6 +20,7 @@ package walkingkooka.spreadsheet.terminal.storage;
 import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.email.EmailAddress;
+import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
@@ -103,6 +104,19 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
     }
 
     // SpreadsheetEngineContextDelegator................................................................................
+
+    @Override
+    public SpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId) {
+        final SpreadsheetEngineContext before = this.spreadsheetEngineContext;
+        final SpreadsheetEngineContext after = before.setSpreadsheetId(spreadsheetId);
+
+        return before.equals(after) ?
+            this :
+            new BasicSpreadsheetTerminalStorageContext(
+                after,
+                this.terminalContext
+            );
+    }
 
     @Override
     public SpreadsheetEngineContext spreadsheetEngineContext() {

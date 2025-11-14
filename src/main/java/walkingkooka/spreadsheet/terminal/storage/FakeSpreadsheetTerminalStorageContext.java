@@ -19,6 +19,7 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.email.EmailAddress;
+import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.FakeSpreadsheetEngineContext;
 import walkingkooka.terminal.TerminalId;
 import walkingkooka.text.LineEnding;
@@ -30,6 +31,11 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
 
     public FakeSpreadsheetTerminalStorageContext() {
         super();
+    }
+
+    @Override
+    public SpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

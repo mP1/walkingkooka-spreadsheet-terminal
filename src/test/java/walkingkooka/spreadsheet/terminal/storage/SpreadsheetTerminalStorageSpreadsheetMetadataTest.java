@@ -352,6 +352,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
         }
 
         @Override
+        public SpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public TestSpreadsheetTerminalStorageContext cloneEnvironment() {
             throw new UnsupportedOperationException();
         }

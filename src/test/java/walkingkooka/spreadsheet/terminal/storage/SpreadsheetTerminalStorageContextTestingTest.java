@@ -68,10 +68,13 @@ import walkingkooka.validation.provider.ValidatorAliasSet;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public final class SpreadsheetTerminalStorageContextTestingTest implements SpreadsheetTerminalStorageContextTesting<TestSpreadsheetTerminalStorageContext>,
     SpreadsheetMetadataTesting {
+
+    private final static SpreadsheetId SPREADSHEET_ID = SpreadsheetId.with(1);
 
     @Override
     public void testTestNaming() {
@@ -150,14 +153,23 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         // SpreadsheetEngineContextDelegator............................................................................
 
         @Override
+        public SpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId) {
+            Objects.requireNonNull(spreadsheetId, "spreadsheetId");
+
+            if (SPREADSHEET_ID.equals(spreadsheetId)) {
+                return this;
+            }
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public SpreadsheetEngineContext spreadsheetEngineContext() {
-            final SpreadsheetId id = SpreadsheetId.with(1);
             final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
                 SpreadsheetMetadataPropertyName.LOCALE,
                 LOCALE
             ).set(
                 SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
-                id
+                SPREADSHEET_ID
             ).set(
                 SpreadsheetMetadataPropertyName.COMPARATORS,
                 SpreadsheetComparatorAliasSet.EMPTY
@@ -208,7 +220,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                 SpreadsheetEngineContextMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     AbsoluteUrl.parseAbsolute("https://example.com"),
-                    id,
+                    SPREADSHEET_ID,
                     (idid) -> repo,
                     SPREADSHEET_PROVIDER,
                     (c) -> SpreadsheetEngineContexts.basic(

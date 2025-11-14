@@ -19,6 +19,7 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.email.EmailAddress;
+import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.storage.StorageContext;
 import walkingkooka.terminal.TerminalContext;
@@ -27,6 +28,9 @@ import java.util.Locale;
 import java.util.Optional;
 
 public interface SpreadsheetTerminalStorageContext extends TerminalContext, StorageContext, SpreadsheetEngineContext {
+
+    @Override
+    SpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId);
 
     @Override
     SpreadsheetTerminalStorageContext cloneEnvironment();
