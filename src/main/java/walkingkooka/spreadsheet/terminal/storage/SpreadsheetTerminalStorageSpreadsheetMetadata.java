@@ -64,9 +64,15 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                                        final SpreadsheetTerminalStorageContext context) {
         final List<StorageName> storageNames = path.namesList();
 
+        final Optional<StorageValue> loaded;
+
         switch (storageNames.size()) {
+            case 0:
+            case 1:
+                loaded = Optional.empty();
+                break;
             case 2:
-                return context.loadMetadata(
+                loaded = context.loadMetadata(
                         context.convertOrFail(
                             storageNames.get(1)
                                 .value(),
@@ -78,9 +84,12 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                             Optional.of(m)
                         ).setContentType(MEDIA_TYPE)
                     );
+                break;
             default:
                 throw new IllegalArgumentException("Invalid path");
         }
+
+        return loaded;
     }
 
     @Override
