@@ -237,7 +237,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
         );
 
         this.checkEquals(
-            "Invalid path, must not contain cell/cell-range/label",
+            "Invalid path, must not contain selection",
             thrown.getMessage()
         );
     }

@@ -128,7 +128,7 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
             case 1:
                 break;
             default:
-                throw new IllegalArgumentException("Invalid path, must not contain cell/cell-range/label");
+                throw new IllegalArgumentException("Invalid path, must not contain selection");
         }
 
         final SpreadsheetCellSet cells = context.convertOrFail(
