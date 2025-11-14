@@ -28,6 +28,7 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineEvaluation;
 import walkingkooka.spreadsheet.engine.collection.SpreadsheetCellSet;
 import walkingkooka.spreadsheet.reference.SpreadsheetExpressionReference;
+import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
 import walkingkooka.spreadsheet.store.SpreadsheetCellStore;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StorageName;
@@ -184,6 +185,10 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
         final SpreadsheetExpressionReference cellOrLabels;
 
         switch (names.size()) {
+            case 0:
+            case 1:
+                cellOrLabels = SpreadsheetSelection.ALL_CELLS;
+                break;
             case 2:
                 cellOrLabels = context.convertOrFail(
                     names.get(1)
@@ -192,7 +197,7 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
                 );
                 break;
             default:
-                throw new IllegalArgumentException("Invalid path");
+                throw new IllegalArgumentException("Invalid path after selection");
         }
 
         final SpreadsheetDelta delta = this.engine.loadCells(
