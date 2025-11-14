@@ -106,20 +106,30 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
     @Override
     StorageValue saveNonNull(final StorageValue value,
                              final SpreadsheetTerminalStorageContext context) {
-        SpreadsheetLabelMapping labelMapping = context.convertOrFail(
-            value.value()
-                .orElse(null),
-            SpreadsheetLabelMapping.class
-        );
+        final List<StorageName> names = value.path()
+            .namesList();
+        switch (names.size()) {
+            case 0:
+            case 1:
+                throw new IllegalArgumentException("Missing label");
+            case 2:
+                SpreadsheetLabelMapping labelMapping = context.convertOrFail(
+                    value.value()
+                        .orElseThrow(() -> new IllegalArgumentException("Missing " + SpreadsheetLabelMapping.class.getSimpleName())),
+                    SpreadsheetLabelMapping.class
+                );
 
-        return value.setValue(
-            Optional.of(
-                this.engine.saveLabel(
-                    labelMapping,
-                    context
-                ).labels()
-            )
-        ).setContentType(MEDIA_TYPE);
+                return value.setValue(
+                    Optional.of(
+                        this.engine.saveLabel(
+                            labelMapping,
+                            context
+                        ).labels()
+                    )
+                ).setContentType(MEDIA_TYPE);
+            default:
+                throw new IllegalArgumentException("Invalid path after label");
+        }
     }
 
     @Override
