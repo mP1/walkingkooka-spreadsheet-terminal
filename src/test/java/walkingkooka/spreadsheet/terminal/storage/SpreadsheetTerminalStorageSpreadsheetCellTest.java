@@ -17,6 +17,7 @@
 
 package walkingkooka.spreadsheet.terminal.storage;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
 import walkingkooka.collect.set.Sets;
@@ -321,6 +322,65 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
             storage,
             path,
             context
+        );
+    }
+
+    @Test
+    public void testListWithExtraPathFails() {
+        final IllegalArgumentException thrown = assertThrows(
+            IllegalArgumentException.class,
+            () -> this.createStorage()
+                .list(
+                    StoragePath.parse("/A1/extra"),
+                    0,
+                    1,
+                    new TestSpreadsheetTerminalStorageContext()
+                )
+        );
+
+        this.checkEquals(
+            "Invalid path after selection",
+            thrown.getMessage()
+        );
+    }
+
+    @Disabled("BasicSpreadsheetEngine.loadCellRange Too slow")
+    @Test
+    public void testListWithoutSelection() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        final SpreadsheetCell a1 = SpreadsheetSelection.A1.setFormula(
+            SpreadsheetFormula.EMPTY.setText("=1")
+        );
+
+        final SpreadsheetCell a2 = SpreadsheetSelection.parseCell("A2")
+            .setFormula(
+                SpreadsheetFormula.EMPTY.setText("=2")
+            );
+
+        SpreadsheetEngines.basic()
+            .saveCells(
+                Sets.of(
+                    a1,
+                    a2
+                ),
+                context
+            );
+
+        this.listAndCheck(
+            this.createStorage(),
+            StoragePath.ROOT,
+            0,
+            3,
+            context,
+            StorageValueInfo.with(
+                StoragePath.parse("/A1"),
+                context.createdAuditInfo()
+            ),
+            StorageValueInfo.with(
+                StoragePath.parse("/A2"),
+                context.createdAuditInfo()
+            )
         );
     }
 
