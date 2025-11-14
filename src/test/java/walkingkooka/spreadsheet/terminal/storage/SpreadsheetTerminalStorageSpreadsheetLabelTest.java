@@ -270,6 +270,44 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
     }
 
     @Test
+    public void testListMissingLabelFails() {
+        final IllegalArgumentException thrown = assertThrows(
+            IllegalArgumentException.class,
+            () -> this.createStorage()
+                .list(
+                    StoragePath.ROOT,
+                    0,
+                    1,
+                    new TestSpreadsheetTerminalStorageContext()
+                )
+        );
+
+        this.checkEquals(
+            "Missing label",
+            thrown.getMessage()
+        );
+    }
+
+    @Test
+    public void testListWithExtraPathFails() {
+        final IllegalArgumentException thrown = assertThrows(
+            IllegalArgumentException.class,
+            () -> this.createStorage()
+                .list(
+                    StoragePath.parse("/" + LABEL + "/extra"),
+                    0,
+                    1,
+                    new TestSpreadsheetTerminalStorageContext()
+                )
+        );
+
+        this.checkEquals(
+            "Invalid path after label",
+            thrown.getMessage()
+        );
+    }
+
+    @Test
     public void testList() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
