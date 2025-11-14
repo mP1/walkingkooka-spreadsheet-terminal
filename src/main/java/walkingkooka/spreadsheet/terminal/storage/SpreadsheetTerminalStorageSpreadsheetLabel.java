@@ -165,6 +165,9 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
         final SpreadsheetLabelName labelName;
 
         switch (names.size()) {
+            case 0:
+            case 1:
+                throw new IllegalArgumentException("Missing label");
             case 2:
                 labelName = context.convertOrFail(
                     names.get(1)
@@ -173,7 +176,7 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
                 );
                 break;
             default:
-                throw new IllegalArgumentException("Invalid path");
+                throw new IllegalArgumentException("Invalid path after label");
         }
 
         final SpreadsheetDelta delta = this.engine.loadLabel(
