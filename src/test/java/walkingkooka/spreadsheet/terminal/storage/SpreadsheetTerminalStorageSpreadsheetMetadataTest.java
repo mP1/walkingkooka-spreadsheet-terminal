@@ -95,6 +95,21 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
     }
 
     @Test
+    public void testLoadMissingSpreadsheetId() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        final SpreadsheetMetadata metadata = context.saveMetadata(METADATA_EN_AU);
+
+        final StoragePath path = StoragePath.ROOT;
+
+        this.loadAndCheck(
+            this.createStorage(),
+            path,
+            context
+        );
+    }
+
+    @Test
     public void testLoad() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
