@@ -279,6 +279,23 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
     }
 
     @Test
+    public void testDeleteMissingReferenceFails() {
+        final IllegalArgumentException thrown = assertThrows(
+            IllegalArgumentException.class,
+            () -> this.createStorage()
+                .delete(
+                    StoragePath.ROOT,
+                    new TestSpreadsheetTerminalStorageContext()
+                )
+        );
+
+        this.checkEquals(
+            "Missing selection",
+            thrown.getMessage()
+        );
+    }
+
+    @Test
     public void testDelete() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
