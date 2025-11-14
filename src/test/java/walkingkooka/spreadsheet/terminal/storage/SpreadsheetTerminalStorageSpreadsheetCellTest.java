@@ -244,6 +244,26 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
     }
 
     @Test
+    public void testSaveWithStorageValueMissingCell() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        final StoragePath path = StoragePath.ROOT;
+
+        this.saveAndCheck(
+            this.createStorage(),
+            StorageValue.with(
+                path,
+                Optional.empty()
+            ),
+            context,
+            StorageValue.with(
+                path,
+                Optional.empty()
+            ).setContentType(SpreadsheetMediaTypes.MEMORY_CELL)
+        );
+    }
+
+    @Test
     public void testSave() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 

@@ -134,7 +134,7 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
 
         final SpreadsheetCellSet cells = context.convertOrFail(
             value.value()
-                .orElse(null),
+                .orElse(SpreadsheetCellSet.EMPTY),
             SpreadsheetCellSet.class
         );
 
