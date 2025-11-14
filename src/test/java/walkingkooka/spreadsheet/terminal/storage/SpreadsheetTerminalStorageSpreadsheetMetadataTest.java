@@ -192,6 +192,80 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
     }
 
     @Test
+    public void testListMissingFilter() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        final SpreadsheetTerminalStorageSpreadsheetMetadata storage = this.createStorage();
+
+        final StorageValue value1 = storage.save(
+            StorageValue.with(
+                StoragePath.ROOT,
+                Optional.of(
+                    METADATA_EN_AU.set(
+                        SpreadsheetMetadataPropertyName.SPREADSHEET_NAME,
+                        SpreadsheetName.with("Hello1")
+                    )
+                )
+            ),
+            context
+        );
+
+        final StorageValue value2 = storage.save(
+            StorageValue.with(
+                StoragePath.ROOT,
+                Optional.of(
+                    METADATA_EN_AU.set(
+                        SpreadsheetMetadataPropertyName.SPREADSHEET_NAME,
+                        SpreadsheetName.with("Hello2")
+                    )
+                )
+            ),
+            context
+        );
+
+        final StorageValue value3 = storage.save(
+            StorageValue.with(
+                StoragePath.ROOT,
+                Optional.of(
+                    METADATA_EN_AU.set(
+                        SpreadsheetMetadataPropertyName.SPREADSHEET_NAME,
+                        SpreadsheetName.with("Different3")
+                    )
+                )
+            ),
+            context
+        );
+
+        final StoragePath path = StoragePath.ROOT;
+
+        this.listAndCheck(
+            this.createStorage(),
+            path,
+            0,
+            2,
+            context,
+            StorageValueInfo.with(
+                StoragePath.parse(
+                    "/" + (
+                        (SpreadsheetMetadata) value1.value()
+                            .get()
+                    ).getOrFail(SpreadsheetMetadataPropertyName.SPREADSHEET_ID)
+                ),
+                context.createdAuditInfo()
+            ),
+            StorageValueInfo.with(
+                StoragePath.parse(
+                    "/" + (
+                        (SpreadsheetMetadata) value2.value()
+                            .get()
+                    ).getOrFail(SpreadsheetMetadataPropertyName.SPREADSHEET_ID)
+                ),
+                context.createdAuditInfo()
+            )
+        );
+    }
+
+    @Test
     public void testList() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
