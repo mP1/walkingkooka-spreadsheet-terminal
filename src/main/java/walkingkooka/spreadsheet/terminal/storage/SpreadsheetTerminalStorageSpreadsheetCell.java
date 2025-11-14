@@ -121,7 +121,17 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
     @Override
     StorageValue saveNonNull(final StorageValue value,
                              final SpreadsheetTerminalStorageContext context) {
-        SpreadsheetCellSet cells = context.convertOrFail(
+        switch (value.path()
+            .namesList()
+            .size()) {
+            case 0:
+            case 1:
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid path, must not contain cell/cell-range/label");
+        }
+
+        final SpreadsheetCellSet cells = context.convertOrFail(
             value.value()
                 .orElse(null),
             SpreadsheetCellSet.class

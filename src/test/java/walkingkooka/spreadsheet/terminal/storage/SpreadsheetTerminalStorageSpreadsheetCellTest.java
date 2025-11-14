@@ -221,9 +221,30 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
     }
 
     @Test
+    public void testSaveWithInvalidCellReferenceFails() {
+        final IllegalArgumentException thrown = assertThrows(
+            IllegalArgumentException.class,
+            () -> this.createStorage()
+                .save(
+                    StorageValue.with(
+                        StoragePath.parse("/999"),
+                        Optional.of(
+                            SpreadsheetSelection.A1.setFormula(SpreadsheetFormula.EMPTY)
+                        )
+                    ),
+                    new TestSpreadsheetTerminalStorageContext()
+                )
+        );
+
+        this.checkEquals(
+            "Invalid path, must not contain cell/cell-range/label",
+            thrown.getMessage()
+        );
+    }
+
+    @Test
     public void testSave() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
-
 
         final SpreadsheetCell cell = SpreadsheetEngines.basic()
             .saveCell(
@@ -235,7 +256,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
             .iterator()
             .next();
 
-        final StoragePath path = StoragePath.parse("/A1");
+        final StoragePath path = StoragePath.ROOT;
 
         this.saveAndCheck(
             this.createStorage(),
