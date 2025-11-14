@@ -145,7 +145,29 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
         );
 
         this.checkEquals(
-            "Invalid path, SpreadsheetId not accepted",
+            "Invalid path, SpreadsheetId should not be present",
+            thrown.getMessage()
+        );
+    }
+
+    @Test
+    public void testSavePathIncludesSpreadsheetId() {
+        final IllegalArgumentException thrown = assertThrows(
+            IllegalArgumentException.class,
+            () -> this.createStorage()
+                .save(
+                    StorageValue.with(
+                        StoragePath.parse("/1"),
+                        Optional.of(
+                            SpreadsheetMetadata.EMPTY
+                        )
+                    ),
+                    new TestSpreadsheetTerminalStorageContext()
+                )
+        );
+
+        this.checkEquals(
+            "Invalid path, SpreadsheetId should not be present",
             thrown.getMessage()
         );
     }

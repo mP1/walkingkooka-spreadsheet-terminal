@@ -102,7 +102,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
             case 1:
                 break;
             case 2:
-                throw new IllegalArgumentException("Invalid path, SpreadsheetId not accepted");
+                throw new IllegalArgumentException("Invalid path, SpreadsheetId should not be present");
             default:
                 throw new IllegalArgumentException("Invalid path");
         }
