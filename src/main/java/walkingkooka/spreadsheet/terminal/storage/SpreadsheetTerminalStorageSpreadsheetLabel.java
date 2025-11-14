@@ -139,7 +139,7 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
         switch (names.size()) {
             case 0:
             case 1:
-                throw new IllegalArgumentException("Missing selection");
+                throw new IllegalArgumentException("Missing label");
             case 2:
                 this.engine.deleteLabel(
                     context.convertOrFail(
@@ -151,7 +151,7 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
                 );
                 break;
             default:
-                throw new IllegalArgumentException("Invalid path");
+                throw new IllegalArgumentException("Invalid path after label");
         }
     }
 
