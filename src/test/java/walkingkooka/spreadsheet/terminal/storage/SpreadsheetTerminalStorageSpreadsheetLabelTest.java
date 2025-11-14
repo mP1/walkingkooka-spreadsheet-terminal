@@ -123,11 +123,9 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             StorageValue.with(
                 path,
                 Optional.of(
-                    Sets.of(
-                        context.storeRepository()
-                            .labels()
-                            .loadOrFail(LABEL)
-                    )
+                    context.storeRepository()
+                        .labels()
+                        .loadOrFail(LABEL)
                 )
             ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
