@@ -115,7 +115,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
 
         @Override
         public EnvironmentContext environmentContext() {
-            return ENVIRONMENT_CONTEXT;
+            return this.environmentContext;
         }
 
         @Override
@@ -148,7 +148,11 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
             return this;
         }
 
-        private final EnvironmentContext environmentContext = EnvironmentContexts.map(ENVIRONMENT_CONTEXT);
+        private final EnvironmentContext environmentContext = EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+            .setEnvironmentValue(
+                SPREADSHEET_ID,
+                SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID
+            );
 
         // SpreadsheetEngineContextDelegator............................................................................
 
@@ -156,7 +160,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         public SpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId) {
             Objects.requireNonNull(spreadsheetId, "spreadsheetId");
 
-            if (SPREADSHEET_ID.equals(spreadsheetId)) {
+            if (SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID.equals(spreadsheetId)) {
                 return this;
             }
             throw new UnsupportedOperationException();
@@ -169,7 +173,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                 LOCALE
             ).set(
                 SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
-                SPREADSHEET_ID
+                SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID
             ).set(
                 SpreadsheetMetadataPropertyName.COMPARATORS,
                 SpreadsheetComparatorAliasSet.EMPTY
@@ -220,7 +224,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
                 SpreadsheetEngineContextMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     AbsoluteUrl.parseAbsolute("https://example.com"),
-                    SPREADSHEET_ID,
+                    SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID,
                     (idid) -> repo,
                     SPREADSHEET_PROVIDER,
                     (c) -> SpreadsheetEngineContexts.basic(
