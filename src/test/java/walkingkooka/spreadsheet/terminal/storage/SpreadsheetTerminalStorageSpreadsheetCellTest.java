@@ -100,6 +100,19 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
     }
 
     @Test
+    public void testLoadMissingCellReference() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        final StoragePath path = StoragePath.ROOT;
+
+        this.loadAndCheck(
+            this.createStorage(),
+            path,
+            context
+        );
+    }
+
+    @Test
     public void testLoadMissingCell() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
