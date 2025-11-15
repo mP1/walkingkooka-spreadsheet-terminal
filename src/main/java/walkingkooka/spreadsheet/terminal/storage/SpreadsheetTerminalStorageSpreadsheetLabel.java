@@ -166,25 +166,25 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
                                        final SpreadsheetTerminalStorageContext context) {
         final List<StorageName> names = path.namesList();
 
-        final SpreadsheetLabelName labelName;
+        final String labelName;
 
         switch (names.size()) {
             case 0:
             case 1:
-                throw new IllegalArgumentException("Missing label");
+                labelName = "";
+                break;
             case 2:
-                labelName = context.convertOrFail(
-                    names.get(1)
-                        .value(),
-                    SpreadsheetLabelName.class
-                );
+                labelName = names.get(1)
+                    .value();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid path after label");
         }
 
-        final SpreadsheetDelta delta = this.engine.loadLabel(
+        final SpreadsheetDelta delta = this.engine.findLabelsByName(
             labelName,
+            offset,
+            count,
             context
         );
 
