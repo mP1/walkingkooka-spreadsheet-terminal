@@ -78,9 +78,36 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements StorageTesting<SpreadsheetTerminalStorageSpreadsheetLabel, SpreadsheetTerminalStorageContext>,
     SpreadsheetMetadataTesting {
 
-    private final static SpreadsheetLabelName LABEL = SpreadsheetSelection.labelName("Label123");
+    private final static SpreadsheetLabelName LABEL1 = SpreadsheetSelection.labelName("Label111");
 
-    private final static SpreadsheetLabelMapping MAPPING = LABEL.setLabelMappingReference(SpreadsheetSelection.A1);
+    private final static SpreadsheetLabelMapping MAPPING1 = LABEL1.setLabelMappingReference(SpreadsheetSelection.A1);
+
+    private final static SpreadsheetLabelName LABEL2 = SpreadsheetSelection.labelName("Label222");
+
+    private final static SpreadsheetLabelMapping MAPPING2 = LABEL2.setLabelMappingReference(
+        SpreadsheetSelection.parseCell("B2")
+    );
+
+    private final static SpreadsheetLabelName LABEL3 = SpreadsheetSelection.labelName("Label333");
+
+    private final static SpreadsheetLabelMapping MAPPING3 = LABEL3.setLabelMappingReference(
+        SpreadsheetSelection.parseCell("C3")
+    );
+
+    private final static StorageValueInfo INFO1 = StorageValueInfo.with(
+        StoragePath.parse("/" + LABEL1),
+        ENVIRONMENT_CONTEXT.createdAuditInfo()
+    );
+
+    private final static StorageValueInfo INFO2 = StorageValueInfo.with(
+        StoragePath.parse("/" + LABEL2),
+        ENVIRONMENT_CONTEXT.createdAuditInfo()
+    );
+
+    private final static StorageValueInfo INFO3 = StorageValueInfo.with(
+        StoragePath.parse("/" + LABEL3),
+        ENVIRONMENT_CONTEXT.createdAuditInfo()
+    );
 
     @Test
     public void testWithNullSpreadsheetEngineFails() {
@@ -96,7 +123,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             IllegalArgumentException.class,
             () -> this.createStorage()
                 .load(
-                    StoragePath.parse("/" + LABEL + "/extra"),
+                    StoragePath.parse("/" + LABEL1 + "/extra"),
                     new TestSpreadsheetTerminalStorageContext()
                 )
         );
@@ -111,7 +138,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
     public void testLoadMissingLabel() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
-        final StoragePath path = StoragePath.parse("/" + LABEL);
+        final StoragePath path = StoragePath.parse("/" + LABEL1);
 
         this.loadAndCheck(
             this.createStorage(),
@@ -126,11 +153,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
         SpreadsheetEngines.basic()
             .saveLabel(
-                MAPPING,
+                MAPPING1,
                 context
             );
 
-        final StoragePath path = StoragePath.parse("/" + LABEL);
+        final StoragePath path = StoragePath.parse("/" + LABEL1);
 
         this.loadAndCheck(
             this.createStorage(),
@@ -141,7 +168,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
                 Optional.of(
                     context.storeRepository()
                         .labels()
-                        .loadOrFail(LABEL)
+                        .loadOrFail(LABEL1)
                 )
             ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
@@ -154,8 +181,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             () -> this.createStorage()
                 .save(
                     StorageValue.with(
-                        StoragePath.parse("/" + LABEL + "/extra"),
-                        Optional.of(MAPPING)
+                        StoragePath.parse("/" + LABEL1 + "/extra"),
+                        Optional.of(MAPPING1)
                     ),
                     new TestSpreadsheetTerminalStorageContext()
                 )
@@ -174,7 +201,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             () -> this.createStorage()
                 .save(
                     StorageValue.with(
-                        StoragePath.parse("/" + LABEL),
+                        StoragePath.parse("/" + LABEL1),
                         Optional.empty()
                     ),
                     new TestSpreadsheetTerminalStorageContext()
@@ -191,18 +218,18 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
     public void testSave() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
-        final StoragePath path = StoragePath.parse("/" + LABEL);
+        final StoragePath path = StoragePath.parse("/" + LABEL1);
 
         this.saveAndCheck(
             this.createStorage(),
             StorageValue.with(
                 path,
-                Optional.of(MAPPING)
+                Optional.of(MAPPING1)
             ),
             context,
             StorageValue.with(
                 path,
-                Optional.of(MAPPING)
+                Optional.of(MAPPING1)
             ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
     }
@@ -230,7 +257,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             IllegalArgumentException.class,
             () -> this.createStorage()
                 .delete(
-                    StoragePath.parse("/" + LABEL + "/extra"),
+                    StoragePath.parse("/" + LABEL1 + "/extra"),
                     new TestSpreadsheetTerminalStorageContext()
                 )
         );
@@ -247,11 +274,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
         SpreadsheetEngines.basic()
             .saveLabel(
-                MAPPING,
+                MAPPING1,
                 context
             );
 
-        final StoragePath path = StoragePath.parse("/" + LABEL);
+        final StoragePath path = StoragePath.parse("/" + LABEL1);
 
         final SpreadsheetTerminalStorageSpreadsheetLabel storage = this.createStorage();
         storage.delete(
@@ -267,31 +294,12 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
     }
 
     @Test
-    public void testListMissingLabelFails() {
-        final IllegalArgumentException thrown = assertThrows(
-            IllegalArgumentException.class,
-            () -> this.createStorage()
-                .list(
-                    StoragePath.ROOT,
-                    0,
-                    1,
-                    new TestSpreadsheetTerminalStorageContext()
-                )
-        );
-
-        this.checkEquals(
-            "Missing label",
-            thrown.getMessage()
-        );
-    }
-
-    @Test
     public void testListWithExtraPathFails() {
         final IllegalArgumentException thrown = assertThrows(
             IllegalArgumentException.class,
             () -> this.createStorage()
                 .list(
-                    StoragePath.parse("/" + LABEL + "/extra"),
+                    StoragePath.parse("/" + LABEL1 + "/extra"),
                     0,
                     1,
                     new TestSpreadsheetTerminalStorageContext()
@@ -305,27 +313,141 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
     }
 
     @Test
-    public void testList() {
+    public void testListMissingLabel() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
 
         SpreadsheetEngines.basic()
             .saveLabel(
-                MAPPING,
+                MAPPING1,
                 context
             );
 
-        final StoragePath path = StoragePath.parse("/" + LABEL);
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING2,
+                context
+            );
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING3,
+                context
+            );
 
         this.listAndCheck(
             this.createStorage(),
-            path,
+            StoragePath.ROOT,
+            0,
+            4,
+            context,
+            INFO1,
+            INFO2,
+            INFO3
+        );
+    }
+
+    @Test
+    public void testListMissingLabelWithOffset() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING1,
+                context
+            );
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING2,
+                context
+            );
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING3,
+                context
+            );
+
+        this.listAndCheck(
+            this.createStorage(),
+            StoragePath.ROOT,
+            1,
+            4,
+            context,
+            INFO2,
+            INFO3
+        );
+    }
+
+    @Test
+    public void testListMissingLabelWithCount() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING1,
+                context
+            );
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING2,
+                context
+            );
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING3,
+                context
+            );
+
+        this.listAndCheck(
+            this.createStorage(),
+            StoragePath.ROOT,
             0,
             2,
             context,
-            StorageValueInfo.with(
-                StoragePath.parse("/" + LABEL),
-                context.createdAuditInfo()
-            )
+            INFO1,
+            INFO2
+        );
+    }
+
+    @Test
+    public void testListWithPrefix() {
+        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING1,
+                context
+            );
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING2,
+                context
+            );
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING3,
+                context
+            );
+
+        SpreadsheetEngines.basic()
+            .saveLabel(
+                MAPPING1,
+                context
+            );
+
+        this.listAndCheck(
+            this.createStorage(),
+            StoragePath.parse("/Label"),
+            0,
+            2,
+            context,
+            INFO1,
+            INFO2
         );
     }
 
