@@ -102,7 +102,6 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
         return Optional.ofNullable(value);
     }
 
-
     @Override
     StorageValue saveNonNull(final StorageValue value,
                              final SpreadsheetTerminalStorageContext context) {
@@ -119,12 +118,17 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
                     SpreadsheetLabelMapping.class
                 );
 
+                final Set<SpreadsheetLabelMapping> saved = this.engine.saveLabel(
+                    labelMapping,
+                    context
+                ).labels();
+
                 return value.setValue(
-                    Optional.of(
-                        this.engine.saveLabel(
-                            labelMapping,
-                            context
-                        ).labels()
+                    Optional.ofNullable(
+                        saved.isEmpty() ?
+                            null :
+                            saved.iterator()
+                                .next()
                     )
                 ).setContentType(MEDIA_TYPE);
             default:
