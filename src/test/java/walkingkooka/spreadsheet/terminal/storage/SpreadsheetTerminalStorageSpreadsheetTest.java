@@ -166,7 +166,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
         @Override
         public Optional<EmailAddress> user() {
-            return Optional.of(USER);
+            return Optional.of(SpreadsheetTerminalStorageSpreadsheetTest.USER);
         }
 
         @Override

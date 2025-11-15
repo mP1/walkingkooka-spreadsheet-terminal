@@ -554,7 +554,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
             final SpreadsheetId id = SpreadsheetId.with(1);
             final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
                 SpreadsheetMetadataPropertyName.LOCALE,
-                LOCALE
+                SpreadsheetTerminalStorageSpreadsheetCellTest.LOCALE
             ).set(
                 SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
                 id

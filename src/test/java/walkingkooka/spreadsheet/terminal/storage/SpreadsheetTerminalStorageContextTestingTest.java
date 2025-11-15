@@ -170,7 +170,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         public SpreadsheetEngineContext spreadsheetEngineContext() {
             final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
                 SpreadsheetMetadataPropertyName.LOCALE,
-                LOCALE
+                SpreadsheetTerminalStorageSpreadsheetCellTest.LOCALE
             ).set(
                 SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
                 SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID

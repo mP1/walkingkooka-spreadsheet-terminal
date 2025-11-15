@@ -508,7 +508,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             final SpreadsheetId id = SpreadsheetId.with(1);
             final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
                 SpreadsheetMetadataPropertyName.LOCALE,
-                LOCALE
+                SpreadsheetTerminalStorageSpreadsheetLabelTest.LOCALE
             ).set(
                 SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
                 id

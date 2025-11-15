@@ -408,7 +408,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
             final SpreadsheetId id = SpreadsheetId.with(1);
             final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
                 SpreadsheetMetadataPropertyName.LOCALE,
-                LOCALE
+                SpreadsheetTerminalStorageSpreadsheetMetadataTest.LOCALE
             ).set(
                 SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
                 id
