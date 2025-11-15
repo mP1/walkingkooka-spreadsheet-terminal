@@ -19,7 +19,6 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
-import walkingkooka.collect.set.Sets;
 import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.email.EmailAddress;
@@ -203,9 +202,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             context,
             StorageValue.with(
                 path,
-                Optional.of(
-                    Sets.of(MAPPING)
-                )
+                Optional.of(MAPPING)
             ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
     }
