@@ -17,7 +17,6 @@
 
 package walkingkooka.spreadsheet.terminal.storage;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
 import walkingkooka.collect.set.Sets;
@@ -364,7 +363,6 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
         );
     }
 
-    @Disabled("BasicSpreadsheetEngine.loadCellRange Too slow")
     @Test
     public void testListWithoutSelection() {
         final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
