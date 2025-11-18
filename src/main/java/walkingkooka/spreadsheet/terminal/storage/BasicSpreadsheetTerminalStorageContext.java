@@ -98,6 +98,11 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
     }
 
     @Override
+    public Optional<EmailAddress> user() {
+        return this.spreadsheetEngineContext.user();
+    }
+
+    @Override
     public SpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
         this.spreadsheetEngineContext.setUser(user);
         return this;
