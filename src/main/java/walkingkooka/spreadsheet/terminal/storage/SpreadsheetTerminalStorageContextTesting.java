@@ -26,6 +26,11 @@ public interface SpreadsheetTerminalStorageContextTesting<C extends SpreadsheetT
     SpreadsheetEngineContextTesting<C> {
 
     @Override
+    default String typeNamePrefix() {
+        return "";
+    }
+
+    @Override
     default String typeNameSuffix() {
         return SpreadsheetTerminalStorageContext.class.getSimpleName();
     }
