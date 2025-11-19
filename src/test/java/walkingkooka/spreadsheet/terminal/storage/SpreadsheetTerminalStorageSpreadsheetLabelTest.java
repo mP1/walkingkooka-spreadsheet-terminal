@@ -578,7 +578,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
                     },
                     EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
                     LOCALE_CONTEXT,
-                    PROVIDER_CONTEXT
+                    PROVIDER_CONTEXT,
+                    TERMINAL_SERVER_CONTEXT
                 ),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             );
