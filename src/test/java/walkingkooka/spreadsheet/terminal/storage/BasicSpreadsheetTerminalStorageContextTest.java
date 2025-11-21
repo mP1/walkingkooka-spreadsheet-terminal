@@ -41,19 +41,8 @@ import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStore;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
 import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserAliasSet;
-import walkingkooka.spreadsheet.security.store.SpreadsheetGroupStores;
-import walkingkooka.spreadsheet.security.store.SpreadsheetUserStores;
-import walkingkooka.spreadsheet.store.SpreadsheetCellRangeStores;
-import walkingkooka.spreadsheet.store.SpreadsheetCellReferencesStores;
-import walkingkooka.spreadsheet.store.SpreadsheetCellStores;
-import walkingkooka.spreadsheet.store.SpreadsheetColumnStores;
-import walkingkooka.spreadsheet.store.SpreadsheetLabelReferencesStores;
-import walkingkooka.spreadsheet.store.SpreadsheetLabelStores;
-import walkingkooka.spreadsheet.store.SpreadsheetRowStores;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
-import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
-import walkingkooka.storage.Storages;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
@@ -127,20 +116,7 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
         final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
         metadataStore.save(metadata);
 
-        final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.basic(
-            SpreadsheetCellStores.treeMap(),
-            SpreadsheetCellReferencesStores.treeMap(),
-            SpreadsheetColumnStores.treeMap(),
-            SpreadsheetFormStores.treeMap(),
-            SpreadsheetGroupStores.treeMap(),
-            SpreadsheetLabelStores.treeMap(),
-            SpreadsheetLabelReferencesStores.treeMap(),
-            metadataStore,
-            SpreadsheetCellRangeStores.treeMap(),
-            SpreadsheetRowStores.treeMap(),
-            Storages.fake(),
-            SpreadsheetUserStores.treeMap()
-        );
+        final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
 
         return BasicSpreadsheetTerminalStorageContext.with(
             SpreadsheetEngineContexts.basic(

@@ -60,20 +60,8 @@ import walkingkooka.spreadsheet.reference.SpreadsheetCellReference;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
-import walkingkooka.spreadsheet.security.store.SpreadsheetGroupStores;
-import walkingkooka.spreadsheet.security.store.SpreadsheetUserStores;
-import walkingkooka.spreadsheet.store.SpreadsheetCellRangeStores;
-import walkingkooka.spreadsheet.store.SpreadsheetCellReferencesStores;
-import walkingkooka.spreadsheet.store.SpreadsheetCellStore;
-import walkingkooka.spreadsheet.store.SpreadsheetCellStores;
-import walkingkooka.spreadsheet.store.SpreadsheetColumnStores;
-import walkingkooka.spreadsheet.store.SpreadsheetLabelReferencesStores;
-import walkingkooka.spreadsheet.store.SpreadsheetLabelStore;
-import walkingkooka.spreadsheet.store.SpreadsheetLabelStores;
-import walkingkooka.spreadsheet.store.SpreadsheetRowStores;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
-import walkingkooka.spreadsheet.validation.form.store.SpreadsheetFormStores;
 import walkingkooka.storage.FakeStorageContext;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StoragePath;
@@ -1038,54 +1026,30 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         final Map<SpreadsheetId, SpreadsheetStoreRepository> spreadsheetIdSpreadsheetStoreRepository = Maps.sorted();
 
         {
-            final SpreadsheetCellStore cells1 = SpreadsheetCellStores.treeMap();
-            final SpreadsheetLabelStore labels1 = SpreadsheetLabelStores.treeMap();
+            final SpreadsheetStoreRepository repo1 = SpreadsheetStoreRepositories.treeMap(metadataStore);
 
-            cells1.save(CELL1);
-            labels1.save(MAPPING1);
+            repo1.cells()
+                .save(CELL1);
+            repo1.labels()
+                .save(MAPPING1);
 
             spreadsheetIdSpreadsheetStoreRepository.put(
                 SPREADSHEET_ID1,
-                SpreadsheetStoreRepositories.basic(
-                    cells1,
-                    SpreadsheetCellReferencesStores.treeMap(),
-                    SpreadsheetColumnStores.treeMap(),
-                    SpreadsheetFormStores.treeMap(),
-                    SpreadsheetGroupStores.treeMap(),
-                    labels1,
-                    SpreadsheetLabelReferencesStores.treeMap(),
-                    metadataStore,
-                    SpreadsheetCellRangeStores.treeMap(),
-                    SpreadsheetRowStores.treeMap(),
-                    Storages.fake(),
-                    SpreadsheetUserStores.treeMap()
-                )
+                repo1
             );
         }
 
         {
-            final SpreadsheetCellStore cells2 = SpreadsheetCellStores.treeMap();
-            final SpreadsheetLabelStore labels2 = SpreadsheetLabelStores.treeMap();
+            final SpreadsheetStoreRepository repo2 = SpreadsheetStoreRepositories.treeMap(metadataStore);
 
-            cells2.save(CELL2);
-            labels2.save(MAPPING2);
+            repo2.cells()
+                .save(CELL2);
+            repo2.labels()
+                .save(MAPPING2);
 
             spreadsheetIdSpreadsheetStoreRepository.put(
                 SPREADSHEET_ID2,
-                SpreadsheetStoreRepositories.basic(
-                    cells2,
-                    SpreadsheetCellReferencesStores.treeMap(),
-                    SpreadsheetColumnStores.treeMap(),
-                    SpreadsheetFormStores.treeMap(),
-                    SpreadsheetGroupStores.treeMap(),
-                    labels2,
-                    SpreadsheetLabelReferencesStores.treeMap(),
-                    metadataStore,
-                    SpreadsheetCellRangeStores.treeMap(),
-                    SpreadsheetRowStores.treeMap(),
-                    Storages.fake(),
-                    SpreadsheetUserStores.treeMap()
-                )
+                repo2
             );
         }
 
