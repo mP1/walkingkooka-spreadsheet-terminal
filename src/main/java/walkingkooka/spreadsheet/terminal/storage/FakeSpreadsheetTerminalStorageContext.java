@@ -78,6 +78,11 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean isTerminalOpen() {
+        throw new UnsupportedOperationException();
+    }
+
     // EnvironmentContext...............................................................................................
 
     @Override
