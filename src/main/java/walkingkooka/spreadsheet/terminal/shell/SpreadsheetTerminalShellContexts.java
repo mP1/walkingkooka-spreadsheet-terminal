@@ -17,12 +17,31 @@
 
 package walkingkooka.spreadsheet.terminal.shell;
 
+import walkingkooka.convert.CanConvert;
 import walkingkooka.reflect.PublicStaticHelper;
+import walkingkooka.terminal.TerminalContext;
+import walkingkooka.terminal.shell.TerminalShellContext;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * A collection of {@link walkingkooka.terminal.server.TerminalServerContext}
  */
 public final class SpreadsheetTerminalShellContexts implements PublicStaticHelper {
+
+    /**
+     * {@see SpreadsheetTerminalShellContext}
+     */
+    public static TerminalShellContext spreadsheet(final Function<String, Optional<Object>> evaluator,
+                                                   final CanConvert canConvert,
+                                                   final TerminalContext terminalContext) {
+        return SpreadsheetTerminalShellContext.with(
+            evaluator,
+            canConvert,
+            terminalContext
+        );
+    }
 
     /**
      * Stop creation
