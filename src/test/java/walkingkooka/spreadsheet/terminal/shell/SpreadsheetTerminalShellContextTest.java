@@ -136,7 +136,6 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
     private void startAndCheck(final List<String> input,
                                final List<String> expectedOutput,
                                final List<String> expectedError) {
-        final Iterator<String> read = input.iterator();
         final List<String> output = Lists.array();
         final List<String> error = Lists.array();
 
