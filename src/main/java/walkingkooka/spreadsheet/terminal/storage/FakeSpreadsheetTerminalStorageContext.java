@@ -22,7 +22,7 @@ import walkingkooka.net.email.EmailAddress;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.FakeSpreadsheetEngineContext;
 import walkingkooka.terminal.TerminalId;
-import walkingkooka.text.LineEnding;
+import walkingkooka.text.printer.Printer;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -49,27 +49,7 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
     }
 
     @Override
-    public Optional<String> readLine(final long timeout) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void print(final CharSequence text) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public LineEnding lineEnding() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void flush() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void close() {
+    public boolean isTerminalOpen() {
         throw new UnsupportedOperationException();
     }
 
@@ -79,7 +59,17 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
     }
 
     @Override
-    public boolean isTerminalOpen() {
+    public Optional<String> readLine(final long timeout) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Printer output() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Printer error() {
         throw new UnsupportedOperationException();
     }
 

@@ -61,24 +61,28 @@ final class SpreadsheetTerminalShellContext implements TerminalShellContext,
     public void evaluate(final String command) {
         Optional<Object> value;
 
+        final TerminalContext terminalContext = this.terminalContext;
+        final CanConvert canConvert = this.canConvert;
+
         try {
-            value = this.evaluator.apply(command);
+            terminalContext.output()
+                .println(
+                    canConvert.convertOrFail(
+                        this.evaluator.apply(command),
+                        String.class
+                    )
+                );
         } catch (final UnsupportedOperationException rethrow) {
             throw rethrow;
         } catch (final RuntimeException cause) {
-            value = Optional.of(
-                SpreadsheetErrorKind.translate(cause)
-            );
+            terminalContext.error()
+                .println(
+                    canConvert.convertOrFail(
+                        SpreadsheetErrorKind.translate(cause),
+                        String.class
+                    )
+                );
         }
-
-        final Object valueOrNull = value.orElse(null);
-
-        this.terminalContext.println(
-            this.canConvert.convert(
-                valueOrNull,
-                String.class
-            ).orElseLeftGet(() -> String.valueOf(valueOrNull))
-        );
     }
 
     /**
