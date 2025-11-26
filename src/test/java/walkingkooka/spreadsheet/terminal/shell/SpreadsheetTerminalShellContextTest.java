@@ -49,6 +49,8 @@ import walkingkooka.terminal.TerminalContexts;
 import walkingkooka.terminal.shell.TerminalShellContextTesting;
 import walkingkooka.terminal.shell.TerminalShells;
 import walkingkooka.text.cursor.TextCursors;
+import walkingkooka.text.printer.FakePrinter;
+import walkingkooka.text.printer.Printer;
 import walkingkooka.tree.expression.ExpressionFunctionName;
 import walkingkooka.tree.expression.function.ExpressionFunctionParameter;
 import walkingkooka.tree.expression.function.FakeExpressionFunction;
@@ -79,6 +81,7 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
     public void testStartInvalidExpression() {
         this.startAndCheck(
             Lists.of("1+2+"),
+            Lists.empty(),
             Lists.of("#ERROR")
         );
     }
@@ -122,21 +125,37 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
     }
 
     private void startAndCheck(final List<String> input,
-                               final List<String> expected) {
+                               final List<String> expectedOutput) {
+        this.startAndCheck(
+            input,
+            expectedOutput,
+            Lists.empty() // error
+        );
+    }
+
+    private void startAndCheck(final List<String> input,
+                               final List<String> expectedOutput,
+                               final List<String> expectedError) {
         final Iterator<String> read = input.iterator();
-        final List<String> printed = Lists.array();
+        final List<String> output = Lists.array();
+        final List<String> error = Lists.array();
 
         TerminalShells.basic(100)
             .start(
                 this.createContext(
                     input,
-                    printed::add
+                    output::add,
+                    error::add
                 )
             );
 
         this.checkEquals(
-            expected,
-            printed
+            expectedOutput,
+            output
+        );
+        this.checkEquals(
+            expectedError,
+            error
         );
     }
 
@@ -144,12 +163,14 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
     public SpreadsheetTerminalShellContext createContext() {
         return this.createContext(
             Lists.empty(),
+            new StringBuilder()::append,
             new StringBuilder()::append
         );
     }
 
     private SpreadsheetTerminalShellContext createContext(final Iterable<String> lines,
-                                                          final Consumer<String> printed) {
+                                                          final Consumer<String> output,
+                                                          final Consumer<String> error) {
         final Iterator<String> linesIterator = lines.iterator();
 
         final SpreadsheetMetadataStore store = SpreadsheetMetadataStores.treeMap();
@@ -273,10 +294,27 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
                 }
 
                 @Override
-                public void println(final CharSequence chars) {
-                    printed.accept(
-                        chars.toString()
-                    );
+                public Printer output() {
+                    return new FakePrinter() {
+                        @Override
+                        public void println(final CharSequence chars) {
+                            output.accept(
+                                chars.toString()
+                            );
+                        }
+                    };
+                }
+
+                @Override
+                public Printer error() {
+                    return new FakePrinter() {
+                        @Override
+                        public void println(final CharSequence chars) {
+                            error.accept(
+                                chars.toString()
+                            );
+                        }
+                    };
                 }
             }
         );
