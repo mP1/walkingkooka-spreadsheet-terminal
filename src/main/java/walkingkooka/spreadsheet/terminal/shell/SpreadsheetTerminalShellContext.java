@@ -66,8 +66,6 @@ final class SpreadsheetTerminalShellContext implements TerminalShellContext,
         } catch (final UnsupportedOperationException rethrow) {
             throw rethrow;
         } catch (final RuntimeException cause) {
-            cause.printStackTrace();
-
             value = Optional.of(
                 SpreadsheetErrorKind.translate(cause)
             );
