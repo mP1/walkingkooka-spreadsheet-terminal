@@ -18,6 +18,7 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentValueName;
+import walkingkooka.io.TextReader;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.FakeSpreadsheetEngineContext;
@@ -59,7 +60,7 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
     }
 
     @Override
-    public Optional<String> readLine(final long timeout) {
+    public TextReader input() {
         throw new UnsupportedOperationException();
     }
 
