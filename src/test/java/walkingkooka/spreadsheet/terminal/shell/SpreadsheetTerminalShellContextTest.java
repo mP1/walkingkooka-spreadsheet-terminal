@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import walkingkooka.collect.list.Lists;
 import walkingkooka.collect.set.Sets;
 import walkingkooka.environment.EnvironmentContexts;
+import walkingkooka.io.FakeTextReader;
+import walkingkooka.io.TextReader;
 import walkingkooka.net.AbsoluteUrl;
 import walkingkooka.net.Url;
 import walkingkooka.net.http.server.HttpHandler;
@@ -66,11 +68,6 @@ import java.util.function.Consumer;
 public final class SpreadsheetTerminalShellContextTest implements TerminalShellContextTesting<SpreadsheetTerminalShellContext>,
     SpreadsheetMetadataTesting,
     ClassTesting2<SpreadsheetTerminalShellContext> {
-
-    @Override
-    public void testReadLineWithNegativeTimeoutFails() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public void testEvaluateWithNullTextFails() {
@@ -284,12 +281,18 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
                 }
 
                 @Override
-                public Optional<String> readLine(final long timeout) {
-                    return Optional.ofNullable(
-                        linesIterator.hasNext() ?
-                            linesIterator.next() :
-                            null
-                    );
+                public TextReader input() {
+                    return new FakeTextReader() {
+
+                        @Override
+                        public Optional<String> readLine(final long timeout) {
+                            return Optional.ofNullable(
+                                linesIterator.hasNext() ?
+                                    linesIterator.next() :
+                                    null
+                            );
+                        }
+                    };
                 }
 
                 @Override
