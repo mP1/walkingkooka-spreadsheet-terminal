@@ -71,6 +71,7 @@ import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
+import walkingkooka.text.LineEnding;
 import walkingkooka.tree.text.TextNode;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
@@ -1143,6 +1144,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
         @Override
         public SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding) {
             throw new UnsupportedOperationException();
         }
 
