@@ -45,11 +45,6 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
     }
 
     @Override
-    public boolean isTerminalInteractive() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public boolean isTerminalOpen() {
         throw new UnsupportedOperationException();
     }
