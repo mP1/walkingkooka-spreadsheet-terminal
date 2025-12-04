@@ -17,6 +17,7 @@
 
 package walkingkooka.spreadsheet.terminal.storage;
 
+import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.spreadsheet.SpreadsheetId;
@@ -34,6 +35,9 @@ public interface SpreadsheetTerminalStorageContext extends TerminalContext, Stor
 
     @Override
     SpreadsheetTerminalStorageContext cloneEnvironment();
+
+    @Override
+    SpreadsheetTerminalStorageContext setEnvironmentContext(final EnvironmentContext environmentContext);
 
     @Override
     <T> SpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,

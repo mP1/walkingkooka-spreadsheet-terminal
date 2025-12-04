@@ -18,6 +18,7 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
+import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.Url;
@@ -64,6 +65,7 @@ import walkingkooka.validation.provider.ValidatorAliasSet;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -469,6 +471,12 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
         @Override
         public TestSpreadsheetTerminalStorageContext cloneEnvironment() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public TestSpreadsheetTerminalStorageContext setEnvironmentContext(final EnvironmentContext environmentContext) {
+            Objects.requireNonNull(environmentContext, "environmentContext");
             throw new UnsupportedOperationException();
         }
 
