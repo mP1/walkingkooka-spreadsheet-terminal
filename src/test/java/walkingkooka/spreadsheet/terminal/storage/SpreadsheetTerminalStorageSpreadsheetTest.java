@@ -160,7 +160,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
         @Override
         public LocalDateTime now() {
-            return NOW.now();
+            return HAS_NOW.now();
         }
     };
 
@@ -1141,7 +1141,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
             Objects.requireNonNull(environmentContext, "environmentContext");
             throw new UnsupportedOperationException();
         }
-        
+
         @Override
         public <T> SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
                                                                                                                                final T value) {
@@ -1165,7 +1165,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
         @Override
         public LocalDateTime now() {
-            return NOW.now();
+            return HAS_NOW.now();
         }
 
         @Override

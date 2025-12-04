@@ -80,7 +80,7 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
         final SpreadsheetEngineContext before = this.spreadsheetEngineContext;
         final SpreadsheetEngineContext after = before.setEnvironmentContext(environmentContext);
 
-        return before.equals(after) ?
+        return before == after ?
             this :
             new BasicSpreadsheetTerminalStorageContext(
                 Objects.requireNonNull(after, "spreadsheetEngineContext"),

@@ -115,7 +115,8 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         @Override
         public SpreadsheetTerminalStorageContext setEnvironmentContext(final EnvironmentContext environmentContext) {
             Objects.requireNonNull(environmentContext, "environmentContext");
-            throw new UnsupportedOperationException();
+
+            return new TestSpreadsheetTerminalStorageContext();
         }
 
         @Override
