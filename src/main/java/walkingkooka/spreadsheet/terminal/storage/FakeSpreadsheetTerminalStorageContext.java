@@ -17,6 +17,7 @@
 
 package walkingkooka.spreadsheet.terminal.storage;
 
+import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.io.TextReader;
 import walkingkooka.net.email.EmailAddress;
@@ -73,6 +74,11 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
 
     @Override
     public SpreadsheetTerminalStorageContext cloneEnvironment() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SpreadsheetTerminalStorageContext setEnvironmentContext(final EnvironmentContext environmentContext) {
         throw new UnsupportedOperationException();
     }
 

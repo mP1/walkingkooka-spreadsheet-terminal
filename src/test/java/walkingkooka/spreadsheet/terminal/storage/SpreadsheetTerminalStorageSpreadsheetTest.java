@@ -1137,6 +1137,12 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         }
 
         @Override
+        public SpreadsheetTerminalStorageContext setEnvironmentContext(final EnvironmentContext environmentContext) {
+            Objects.requireNonNull(environmentContext, "environmentContext");
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
         public <T> SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
                                                                                                                                final T value) {
             throw new UnsupportedOperationException();

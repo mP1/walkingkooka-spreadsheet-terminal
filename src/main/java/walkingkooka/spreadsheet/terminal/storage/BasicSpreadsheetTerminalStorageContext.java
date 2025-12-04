@@ -76,6 +76,19 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
     }
 
     @Override
+    public SpreadsheetTerminalStorageContext setEnvironmentContext(final EnvironmentContext environmentContext) {
+        final SpreadsheetEngineContext before = this.spreadsheetEngineContext;
+        final SpreadsheetEngineContext after = before.setEnvironmentContext(environmentContext);
+
+        return before.equals(after) ?
+            this :
+            new BasicSpreadsheetTerminalStorageContext(
+                Objects.requireNonNull(after, "spreadsheetEngineContext"),
+                this.terminalContext
+            );
+    }
+
+    @Override
     public <T> SpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
                                                                      final T reference) {
         this.spreadsheetEngineContext.setEnvironmentValue(
