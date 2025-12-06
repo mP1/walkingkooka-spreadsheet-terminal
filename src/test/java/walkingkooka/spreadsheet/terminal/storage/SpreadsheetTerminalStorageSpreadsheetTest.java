@@ -42,9 +42,9 @@ import walkingkooka.spreadsheet.convert.provider.SpreadsheetConvertersConverterP
 import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextMode;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
+import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
 import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
 import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
@@ -1076,14 +1076,14 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
             this.spreadsheetIdSpreadsheetStoreRepository = spreadsheetIdSpreadsheetStoreRepository;
 
             this.spreadsheetEngineContext = SpreadsheetEngineContexts.basic(
-                SpreadsheetEngineContextMode.SCRIPTING,
+                SpreadsheetMetadataMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     Url.parseAbsolute("https://example.com"),
                     spreadsheetId,
                     spreadsheetIdSpreadsheetStoreRepository,
                     SPREADSHEET_PROVIDER,
                     (c) -> SpreadsheetEngineContexts.basic(
-                        SpreadsheetEngineContextMode.FORMULA,
+                        SpreadsheetMetadataMode.FORMULA,
                         c,
                         TERMINAL_CONTEXT
                     ),
