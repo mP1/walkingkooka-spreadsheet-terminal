@@ -33,8 +33,8 @@ import walkingkooka.route.Router;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextMode;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
+import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionEvaluationContext;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
@@ -193,7 +193,7 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
         final SpreadsheetEngineContext[] engineContexts = new SpreadsheetEngineContext[1];
 
         engineContexts[0] = SpreadsheetEngineContexts.basic(
-            SpreadsheetEngineContextMode.SCRIPTING,
+            SpreadsheetMetadataMode.SCRIPTING,
             SpreadsheetContexts.basic(
                 AbsoluteUrl.parseAbsolute("https://example.com"),
                 spreadsheetId,
@@ -238,7 +238,7 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
                     )
                 ),
                 (c) -> SpreadsheetEngineContexts.basic(
-                    SpreadsheetEngineContextMode.FORMULA,
+                    SpreadsheetMetadataMode.FORMULA,
                     c,
                     TERMINAL_CONTEXT
                 ),

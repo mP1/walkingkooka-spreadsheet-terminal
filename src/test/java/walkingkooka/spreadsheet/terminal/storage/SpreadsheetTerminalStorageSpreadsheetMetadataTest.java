@@ -35,8 +35,8 @@ import walkingkooka.spreadsheet.compare.provider.SpreadsheetComparatorAliasSet;
 import walkingkooka.spreadsheet.convert.provider.SpreadsheetConvertersConverterProviders;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextMode;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
+import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
 import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
 import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
@@ -438,14 +438,14 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
             final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
 
             return SpreadsheetEngineContexts.basic(
-                SpreadsheetEngineContextMode.SCRIPTING,
+                SpreadsheetMetadataMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     Url.parseAbsolute("https://example.com"),
                     id,
                     (idid) -> repo,
                     SPREADSHEET_PROVIDER,
                     (c) -> SpreadsheetEngineContexts.basic(
-                        SpreadsheetEngineContextMode.FORMULA,
+                        SpreadsheetMetadataMode.FORMULA,
                         c,
                         TERMINAL_CONTEXT
                     ),
