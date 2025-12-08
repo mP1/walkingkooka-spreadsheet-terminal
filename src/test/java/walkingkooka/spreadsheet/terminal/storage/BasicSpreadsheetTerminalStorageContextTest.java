@@ -142,7 +142,7 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                             throw new UnsupportedOperationException();
                         }
                     },
-                    SpreadsheetEnvironmentContexts.with(
+                    SpreadsheetEnvironmentContexts.basic(
                         EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
                             .setEnvironmentValue(
                                 SpreadsheetEnvironmentContext.SPREADSHEET_ID,
