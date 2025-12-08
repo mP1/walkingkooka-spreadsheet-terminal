@@ -22,7 +22,6 @@ import walkingkooka.Either;
 import walkingkooka.collect.set.Sets;
 import walkingkooka.convert.ConverterException;
 import walkingkooka.environment.EnvironmentContexts;
-import walkingkooka.net.Url;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
@@ -599,11 +598,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
                         }
                     },
                     SpreadsheetEnvironmentContexts.with(
-                        EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                        EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
                             .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SERVER_URL,
-                                Url.parseAbsolute("https://example.com")
-                            ).setEnvironmentValue(
                                 SpreadsheetEnvironmentContext.SPREADSHEET_ID,
                                 id
                             )

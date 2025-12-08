@@ -19,7 +19,6 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
 import walkingkooka.environment.EnvironmentContexts;
-import walkingkooka.net.Url;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
 import walkingkooka.reflect.JavaVisibility;
@@ -144,11 +143,8 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                         }
                     },
                     SpreadsheetEnvironmentContexts.with(
-                        EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                        EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
                             .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SERVER_URL,
-                                Url.parseAbsolute("https://example.com")
-                            ).setEnvironmentValue(
                                 SpreadsheetEnvironmentContext.SPREADSHEET_ID,
                                 spreadsheetId
                             )

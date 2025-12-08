@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.environment.EnvironmentValueName;
-import walkingkooka.net.Url;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
@@ -456,11 +455,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
                         }
                     },
                     SpreadsheetEnvironmentContexts.with(
-                        EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                        EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
                             .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SERVER_URL,
-                                Url.parseAbsolute("https://example.com")
-                            ).setEnvironmentValue(
                                 SpreadsheetEnvironmentContext.SPREADSHEET_ID,
                                 id
                             )
