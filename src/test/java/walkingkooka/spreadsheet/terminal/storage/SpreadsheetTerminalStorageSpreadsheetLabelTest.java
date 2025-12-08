@@ -20,7 +20,6 @@ package walkingkooka.spreadsheet.terminal.storage;
 import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
 import walkingkooka.environment.EnvironmentContexts;
-import walkingkooka.net.Url;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
@@ -87,17 +86,17 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     private final static StorageValueInfo INFO1 = StorageValueInfo.with(
         StoragePath.parse("/" + LABEL1),
-        ENVIRONMENT_CONTEXT.createdAuditInfo()
+        SPREADSHEET_ENVIRONMENT_CONTEXT.createdAuditInfo()
     );
 
     private final static StorageValueInfo INFO2 = StorageValueInfo.with(
         StoragePath.parse("/" + LABEL2),
-        ENVIRONMENT_CONTEXT.createdAuditInfo()
+        SPREADSHEET_ENVIRONMENT_CONTEXT.createdAuditInfo()
     );
 
     private final static StorageValueInfo INFO3 = StorageValueInfo.with(
         StoragePath.parse("/" + LABEL3),
-        ENVIRONMENT_CONTEXT.createdAuditInfo()
+        SPREADSHEET_ENVIRONMENT_CONTEXT.createdAuditInfo()
     );
 
     @Test
@@ -553,11 +552,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
                         }
                     },
                     SpreadsheetEnvironmentContexts.with(
-                        EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                        EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
                             .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SERVER_URL,
-                                Url.parseAbsolute("https://example.com")
-                            ).setEnvironmentValue(
                                 SpreadsheetEnvironmentContext.SPREADSHEET_ID,
                                 id
                             )

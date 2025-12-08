@@ -248,11 +248,8 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
                     }
                 },
                 SpreadsheetEnvironmentContexts.with(
-                    EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                    EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
                         .setEnvironmentValue(
-                            SpreadsheetEnvironmentContext.SERVER_URL,
-                            Url.parseAbsolute("https://example.com")
-                        ).setEnvironmentValue(
                             SpreadsheetEnvironmentContext.SPREADSHEET_ID,
                             spreadsheetId
                         )
