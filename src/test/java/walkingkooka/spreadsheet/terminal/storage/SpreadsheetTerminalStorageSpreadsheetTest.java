@@ -45,6 +45,8 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
 import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
+import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContext;
+import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContexts;
 import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
 import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
@@ -1078,8 +1080,6 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
             this.spreadsheetEngineContext = SpreadsheetEngineContexts.basic(
                 SpreadsheetMetadataMode.SCRIPTING,
                 SpreadsheetContexts.basic(
-                    Url.parseAbsolute("https://example.com"),
-                    spreadsheetId,
                     spreadsheetIdSpreadsheetStoreRepository,
                     SPREADSHEET_PROVIDER,
                     (c) -> SpreadsheetEngineContexts.basic(
@@ -1094,7 +1094,20 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
                                 throw new UnsupportedOperationException();
                             }
                         },
-                    EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
+                    SpreadsheetEnvironmentContexts.with(
+                        EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                            .setEnvironmentValue(
+                                SpreadsheetEnvironmentContext.SERVER_URL,
+                                Url.parseAbsolute("https://example.com")
+                            ).setEnvironmentValue(
+                                SpreadsheetEnvironmentContext.SPREADSHEET_ID,
+                                spreadsheetId
+                            ).setUser(
+                                Optional.of(
+                                    EmailAddress.parse("user@example.com")
+                                )
+                            )
+                    ),
                     LOCALE_CONTEXT,
                     PROVIDER_CONTEXT,
                     TERMINAL_SERVER_CONTEXT
