@@ -20,7 +20,7 @@ package walkingkooka.spreadsheet.terminal.storage;
 import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
 import walkingkooka.environment.EnvironmentContexts;
-import walkingkooka.net.AbsoluteUrl;
+import walkingkooka.net.Url;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
@@ -36,6 +36,8 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
 import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
+import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContext;
+import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContexts;
 import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
 import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
@@ -537,8 +539,6 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             return SpreadsheetEngineContexts.basic(
                 SpreadsheetMetadataMode.SCRIPTING,
                 SpreadsheetContexts.basic(
-                    AbsoluteUrl.parseAbsolute("https://example.com"),
-                    id,
                     (idid) -> repo,
                     SPREADSHEET_PROVIDER,
                     (c) -> SpreadsheetEngineContexts.basic(
@@ -552,7 +552,16 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
                             throw new UnsupportedOperationException();
                         }
                     },
-                    EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
+                    SpreadsheetEnvironmentContexts.with(
+                        EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                            .setEnvironmentValue(
+                                SpreadsheetEnvironmentContext.SERVER_URL,
+                                Url.parseAbsolute("https://example.com")
+                            ).setEnvironmentValue(
+                                SpreadsheetEnvironmentContext.SPREADSHEET_ID,
+                                id
+                            )
+                    ),
                     LOCALE_CONTEXT,
                     PROVIDER_CONTEXT,
                     TERMINAL_SERVER_CONTEXT

@@ -37,6 +37,8 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
+import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContext;
+import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContexts;
 import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
 import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
@@ -440,8 +442,6 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
             return SpreadsheetEngineContexts.basic(
                 SpreadsheetMetadataMode.SCRIPTING,
                 SpreadsheetContexts.basic(
-                    Url.parseAbsolute("https://example.com"),
-                    id,
                     (idid) -> repo,
                     SPREADSHEET_PROVIDER,
                     (c) -> SpreadsheetEngineContexts.basic(
@@ -455,7 +455,16 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
                             throw new UnsupportedOperationException();
                         }
                     },
-                    EnvironmentContexts.map(ENVIRONMENT_CONTEXT),
+                    SpreadsheetEnvironmentContexts.with(
+                        EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                            .setEnvironmentValue(
+                                SpreadsheetEnvironmentContext.SERVER_URL,
+                                Url.parseAbsolute("https://example.com")
+                            ).setEnvironmentValue(
+                                SpreadsheetEnvironmentContext.SPREADSHEET_ID,
+                                id
+                            )
+                    ),
                     LOCALE_CONTEXT,
                     PROVIDER_CONTEXT,
                     TERMINAL_SERVER_CONTEXT
