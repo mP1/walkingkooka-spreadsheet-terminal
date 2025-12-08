@@ -1094,7 +1094,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
                                 throw new UnsupportedOperationException();
                             }
                         },
-                    SpreadsheetEnvironmentContexts.with(
+                    SpreadsheetEnvironmentContexts.basic(
                         EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
                             .setEnvironmentValue(
                                 SpreadsheetEnvironmentContext.SERVER_URL,
