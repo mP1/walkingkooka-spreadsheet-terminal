@@ -200,7 +200,6 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
                 metadata.spreadsheetProvider(
                     SpreadsheetProviders.basic(
                         CONVERTER_PROVIDER,
-                        //EXPRESSION_FUNCTION_PROVIDER,
                         ExpressionFunctionProviders.basic(
                             Url.parseAbsolute("https://example.com/functions"),
                             SpreadsheetExpressionFunctions.NAME_CASE_SENSITIVITY,
