@@ -18,15 +18,11 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
-import walkingkooka.Cast;
 import walkingkooka.ToStringTesting;
 import walkingkooka.collect.map.Maps;
 import walkingkooka.environment.AuditInfo;
 import walkingkooka.environment.EnvironmentContext;
-import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.environment.EnvironmentValueName;
-import walkingkooka.environment.FakeEnvironmentContext;
-import walkingkooka.net.Url;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
@@ -145,27 +141,6 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     private final Storage<SpreadsheetTerminalStorageContext> LABELS = Storages.fake();
     private final Storage<SpreadsheetTerminalStorageContext> METADATAS = Storages.fake();
 
-    private final static EnvironmentContext ENVIRONMENT_CONTEXT = new FakeEnvironmentContext() {
-        @Override
-        public <T> Optional<T> environmentValue(final EnvironmentValueName<T> name) {
-            return Optional.ofNullable(
-                SpreadsheetTerminalStorageSpreadsheet.SPREADSHEET_ID.equals(name) ?
-                    Cast.to(SPREADSHEET_ID1) :
-                    null
-            );
-        }
-
-        @Override
-        public Optional<EmailAddress> user() {
-            return Optional.of(SpreadsheetTerminalStorageSpreadsheetTest.USER);
-        }
-
-        @Override
-        public LocalDateTime now() {
-            return HAS_NOW.now();
-        }
-    };
-
     private final static SpreadsheetCell CELL1 = SpreadsheetSelection.A1.setFormula(
         SpreadsheetFormula.EMPTY.setValue(
             Optional.of(111)
@@ -191,7 +166,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         SpreadsheetSelection.labelName("Target222")
     );
 
-    private final static AuditInfo AUDIT_INFO = ENVIRONMENT_CONTEXT.createdAuditInfo();
+    private final static AuditInfo AUDIT_INFO = SPREADSHEET_ENVIRONMENT_CONTEXT.createdAuditInfo();
 
     private static final StorageValueInfo METADATA_INFO1 = StorageValueInfo.with(
         StoragePath.parse("/spreadsheet/111"),
@@ -1095,11 +1070,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
                             }
                         },
                     SpreadsheetEnvironmentContexts.basic(
-                        EnvironmentContexts.map(ENVIRONMENT_CONTEXT)
+                        SPREADSHEET_ENVIRONMENT_CONTEXT.cloneEnvironment()
                             .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SERVER_URL,
-                                Url.parseAbsolute("https://example.com")
-                            ).setEnvironmentValue(
                                 SpreadsheetEnvironmentContext.SPREADSHEET_ID,
                                 spreadsheetId
                             ).setUser(
@@ -1145,7 +1117,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         private final SpreadsheetEngineContext spreadsheetEngineContext;
 
         @Override
-        public SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext cloneEnvironment() {
+        public TestSpreadsheetTerminalStorageContext cloneEnvironment() {
             throw new UnsupportedOperationException();
         }
 
@@ -1156,23 +1128,23 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         }
 
         @Override
-        public <T> SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
-                                                                                                                               final T value) {
+        public <T> TestSpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
+                                                                             final T value) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name) {
+        public TestSpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding) {
+        public TestSpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext setLocale(final Locale locale) {
+        public TestSpreadsheetTerminalStorageContext setLocale(final Locale locale) {
             throw new UnsupportedOperationException();
         }
 
@@ -1188,7 +1160,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         }
 
         @Override
-        public SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
+        public TestSpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
             throw new UnsupportedOperationException();
         }
 
@@ -1203,7 +1175,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         }
 
         @Override
-        public SpreadsheetTerminalStorageSpreadsheetMetadataTest.TestSpreadsheetTerminalStorageContext exitTerminal() {
+        public TestSpreadsheetTerminalStorageContext exitTerminal() {
             throw new UnsupportedOperationException();
         }
     }

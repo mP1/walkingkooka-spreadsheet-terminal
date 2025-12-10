@@ -18,7 +18,6 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentContext;
-import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
@@ -105,7 +104,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
 
         @Override
         public EnvironmentContext environmentContext() {
-            return this.environmentContext;
+            return this.spreadsheetEngineContext();
         }
 
         @Override
@@ -123,38 +122,37 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         @Override
         public <T> SpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
                                                                          final T reference) {
-            this.environmentContext.setEnvironmentValue(name, reference);
+            this.spreadsheetEngineContext()
+                .setEnvironmentValue(name, reference);
             return this;
         }
 
         @Override
         public SpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name) {
-            this.environmentContext.removeEnvironmentValue(name);
+            this.spreadsheetEngineContext()
+                .removeEnvironmentValue(name);
             return this;
         }
 
         @Override
         public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
-            this.environmentContext.setLocale(locale);
+            this.spreadsheetEngineContext()
+                .setLocale(locale);
             return this;
         }
 
         @Override
         public Optional<EmailAddress> user() {
-            return this.environmentContext.user();
+            return this.spreadsheetEngineContext()
+                .user();
         }
 
         @Override
         public SpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
-            this.environmentContext.setUser(user);
+            this.spreadsheetEngineContext()
+                .setUser(user);
             return this;
         }
-
-        private final EnvironmentContext environmentContext = EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
-            .setEnvironmentValue(
-                SPREADSHEET_ID,
-                SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID
-            );
 
         // SpreadsheetEngineContextDelegator............................................................................
 
@@ -170,75 +168,81 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
 
         @Override
         public SpreadsheetEngineContext spreadsheetEngineContext() {
-            final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
-                SpreadsheetMetadataPropertyName.LOCALE,
-                SpreadsheetTerminalStorageSpreadsheetCellTest.LOCALE
-            ).set(
-                SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
-                SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID
-            ).set(
-                SpreadsheetMetadataPropertyName.COMPARATORS,
-                SpreadsheetComparatorAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.CONVERTERS,
-                SpreadsheetConvertersConverterProviders.ALL.aliasSet()
-            ).set(
-                SpreadsheetMetadataPropertyName.EXPORTERS,
-                SpreadsheetExporterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FORM_HANDLERS,
-                FormHandlerAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FORMATTERS,
-                SpreadsheetFormatterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FUNCTIONS,
-                SpreadsheetExpressionFunctions.EMPTY_ALIAS_SET
-            ).set(
-                SpreadsheetMetadataPropertyName.IMPORTERS,
-                SpreadsheetImporterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.PARSERS,
-                SpreadsheetParserAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.VALIDATORS,
-                ValidatorAliasSet.EMPTY
-            );
-            final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
-            metadataStore.save(metadata);
+            if (null == this.spreadsheetEngineContext) {
+                final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
+                    SpreadsheetMetadataPropertyName.LOCALE,
+                    SpreadsheetTerminalStorageSpreadsheetCellTest.LOCALE
+                ).set(
+                    SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
+                    SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID
+                ).set(
+                    SpreadsheetMetadataPropertyName.COMPARATORS,
+                    SpreadsheetComparatorAliasSet.EMPTY
+                ).set(
+                    SpreadsheetMetadataPropertyName.CONVERTERS,
+                    SpreadsheetConvertersConverterProviders.ALL.aliasSet()
+                ).set(
+                    SpreadsheetMetadataPropertyName.EXPORTERS,
+                    SpreadsheetExporterAliasSet.EMPTY
+                ).set(
+                    SpreadsheetMetadataPropertyName.FORM_HANDLERS,
+                    FormHandlerAliasSet.EMPTY
+                ).set(
+                    SpreadsheetMetadataPropertyName.FORMATTERS,
+                    SpreadsheetFormatterAliasSet.EMPTY
+                ).set(
+                    SpreadsheetMetadataPropertyName.FUNCTIONS,
+                    SpreadsheetExpressionFunctions.EMPTY_ALIAS_SET
+                ).set(
+                    SpreadsheetMetadataPropertyName.IMPORTERS,
+                    SpreadsheetImporterAliasSet.EMPTY
+                ).set(
+                    SpreadsheetMetadataPropertyName.PARSERS,
+                    SpreadsheetParserAliasSet.EMPTY
+                ).set(
+                    SpreadsheetMetadataPropertyName.VALIDATORS,
+                    ValidatorAliasSet.EMPTY
+                );
+                final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
+                metadataStore.save(metadata);
 
-            final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
+                final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
 
-            return SpreadsheetEngineContexts.basic(
-                SpreadsheetMetadataMode.SCRIPTING,
-                SpreadsheetContexts.basic(
-                    (idid) -> repo,
-                    SPREADSHEET_PROVIDER,
-                    (c) -> SpreadsheetEngineContexts.basic(
-                        SpreadsheetMetadataMode.FORMULA,
-                        c,
-                        TERMINAL_CONTEXT
+                this.spreadsheetEngineContext = SpreadsheetEngineContexts.basic(
+                    SpreadsheetMetadataMode.SCRIPTING,
+                    SpreadsheetContexts.basic(
+                        (idid) -> repo,
+                        SPREADSHEET_PROVIDER,
+                        (c) -> SpreadsheetEngineContexts.basic(
+                            SpreadsheetMetadataMode.FORMULA,
+                            c,
+                            TERMINAL_CONTEXT
+                        ),
+                        (SpreadsheetEngineContext c) -> new Router<>() {
+                            @Override
+                            public Optional<HttpHandler> route(final Map<HttpRequestAttribute<?>, Object> parameters) {
+                                throw new UnsupportedOperationException();
+                            }
+                        },
+                        SpreadsheetEnvironmentContexts.basic(
+                            SPREADSHEET_ENVIRONMENT_CONTEXT.cloneEnvironment()
+                                .setEnvironmentValue(
+                                    SpreadsheetEnvironmentContext.SPREADSHEET_ID,
+                                    SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID
+                                )
+                        ),
+                        LOCALE_CONTEXT,
+                        PROVIDER_CONTEXT,
+                        TERMINAL_SERVER_CONTEXT
                     ),
-                    (SpreadsheetEngineContext c) -> new Router<>() {
-                        @Override
-                        public Optional<HttpHandler> route(final Map<HttpRequestAttribute<?>, Object> parameters) {
-                            throw new UnsupportedOperationException();
-                        }
-                    },
-                    SpreadsheetEnvironmentContexts.basic(
-                        EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
-                            .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SPREADSHEET_ID,
-                                SpreadsheetTerminalStorageContextTestingTest.SPREADSHEET_ID
-                            )
-                    ),
-                    LOCALE_CONTEXT,
-                    PROVIDER_CONTEXT,
-                    TERMINAL_SERVER_CONTEXT
-                ),
-                SpreadsheetMetadataTesting.TERMINAL_CONTEXT
-            );
+                    SpreadsheetMetadataTesting.TERMINAL_CONTEXT
+                );
+            }
+
+            return this.spreadsheetEngineContext;
         }
+
+        private SpreadsheetEngineContext spreadsheetEngineContext;
 
         // TerminalContextDelegator.....................................................................................
 
