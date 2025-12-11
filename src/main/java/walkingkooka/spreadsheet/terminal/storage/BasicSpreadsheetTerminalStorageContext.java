@@ -55,12 +55,7 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
         return this.spreadsheetEngineContext.resolveLabel(labelName);
     }
 
-    // EnvironmentContextDelegator......................................................................................
-
-    @Override
-    public EnvironmentContext environmentContext() {
-        return this.spreadsheetEngineContext;
-    }
+    // SpreadsheetEngineContextDelegator................................................................................
 
     @Override
     public SpreadsheetTerminalStorageContext cloneEnvironment() {
@@ -120,8 +115,6 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
         this.spreadsheetEngineContext.setUser(user);
         return this;
     }
-
-    // SpreadsheetEngineContextDelegator................................................................................
 
     @Override
     public SpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId) {

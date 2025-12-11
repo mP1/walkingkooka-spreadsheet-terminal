@@ -103,7 +103,7 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         // EnvironmentContextDelegator..................................................................................
 
         @Override
-        public EnvironmentContext environmentContext() {
+        public SpreadsheetEngineContext environmentContext() {
             return this.spreadsheetEngineContext();
         }
 
