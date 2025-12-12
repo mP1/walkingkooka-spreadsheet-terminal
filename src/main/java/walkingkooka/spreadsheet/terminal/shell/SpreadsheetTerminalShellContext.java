@@ -22,6 +22,7 @@ import walkingkooka.spreadsheet.SpreadsheetErrorKind;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
+import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
 import walkingkooka.terminal.shell.TerminalShellContext;
 
 import java.util.Objects;
@@ -103,6 +104,11 @@ final class SpreadsheetTerminalShellContext implements TerminalShellContext,
     }
 
     private final TerminalContext terminalContext;
+
+    @Override
+    public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
+        throw new UnsupportedOperationException();
+    }
 
     // String...........................................................................................................
 

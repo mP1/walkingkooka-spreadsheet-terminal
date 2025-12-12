@@ -59,6 +59,7 @@ import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
+import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
 import walkingkooka.text.LineEnding;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
@@ -534,6 +535,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
         @Override
         public TestSpreadsheetTerminalStorageContext exitTerminal() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
             throw new UnsupportedOperationException();
         }
     }
