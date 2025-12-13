@@ -52,6 +52,7 @@ import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
 import walkingkooka.spreadsheet.terminal.storage.SpreadsheetTerminalStorageContextTestingTest.TestSpreadsheetTerminalStorageContext;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
+import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
@@ -250,6 +251,11 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         public SpreadsheetTerminalStorageContext exitTerminal() {
             TERMINAL_CONTEXT.exitTerminal();
             return this;
+        }
+
+        @Override
+        public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
+            throw new UnsupportedOperationException();
         }
 
         @Override
