@@ -18,8 +18,8 @@
 package walkingkooka.spreadsheet.terminal.shell;
 
 import walkingkooka.convert.CanConvert;
-import walkingkooka.spreadsheet.SpreadsheetErrorKind;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
+import walkingkooka.spreadsheet.value.SpreadsheetErrorKind;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
 import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
