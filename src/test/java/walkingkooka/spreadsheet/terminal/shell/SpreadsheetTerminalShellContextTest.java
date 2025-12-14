@@ -270,7 +270,7 @@ public final class SpreadsheetTerminalShellContextTest implements TerminalShellC
         return SpreadsheetTerminalShellContext.with(
             (s) -> Optional.ofNullable(
                 expressionEvaluationContext.evaluateExpression(
-                    expressionEvaluationContext.parseFormula(
+                    expressionEvaluationContext.parseExpression(
                             TextCursors.charSequence(s)
                         ).toExpression(expressionEvaluationContext)
                         .orElseThrow(() -> new IllegalStateException("Invalid expression"))
