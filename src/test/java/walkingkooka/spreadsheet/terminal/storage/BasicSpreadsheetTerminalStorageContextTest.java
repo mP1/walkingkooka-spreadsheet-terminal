@@ -126,12 +126,12 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
         final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
 
         return BasicSpreadsheetTerminalStorageContext.with(
-            SpreadsheetEngineContexts.basic(
+            SpreadsheetEngineContexts.spreadsheetContext(
                 SpreadsheetMetadataMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     (idid) -> repo,
                     SPREADSHEET_PROVIDER,
-                    (c) -> SpreadsheetEngineContexts.basic(
+                    (c) -> SpreadsheetEngineContexts.spreadsheetContext(
                         SpreadsheetMetadataMode.FORMULA,
                         c,
                         TERMINAL_CONTEXT

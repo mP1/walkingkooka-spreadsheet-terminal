@@ -1053,12 +1053,12 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
             this.spreadsheetId = spreadsheetId;
             this.spreadsheetIdSpreadsheetStoreRepository = spreadsheetIdSpreadsheetStoreRepository;
 
-            this.spreadsheetEngineContext = SpreadsheetEngineContexts.basic(
+            this.spreadsheetEngineContext = SpreadsheetEngineContexts.spreadsheetContext(
                 SpreadsheetMetadataMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     spreadsheetIdSpreadsheetStoreRepository,
                     SPREADSHEET_PROVIDER,
-                    (c) -> SpreadsheetEngineContexts.basic(
+                    (c) -> SpreadsheetEngineContexts.spreadsheetContext(
                         SpreadsheetMetadataMode.FORMULA,
                         c,
                         TERMINAL_CONTEXT
