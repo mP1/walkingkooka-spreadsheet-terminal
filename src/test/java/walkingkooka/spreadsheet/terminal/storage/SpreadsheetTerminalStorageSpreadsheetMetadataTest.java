@@ -439,12 +439,12 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
             final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
 
-            return SpreadsheetEngineContexts.basic(
+            return SpreadsheetEngineContexts.spreadsheetContext(
                 SpreadsheetMetadataMode.SCRIPTING,
                 SpreadsheetContexts.basic(
                     (idid) -> repo,
                     SPREADSHEET_PROVIDER,
-                    (c) -> SpreadsheetEngineContexts.basic(
+                    (c) -> SpreadsheetEngineContexts.spreadsheetContext(
                         SpreadsheetMetadataMode.FORMULA,
                         c,
                         TERMINAL_CONTEXT

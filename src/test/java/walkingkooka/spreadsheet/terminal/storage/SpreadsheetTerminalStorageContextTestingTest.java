@@ -209,12 +209,12 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
 
                 final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
 
-                this.spreadsheetEngineContext = SpreadsheetEngineContexts.basic(
+                this.spreadsheetEngineContext = SpreadsheetEngineContexts.spreadsheetContext(
                     SpreadsheetMetadataMode.SCRIPTING,
                     SpreadsheetContexts.basic(
                         (idid) -> repo,
                         SPREADSHEET_PROVIDER,
-                        (c) -> SpreadsheetEngineContexts.basic(
+                        (c) -> SpreadsheetEngineContexts.spreadsheetContext(
                             SpreadsheetMetadataMode.FORMULA,
                             c,
                             TERMINAL_CONTEXT
