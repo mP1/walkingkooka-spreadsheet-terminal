@@ -1181,6 +1181,12 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         }
 
         @Override
+        public Object evaluate(final String expression) {
+            Objects.requireNonNull(expression, "expression");
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
             throw new UnsupportedOperationException();
         }

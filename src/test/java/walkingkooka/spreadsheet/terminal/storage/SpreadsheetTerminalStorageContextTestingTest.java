@@ -254,6 +254,11 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
         }
 
         @Override
+        public Object evaluate(final String expression) {
+            return TERMINAL_CONTEXT.evaluate(expression);
+        }
+
+        @Override
         public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
             throw new UnsupportedOperationException();
         }

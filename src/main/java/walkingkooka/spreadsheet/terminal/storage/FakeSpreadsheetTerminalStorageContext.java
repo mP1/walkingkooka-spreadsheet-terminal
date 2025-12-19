@@ -72,6 +72,11 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
     }
 
     @Override
+    public Object evaluate(final String expression) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
         throw new UnsupportedOperationException();
     }
