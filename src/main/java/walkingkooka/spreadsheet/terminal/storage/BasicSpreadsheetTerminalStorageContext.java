@@ -151,6 +151,11 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
     }
 
     @Override
+    public Object evaluate(final String expression) {
+        return this.terminalContext.evaluate(expression);
+    }
+
+    @Override
     public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
         return this.terminalContext.terminalExpressionEvaluationContext();
     }
