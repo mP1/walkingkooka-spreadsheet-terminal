@@ -27,7 +27,6 @@ import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
-import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
 import walkingkooka.text.LineEnding;
 
 import java.util.Locale;
@@ -167,10 +166,10 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
         return this.terminalContext.evaluate(expression);
     }
 
-    @Override
-    public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
-        return this.terminalContext.terminalExpressionEvaluationContext();
-    }
+//    @Override
+//    public TerminalExpressionEvaluationContext terminalContext() {
+//        return this.terminalContext.terminalExpressionEvaluationContext();
+//    }
 
     private final TerminalContext terminalContext;
 

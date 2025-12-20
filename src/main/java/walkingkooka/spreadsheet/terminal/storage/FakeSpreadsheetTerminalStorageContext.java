@@ -24,7 +24,6 @@ import walkingkooka.net.email.EmailAddress;
 import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.FakeSpreadsheetEngineContext;
 import walkingkooka.terminal.TerminalId;
-import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
 import walkingkooka.text.LineEnding;
 import walkingkooka.text.printer.Printer;
 
@@ -74,11 +73,6 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
 
     @Override
     public Object evaluate(final String expression) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
         throw new UnsupportedOperationException();
     }
 

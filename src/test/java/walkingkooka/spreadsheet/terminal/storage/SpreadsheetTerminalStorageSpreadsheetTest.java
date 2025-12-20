@@ -69,7 +69,6 @@ import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
-import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
 import walkingkooka.text.LineEnding;
 import walkingkooka.tree.text.TextNode;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
@@ -1188,11 +1187,6 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         @Override
         public Object evaluate(final String expression) {
             Objects.requireNonNull(expression, "expression");
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TerminalExpressionEvaluationContext terminalExpressionEvaluationContext() {
             throw new UnsupportedOperationException();
         }
     }
