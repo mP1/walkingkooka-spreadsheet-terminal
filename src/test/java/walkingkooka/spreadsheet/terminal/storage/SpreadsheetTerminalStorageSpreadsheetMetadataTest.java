@@ -524,6 +524,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
         }
 
         @Override
+        public EnvironmentContext environmentContext() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public Optional<SpreadsheetSelection> resolveLabel(final SpreadsheetLabelName label) {
             throw new UnsupportedOperationException();
         }

@@ -28,6 +28,7 @@ import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
 import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
+import walkingkooka.text.LineEnding;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -101,6 +102,12 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
     }
 
     @Override
+    public SpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding) {
+        this.spreadsheetEngineContext.setLineEnding(lineEnding);
+        return this;
+    }
+    
+    @Override
     public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
         this.spreadsheetEngineContext.setLocale(locale);
         return this;
@@ -128,6 +135,11 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
                 after,
                 this.terminalContext
             );
+    }
+
+    @Override
+    public EnvironmentContext environmentContext() {
+        return this.spreadsheetEngineContext;
     }
 
     @Override

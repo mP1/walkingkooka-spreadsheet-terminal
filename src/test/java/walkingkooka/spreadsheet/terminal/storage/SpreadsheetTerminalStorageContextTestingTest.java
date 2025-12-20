@@ -53,6 +53,7 @@ import walkingkooka.spreadsheet.terminal.storage.SpreadsheetTerminalStorageConte
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
 import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
+import walkingkooka.text.LineEnding;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
@@ -135,6 +136,13 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
             return this;
         }
 
+        @Override
+        public SpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding) {
+            this.spreadsheetEngineContext()
+                .setLineEnding(lineEnding);
+            return this;
+        }
+        
         @Override
         public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
             this.spreadsheetEngineContext()
