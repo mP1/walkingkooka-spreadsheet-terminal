@@ -25,6 +25,7 @@ import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.FakeSpreadsheetEngineContext;
 import walkingkooka.terminal.TerminalId;
 import walkingkooka.terminal.expression.TerminalExpressionEvaluationContext;
+import walkingkooka.text.LineEnding;
 import walkingkooka.text.printer.Printer;
 
 import java.util.Locale;
@@ -109,6 +110,11 @@ public class FakeSpreadsheetTerminalStorageContext extends FakeSpreadsheetEngine
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public SpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding) {
+        throw new UnsupportedOperationException();
+    }
+    
     @Override
     public SpreadsheetTerminalStorageContext setLocale(final Locale locale) {
         throw new UnsupportedOperationException();

@@ -24,6 +24,7 @@ import walkingkooka.spreadsheet.SpreadsheetId;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
 import walkingkooka.storage.StorageContext;
 import walkingkooka.terminal.TerminalContext;
+import walkingkooka.text.LineEnding;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -45,6 +46,9 @@ public interface SpreadsheetTerminalStorageContext extends TerminalContext, Stor
 
     @Override
     SpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name);
+
+    @Override
+    SpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding);
 
     @Override
     SpreadsheetTerminalStorageContext setLocale(final Locale locale);

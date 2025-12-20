@@ -1171,6 +1171,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         }
 
         @Override
+        public EnvironmentContext environmentContext() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public TerminalContext terminalContext() {
             throw new UnsupportedOperationException();
         }
