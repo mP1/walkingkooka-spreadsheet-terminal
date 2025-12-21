@@ -583,9 +583,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
 
             return SpreadsheetEngineContexts.spreadsheetContext(
                 SpreadsheetMetadataMode.SCRIPTING,
-                SpreadsheetContexts.basic(
-                    (idid) -> repo,
-                    SPREADSHEET_PROVIDER,
+                SpreadsheetContexts.fixedSpreadsheetId(
+                    repo,
                     (c) -> SpreadsheetEngineContexts.spreadsheetContext(
                         SpreadsheetMetadataMode.FORMULA,
                         c,
@@ -605,8 +604,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
                             )
                     ),
                     LOCALE_CONTEXT,
-                    PROVIDER_CONTEXT,
-                    TERMINAL_SERVER_CONTEXT
+                    SPREADSHEET_PROVIDER,
+                    PROVIDER_CONTEXT
                 ),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             );
