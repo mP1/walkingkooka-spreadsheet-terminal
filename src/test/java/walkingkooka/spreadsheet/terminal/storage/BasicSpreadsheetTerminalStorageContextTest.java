@@ -128,9 +128,8 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
         return BasicSpreadsheetTerminalStorageContext.with(
             SpreadsheetEngineContexts.spreadsheetContext(
                 SpreadsheetMetadataMode.SCRIPTING,
-                SpreadsheetContexts.basic(
-                    (idid) -> repo,
-                    SPREADSHEET_PROVIDER,
+                SpreadsheetContexts.fixedSpreadsheetId(
+                    repo,
                     (c) -> SpreadsheetEngineContexts.spreadsheetContext(
                         SpreadsheetMetadataMode.FORMULA,
                         c,
@@ -150,13 +149,18 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                             )
                     ),
                     LOCALE_CONTEXT,
-                    PROVIDER_CONTEXT,
-                    TERMINAL_SERVER_CONTEXT
+                    SPREADSHEET_PROVIDER,
+                    PROVIDER_CONTEXT
                 ),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             ),
             TERMINAL_CONTEXT
         );
+    }
+
+    @Override
+    public void testSetSpreadsheetIdWithSame() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

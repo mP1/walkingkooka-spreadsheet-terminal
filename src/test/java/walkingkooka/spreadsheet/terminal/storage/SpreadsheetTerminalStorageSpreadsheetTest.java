@@ -1054,9 +1054,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
             this.spreadsheetEngineContext = SpreadsheetEngineContexts.spreadsheetContext(
                 SpreadsheetMetadataMode.SCRIPTING,
-                SpreadsheetContexts.basic(
-                    spreadsheetIdSpreadsheetStoreRepository,
-                    SPREADSHEET_PROVIDER,
+                SpreadsheetContexts.fixedSpreadsheetId(
+                    spreadsheetIdSpreadsheetStoreRepository.apply(spreadsheetId),
                     (c) -> SpreadsheetEngineContexts.spreadsheetContext(
                         SpreadsheetMetadataMode.FORMULA,
                         c,
@@ -1081,8 +1080,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
                             )
                     ),
                     LOCALE_CONTEXT,
-                    PROVIDER_CONTEXT,
-                    TERMINAL_SERVER_CONTEXT
+                    SPREADSHEET_PROVIDER,
+                    PROVIDER_CONTEXT
                 ),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             );
