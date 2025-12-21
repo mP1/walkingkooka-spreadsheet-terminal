@@ -19,9 +19,9 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.collect.list.ImmutableList;
 import walkingkooka.net.header.MediaType;
-import walkingkooka.spreadsheet.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.engine.SpreadsheetDelta;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
+import walkingkooka.spreadsheet.net.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.store.SpreadsheetCellStore;
