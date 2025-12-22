@@ -454,6 +454,12 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
     static class TestSpreadsheetTerminalStorageContext extends FakeSpreadsheetTerminalStorageContext implements SpreadsheetEngineContextDelegator {
 
         @Override
+        public SpreadsheetEngineContext setSpreadsheetMetadataMode(final SpreadsheetMetadataMode mode) {
+            this.engineContext.setSpreadsheetMetadataMode(mode);
+            return this;
+        }
+
+        @Override
         public SpreadsheetStoreRepository storeRepository() {
             return this.engineContext.storeRepository();
         }
