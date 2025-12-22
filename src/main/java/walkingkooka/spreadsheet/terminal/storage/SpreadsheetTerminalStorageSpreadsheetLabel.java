@@ -89,10 +89,8 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
             if (false == mappings.isEmpty()) {
                 value = StorageValue.with(
                     path,
-                    Optional.ofNullable(
-                        mappings.isEmpty() ?
-                            null :
-                            mappings.iterator()
+                    Optional.of(
+                        mappings.iterator()
                                 .next()
                     )
                 ).setContentType(MEDIA_TYPE);
