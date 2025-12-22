@@ -166,11 +166,6 @@ final class BasicSpreadsheetTerminalStorageContext implements SpreadsheetTermina
         return this.terminalContext.evaluate(expression);
     }
 
-//    @Override
-//    public TerminalExpressionEvaluationContext terminalContext() {
-//        return this.terminalContext.terminalExpressionEvaluationContext();
-//    }
-
     private final TerminalContext terminalContext;
 
     // toString.........................................................................................................
