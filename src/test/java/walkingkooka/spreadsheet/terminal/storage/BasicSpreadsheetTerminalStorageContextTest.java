@@ -19,6 +19,8 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
 import walkingkooka.environment.EnvironmentContexts;
+import walkingkooka.io.TextReader;
+import walkingkooka.io.TextReaders;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
 import walkingkooka.reflect.JavaVisibility;
@@ -44,10 +46,14 @@ import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
 import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserAliasSet;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
+import walkingkooka.terminal.FakeTerminalContext;
+import walkingkooka.text.printer.Printer;
+import walkingkooka.text.printer.Printers;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -154,7 +160,29 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
                 ),
                 SpreadsheetMetadataTesting.TERMINAL_CONTEXT
             ),
-            TERMINAL_CONTEXT
+            new FakeTerminalContext() {
+
+                @Override
+                public TextReader input() {
+                    return TextReaders.fake();
+                }
+
+                @Override
+                public Printer output() {
+                    return Printers.fake();
+                }
+
+                @Override
+                public Printer error() {
+                    return Printers.fake();
+                }
+
+                @Override
+                public Object evaluate(final String expression) {
+                    Objects.requireNonNull(expression, "expression");
+                    throw new UnsupportedOperationException();
+                }
+            }
         );
     }
 

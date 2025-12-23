@@ -19,6 +19,8 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentContext;
 import walkingkooka.environment.EnvironmentValueName;
+import walkingkooka.io.TextReader;
+import walkingkooka.io.TextReaders;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
 import walkingkooka.net.http.server.HttpRequestAttribute;
@@ -50,9 +52,12 @@ import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
 import walkingkooka.spreadsheet.terminal.storage.SpreadsheetTerminalStorageContextTestingTest.TestSpreadsheetTerminalStorageContext;
+import walkingkooka.terminal.FakeTerminalContext;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
 import walkingkooka.text.LineEnding;
+import walkingkooka.text.printer.Printer;
+import walkingkooka.text.printer.Printers;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
@@ -266,7 +271,23 @@ public final class SpreadsheetTerminalStorageContextTestingTest implements Sprea
 
         @Override
         public TerminalContext terminalContext() {
-            return TERMINAL_CONTEXT;
+            return new FakeTerminalContext() {
+
+                @Override
+                public TextReader input() {
+                    return TextReaders.fake();
+                }
+
+                @Override
+                public Printer output() {
+                    return Printers.fake();
+                }
+
+                @Override
+                public Printer error() {
+                    return Printers.fake();
+                }
+            };
         }
 
         // toString.....................................................................................................
