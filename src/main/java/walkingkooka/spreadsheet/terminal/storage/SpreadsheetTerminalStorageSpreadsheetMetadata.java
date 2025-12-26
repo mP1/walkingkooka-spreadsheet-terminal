@@ -19,7 +19,7 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.collect.list.ImmutableList;
 import walkingkooka.net.header.MediaType;
-import walkingkooka.spreadsheet.SpreadsheetId;
+import walkingkooka.spreadsheet.meta.SpreadsheetId;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStore;

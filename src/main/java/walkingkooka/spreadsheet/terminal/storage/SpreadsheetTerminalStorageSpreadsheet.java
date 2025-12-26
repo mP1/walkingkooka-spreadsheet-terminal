@@ -18,7 +18,7 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentValueName;
-import walkingkooka.spreadsheet.SpreadsheetId;
+import walkingkooka.spreadsheet.meta.SpreadsheetId;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StorageName;
