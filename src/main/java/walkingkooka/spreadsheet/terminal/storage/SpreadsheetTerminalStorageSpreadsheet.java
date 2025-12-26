@@ -238,7 +238,10 @@ final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalSto
      * </pre>
      */
     // @VisibleForTesting
-    final static EnvironmentValueName<SpreadsheetId> SPREADSHEET_ID = EnvironmentValueName.with("SpreadsheetId");
+    final static EnvironmentValueName<SpreadsheetId> SPREADSHEET_ID = EnvironmentValueName.with(
+        "SpreadsheetId",
+        SpreadsheetId.class
+    );
 
     private final static String SPREADSHEET_STRING = "spreadsheet";
 
