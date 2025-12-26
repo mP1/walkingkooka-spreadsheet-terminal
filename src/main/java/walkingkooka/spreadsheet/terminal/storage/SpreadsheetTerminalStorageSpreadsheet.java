@@ -18,6 +18,7 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.environment.EnvironmentValueName;
+import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContextFactory;
 import walkingkooka.spreadsheet.meta.SpreadsheetId;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.storage.Storage;
@@ -51,7 +52,7 @@ import java.util.function.BiFunction;
  * /spreadsheet/1/label/Label123
  * </pre>
  * This {@link Storage} is intended to be used within a terminal session, where the user is reading/writing files
- * some with and some without a spreadsheet-id within the path. Those without the {@link #SPREADSHEET_ID},
+ * some with and some without a spreadsheet-id within the path. Those without the {@link SpreadsheetEnvironmentContextFactory#SPREADSHEET_ID},
  * will use the {@link EnvironmentValueName} when forming the final full path.
  */
 final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalStorage {
@@ -228,20 +229,6 @@ final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalSto
             executeContext
         );
     }
-
-    /**
-     * An {@link walkingkooka.environment.EnvironmentContext} that holds the default {@link SpreadsheetId} when it is
-     * missing from a {@link StoragePath}.
-     * <pre>
-     * /cell/AB12
-     * /label/Label123
-     * </pre>
-     */
-    // @VisibleForTesting
-    final static EnvironmentValueName<SpreadsheetId> SPREADSHEET_ID = EnvironmentValueName.with(
-        "SpreadsheetId",
-        SpreadsheetId.class
-    );
 
     private final static String SPREADSHEET_STRING = "spreadsheet";
 
