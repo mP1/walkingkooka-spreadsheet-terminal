@@ -139,7 +139,7 @@ final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalSto
     }
 
     /**
-     * If the path is a /cell or /column or /row then add the {@link #SPREADSHEET_ID}.
+     * If the path is a /cell or /column or /row then add the {@link SpreadsheetEnvironmentContextFactory#SPREADSHEET_ID}.
      */
     private <T> T route(final StoragePath path,
                         final SpreadsheetTerminalStorageContext context,
