@@ -83,8 +83,8 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageTesting<SpreadsheetTerminalStorageSpreadsheet, SpreadsheetTerminalStorageContext>,
-    ToStringTesting<SpreadsheetTerminalStorageSpreadsheet>,
+public final class SpreadsheetTerminalStorageRouterTest implements StorageTesting<SpreadsheetTerminalStorageRouter, SpreadsheetTerminalStorageContext>,
+    ToStringTesting<SpreadsheetTerminalStorageRouter>,
     SpreadsheetMetadataTesting {
 
     private final static SpreadsheetId SPREADSHEET_ID1 = SpreadsheetId.with(0x111);
@@ -202,7 +202,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     public void testWithNullCellsFails() {
         assertThrows(
             NullPointerException.class,
-            () -> SpreadsheetTerminalStorageSpreadsheet.with(
+            () -> SpreadsheetTerminalStorageRouter.with(
                 null,
                 LABELS,
                 METADATAS,
@@ -215,7 +215,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     public void testWithNullLabelsFails() {
         assertThrows(
             NullPointerException.class,
-            () -> SpreadsheetTerminalStorageSpreadsheet.with(
+            () -> SpreadsheetTerminalStorageRouter.with(
                 CELLS,
                 null,
                 METADATAS,
@@ -228,7 +228,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     public void testWithNullMetadataFails() {
         assertThrows(
             NullPointerException.class,
-            () -> SpreadsheetTerminalStorageSpreadsheet.with(
+            () -> SpreadsheetTerminalStorageRouter.with(
                 CELLS,
                 LABELS,
                 null,
@@ -241,7 +241,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     public void testWithNullOtherFails() {
         assertThrows(
             NullPointerException.class,
-            () -> SpreadsheetTerminalStorageSpreadsheet.with(
+            () -> SpreadsheetTerminalStorageRouter.with(
                 CELLS,
                 LABELS,
                 METADATAS,
@@ -681,7 +681,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testSaveOther() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/other");
@@ -703,7 +703,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testSaveOtherAndLoad() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/other");
@@ -735,7 +735,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testSaveOtherDeleteAndLoad() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/other");
@@ -779,7 +779,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testDeleteWithSpreadsheetId() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         // must delete spreadsheet/222 because context is for spreadsheet/111
@@ -808,7 +808,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testDeleteWithCell() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/cell/A1");
@@ -827,7 +827,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testDeleteWithLabel() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/label/Label111");
@@ -846,7 +846,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testDeleteWithSpreadsheetIdAndCell() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         storage.delete(
@@ -863,7 +863,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testDeleteWithSpreadsheetIdAndCell2() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/spreadsheet/222/cell/B2");
@@ -882,7 +882,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testDeleteWithSpreadsheetIdAndLabel() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/spreadsheet/111/label/Label111");
@@ -901,7 +901,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testDeleteWithSpreadsheetIdAndLabel2() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/spreadsheet/222/label/Label222");
@@ -922,7 +922,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithSpreadsheet() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -938,7 +938,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithSpreadsheetAndOffset() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -953,7 +953,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithSpreadsheetAndOffset2() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -967,7 +967,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithSpreadsheetAndSize() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -982,7 +982,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithCell() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -1000,7 +1000,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithLabel() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -1018,7 +1018,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithSpreadsheetIdCell1() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -1036,7 +1036,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithSpreadsheetIdCell2() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -1054,7 +1054,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithSpreadsheetIdLabel1() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -1072,7 +1072,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithSpreadsheetIdLabel2() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         this.listAndCheck(
@@ -1090,7 +1090,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
 
     @Test
     public void testListWithOther() {
-        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final SpreadsheetTerminalStorageRouter storage = this.createStorage();
         final TestSpreadsheetTerminalStorageContext context = this.createContext();
 
         final StoragePath path1 = StoragePath.parse("/other/1.txt");
@@ -1155,10 +1155,10 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     }
 
     @Override
-    public SpreadsheetTerminalStorageSpreadsheet createStorage() {
+    public SpreadsheetTerminalStorageRouter createStorage() {
         final SpreadsheetEngine engine = SpreadsheetEngines.basic();
 
-        return SpreadsheetTerminalStorageSpreadsheet.with(
+        return SpreadsheetTerminalStorageRouter.with(
             SpreadsheetTerminalStorages.cell(engine),
             SpreadsheetTerminalStorages.label(engine),
             SpreadsheetTerminalStorages.metadata(),
@@ -1372,7 +1372,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     @Test
     public void testToString() {
         this.toStringAndCheck(
-            SpreadsheetTerminalStorageSpreadsheet.with(
+            SpreadsheetTerminalStorageRouter.with(
                 CELLS,
                 LABELS,
                 METADATAS,
@@ -1385,8 +1385,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     // class............................................................................................................
 
     @Override
-    public Class<SpreadsheetTerminalStorageSpreadsheet> type() {
-        return SpreadsheetTerminalStorageSpreadsheet.class;
+    public Class<SpreadsheetTerminalStorageRouter> type() {
+        return SpreadsheetTerminalStorageRouter.class;
     }
 
     @Override
