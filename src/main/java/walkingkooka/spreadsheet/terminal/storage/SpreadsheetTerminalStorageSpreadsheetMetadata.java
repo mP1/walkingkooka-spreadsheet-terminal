@@ -165,11 +165,8 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                 name = "";
                 break;
             case 2:
-                name = context.convertOrFail(
-                    names.get(1)
-                        .value(),
-                    String.class
-                );
+                name = names.get(1)
+                    .value();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid path");
