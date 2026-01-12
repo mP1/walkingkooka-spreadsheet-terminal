@@ -19,8 +19,8 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
 import walkingkooka.Either;
+import walkingkooka.InvalidCharacterException;
 import walkingkooka.collect.set.Sets;
-import walkingkooka.convert.ConverterException;
 import walkingkooka.environment.EnvironmentContexts;
 import walkingkooka.net.email.EmailAddress;
 import walkingkooka.net.http.server.HttpHandler;
@@ -110,13 +110,18 @@ public final class SpreadsheetTerminalStorageSpreadsheetCellTest implements Stor
 
         final StoragePath path = StoragePath.parse("/999");
 
-        assertThrows(
-            ConverterException.class,
+        final InvalidCharacterException thrown = assertThrows(
+            InvalidCharacterException.class,
             () -> this.createStorage()
                 .load(
                     path,
                     context
                 )
+        );
+        this.checkEquals(
+            "Invalid character '9' at 0",
+            thrown.getMessage(),
+            "message"
         );
     }
 
