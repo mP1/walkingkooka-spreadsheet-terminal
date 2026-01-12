@@ -122,7 +122,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                 )
             )
         ).setValue(
-            Optional.ofNullable(saved)
+            Optional.of(saved)
         ).setContentType(MEDIA_TYPE);
     }
 
