@@ -202,9 +202,8 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
                                 );
 
                                 executeContext = context.setSpreadsheetId(
-                                    context.convertOrFail(
-                                        spreadsheetIdStorageName.value(),
-                                        SpreadsheetId.class
+                                    SpreadsheetId.parse(
+                                        spreadsheetIdStorageName.value()
                                     )
                                 );
 
