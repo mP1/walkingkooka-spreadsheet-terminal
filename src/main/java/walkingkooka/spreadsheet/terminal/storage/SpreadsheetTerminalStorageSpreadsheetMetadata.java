@@ -73,10 +73,8 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                 break;
             case 2:
                 loaded = context.loadMetadata(
-                        context.convertOrFail(
+                        parseSpreadsheetId(
                             storageNames.get(1)
-                                .value(),
-                            SpreadsheetId.class
                         )
                     )
                     .map(m -> StorageValue.with(
@@ -139,10 +137,8 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                 throw new IllegalArgumentException("Missing " + SpreadsheetId.class.getSimpleName());
             case 2:
                 context.deleteMetadata(
-                    context.convertOrFail(
+                    parseSpreadsheetId(
                         names.get(1)
-                            .value(),
-                        SpreadsheetId.class
                     )
                 );
                 break;
@@ -195,6 +191,12 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
                     context.createdAuditInfo()
                 )
             ).collect(ImmutableList.collector());
+    }
+
+    private static SpreadsheetId parseSpreadsheetId(final StorageName name) {
+        return SpreadsheetId.parse(
+            name.value()
+        );
     }
 
     // Object...........................................................................................................
