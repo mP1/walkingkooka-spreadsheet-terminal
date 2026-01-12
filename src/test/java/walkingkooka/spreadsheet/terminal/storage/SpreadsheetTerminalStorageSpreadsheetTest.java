@@ -140,6 +140,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
     private final Storage<SpreadsheetTerminalStorageContext> CELLS = Storages.fake();
     private final Storage<SpreadsheetTerminalStorageContext> LABELS = Storages.fake();
     private final Storage<SpreadsheetTerminalStorageContext> METADATAS = Storages.fake();
+    private final Storage<SpreadsheetTerminalStorageContext> OTHER = Storages.fake();
 
     private final static SpreadsheetCell CELL1 = SpreadsheetSelection.A1.setFormula(
         SpreadsheetFormula.EMPTY.setValue(
@@ -204,7 +205,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
             () -> SpreadsheetTerminalStorageSpreadsheet.with(
                 null,
                 LABELS,
-                METADATAS
+                METADATAS,
+                OTHER
             )
         );
     }
@@ -216,7 +218,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
             () -> SpreadsheetTerminalStorageSpreadsheet.with(
                 CELLS,
                 null,
-                METADATAS
+                METADATAS,
+                OTHER
             )
         );
     }
@@ -228,6 +231,20 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
             () -> SpreadsheetTerminalStorageSpreadsheet.with(
                 CELLS,
                 LABELS,
+                null,
+                OTHER
+            )
+        );
+    }
+
+    @Test
+    public void testWithNullOtherFails() {
+        assertThrows(
+            NullPointerException.class,
+            () -> SpreadsheetTerminalStorageSpreadsheet.with(
+                CELLS,
+                LABELS,
+                METADATAS,
                 null
             )
         );
@@ -662,6 +679,93 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         );
     }
 
+    @Test
+    public void testSaveOther() {
+        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+
+        final StoragePath path = StoragePath.parse("/other");
+        final String value = "value123";
+
+        this.saveAndCheck(
+            storage,
+            StorageValue.with(
+                path,
+                Optional.of(value)
+            ),
+            context,
+            StorageValue.with(
+                path,
+                Optional.of(value)
+            )
+        );
+    }
+
+    @Test
+    public void testSaveOtherAndLoad() {
+        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+
+        final StoragePath path = StoragePath.parse("/other");
+        final String value = "value123";
+
+        this.saveAndCheck(
+            storage,
+            StorageValue.with(
+                path,
+                Optional.of(value)
+            ),
+            context,
+            StorageValue.with(
+                path,
+                Optional.of(value)
+            )
+        );
+
+        this.loadAndCheck(
+            storage,
+            path,
+            context,
+            StorageValue.with(
+                path,
+                Optional.of(value)
+            )
+        );
+    }
+
+    @Test
+    public void testSaveOtherDeleteAndLoad() {
+        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+
+        final StoragePath path = StoragePath.parse("/other");
+        final String value = "value123";
+
+        this.saveAndCheck(
+            storage,
+            StorageValue.with(
+                path,
+                Optional.of(value)
+            ),
+            context,
+            StorageValue.with(
+                path,
+                Optional.of(value)
+            )
+        );
+
+        storage.delete(
+            path,
+            context
+        );
+
+        this.loadAndCheck(
+            storage,
+            path,
+            context
+        );
+    }
+
     // Storage.delete...................................................................................................
 
     @Test
@@ -984,6 +1088,72 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         );
     }
 
+    @Test
+    public void testListWithOther() {
+        final SpreadsheetTerminalStorageSpreadsheet storage = this.createStorage();
+        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+
+        final StoragePath path1 = StoragePath.parse("/other/1.txt");
+        final String value1 = "value123";
+
+        this.saveAndCheck(
+            storage,
+            StorageValue.with(
+                path1,
+                Optional.of(value1)
+            ),
+            context,
+            StorageValue.with(
+                path1,
+                Optional.of(value1)
+            )
+        );
+
+        final StoragePath path2 = StoragePath.parse("/other/2.txt");
+        final String value2 = "value223";
+
+        this.saveAndCheck(
+            storage,
+            StorageValue.with(
+                path2,
+                Optional.of(value2)
+            ),
+            context,
+            StorageValue.with(
+                path2,
+                Optional.of(value2)
+            )
+        );
+
+        this.listAndCheck(
+            storage,
+            StoragePath.ROOT,
+            0,
+            2,
+            context,
+            StorageValueInfo.with(
+                StoragePath.parse("/other"),
+                AUDIT_INFO
+            )
+        );
+
+        this.listAndCheck(
+            storage,
+            StoragePath.parse("/other/"),
+            0,
+            3,
+            context,
+            StorageValueInfo.with(
+                path1,
+                AUDIT_INFO
+            ),
+            StorageValueInfo.with(
+                path2,
+                AUDIT_INFO
+            )
+        );
+    }
+
     @Override
     public SpreadsheetTerminalStorageSpreadsheet createStorage() {
         final SpreadsheetEngine engine = SpreadsheetEngines.basic();
@@ -991,7 +1161,8 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         return SpreadsheetTerminalStorageSpreadsheet.with(
             SpreadsheetTerminalStorages.cell(engine),
             SpreadsheetTerminalStorages.label(engine),
-            SpreadsheetTerminalStorages.metadata()
+            SpreadsheetTerminalStorages.metadata(),
+            Storages.tree()
         );
     }
 
@@ -1204,9 +1375,10 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
             SpreadsheetTerminalStorageSpreadsheet.with(
                 CELLS,
                 LABELS,
-                METADATAS
+                METADATAS,
+                OTHER
             ),
-            "/cell " + CELLS + ", /label " + LABELS + ", /spreadsheet " + METADATAS
+            "/cell " + CELLS + ", /label " + LABELS + ", /spreadsheet " + METADATAS + ", /* " + OTHER
         );
     }
 
