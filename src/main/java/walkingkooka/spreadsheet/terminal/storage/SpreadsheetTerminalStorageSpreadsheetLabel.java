@@ -24,6 +24,7 @@ import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
 import walkingkooka.spreadsheet.net.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
+import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
 import walkingkooka.spreadsheet.store.SpreadsheetCellStore;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StorageName;
@@ -68,10 +69,8 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
 
         switch (names.size()) {
             case 2:
-                labelName = context.convertOrFail(
+                labelName = parseLabel(
                     names.get(1)
-                        .value(),
-                    SpreadsheetLabelName.class
                 );
                 break;
             default:
@@ -144,10 +143,8 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
                 throw new IllegalArgumentException("Missing label");
             case 2:
                 this.engine.deleteLabel(
-                    context.convertOrFail(
+                    parseLabel(
                         names.get(1)
-                            .value(),
-                        SpreadsheetLabelName.class
                     ),
                     context
                 );
@@ -202,6 +199,12 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
     }
 
     private final SpreadsheetEngine engine;
+
+    private static SpreadsheetLabelName parseLabel(final StorageName name) {
+        return SpreadsheetSelection.labelName(
+            name.value()
+        );
+    }
 
     // Object...........................................................................................................
 
