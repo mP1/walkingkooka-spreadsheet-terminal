@@ -1004,7 +1004,10 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         final Map<SpreadsheetId, SpreadsheetStoreRepository> spreadsheetIdSpreadsheetStoreRepository = Maps.sorted();
 
         {
-            final SpreadsheetStoreRepository repo1 = SpreadsheetStoreRepositories.treeMap(metadataStore);
+            final SpreadsheetStoreRepository repo1 = SpreadsheetStoreRepositories.treeMap(
+                metadataStore,
+                Storages.fake()
+            );
 
             repo1.cells()
                 .save(CELL1);
@@ -1018,7 +1021,10 @@ public final class SpreadsheetTerminalStorageSpreadsheetTest implements StorageT
         }
 
         {
-            final SpreadsheetStoreRepository repo2 = SpreadsheetStoreRepositories.treeMap(metadataStore);
+            final SpreadsheetStoreRepository repo2 = SpreadsheetStoreRepositories.treeMap(
+                metadataStore,
+                Storages.fake()
+            );
 
             repo2.cells()
                 .save(CELL2);

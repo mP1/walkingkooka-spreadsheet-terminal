@@ -46,6 +46,7 @@ import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
 import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserAliasSet;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
+import walkingkooka.storage.Storages;
 import walkingkooka.terminal.FakeTerminalContext;
 import walkingkooka.text.printer.Printer;
 import walkingkooka.text.printer.Printers;
@@ -129,7 +130,10 @@ public final class BasicSpreadsheetTerminalStorageContextTest implements Spreads
         final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
         metadataStore.save(metadata);
 
-        final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
+        final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(
+            metadataStore,
+            Storages.fake()
+        );
 
         return BasicSpreadsheetTerminalStorageContext.with(
             SpreadsheetEngineContexts.spreadsheetContext(
