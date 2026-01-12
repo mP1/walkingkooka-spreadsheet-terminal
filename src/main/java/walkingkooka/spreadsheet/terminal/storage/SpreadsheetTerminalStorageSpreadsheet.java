@@ -26,7 +26,6 @@ import walkingkooka.storage.StorageName;
 import walkingkooka.storage.StoragePath;
 import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
-import walkingkooka.storage.Storages;
 
 import java.util.List;
 import java.util.Objects;
@@ -59,22 +58,27 @@ final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalSto
 
     static SpreadsheetTerminalStorageSpreadsheet with(final Storage<SpreadsheetTerminalStorageContext> cells,
                                                       final Storage<SpreadsheetTerminalStorageContext> labels,
-                                                      final Storage<SpreadsheetTerminalStorageContext> metadatas) {
+                                                      final Storage<SpreadsheetTerminalStorageContext> metadatas,
+                                                      final Storage<SpreadsheetTerminalStorageContext> other) {
         return new SpreadsheetTerminalStorageSpreadsheet(
             Objects.requireNonNull(cells, "cells"),
             Objects.requireNonNull(labels, "labels"),
-            Objects.requireNonNull(metadatas, "metadatas")
+            Objects.requireNonNull(metadatas, "metadatas"),
+            Objects.requireNonNull(other, "other")
         );
     }
 
     private SpreadsheetTerminalStorageSpreadsheet(final Storage<SpreadsheetTerminalStorageContext> cells,
                                                   final Storage<SpreadsheetTerminalStorageContext> labels,
-                                                  final Storage<SpreadsheetTerminalStorageContext> metadatas) {
+                                                  final Storage<SpreadsheetTerminalStorageContext> metadatas,
+                                                  final Storage<SpreadsheetTerminalStorageContext> other) {
         super();
 
         this.cells = cells.setPrefix(CELL);
         this.labels = labels.setPrefix(LABEL);
         this.metadatas = metadatas.setPrefix(SPREADSHEET);
+
+        this.other = other;
     }
 
     // SpreadsheetTerminalStorage.......................................................................................
@@ -153,7 +157,7 @@ final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalSto
         switch (nameCount) {
             case 0:
             case 1:
-                storage = Storages.empty();
+                storage = this.other;
                 executeContext = context;
                 break;
             default:
@@ -184,7 +188,7 @@ final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalSto
                                         storage = this.labels;
                                         break;
                                     default:
-                                        storage = Storages.empty();
+                                        storage = this.other;
                                         break;
                                 }
 
@@ -216,7 +220,7 @@ final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalSto
                         executeContext = context;
                         break;
                     default:
-                        storage = Storages.empty();
+                        storage = this.other;
                         executeContext = context;
                         break;
                 }
@@ -254,10 +258,15 @@ final class SpreadsheetTerminalStorageSpreadsheet extends SpreadsheetTerminalSto
 
     private final Storage<SpreadsheetTerminalStorageContext> metadatas;
 
+    /**
+     * This storage will provide storage for paths that dont match the cells, labels or metadata.
+     */
+    private final Storage<SpreadsheetTerminalStorageContext> other;
+
     // Object...........................................................................................................
 
     @Override
     public String toString() {
-        return this.cells + ", " + this.labels + ", " + this.metadatas;
+        return this.cells + ", " + this.labels + ", " + this.metadatas + ", /* " + this.other;
     }
 }

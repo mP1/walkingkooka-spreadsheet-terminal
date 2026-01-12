@@ -52,11 +52,13 @@ public final class SpreadsheetTerminalStorages implements PublicStaticHelper {
      */
     public static Storage<SpreadsheetTerminalStorageContext> spreadsheet(final Storage<SpreadsheetTerminalStorageContext> cells,
                                                                          final Storage<SpreadsheetTerminalStorageContext> labels,
-                                                                         final Storage<SpreadsheetTerminalStorageContext> metadatas) {
+                                                                         final Storage<SpreadsheetTerminalStorageContext> metadatas,
+                                                                         final Storage<SpreadsheetTerminalStorageContext> other) {
         return SpreadsheetTerminalStorageSpreadsheet.with(
             cells,
             labels,
-            metadatas
+            metadatas,
+            other
         );
     }
 
