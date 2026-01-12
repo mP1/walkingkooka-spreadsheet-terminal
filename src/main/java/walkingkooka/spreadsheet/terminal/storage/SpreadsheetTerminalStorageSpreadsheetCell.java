@@ -77,10 +77,8 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
         switch (names.size()) {
             case 2:
             case 3:
-                cellOrLabels = context.convertOrFail(
+                cellOrLabels = parseExpressionReference(
                     names.get(1)
-                        .value(),
-                    SpreadsheetExpressionReference.class
                 );
                 break;
             default:
@@ -162,10 +160,8 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
                 throw new IllegalArgumentException("Missing selection");
             case 2:
                 this.engine.deleteCells(
-                    context.convertOrFail(
+                    parseExpressionReference(
                         names.get(1)
-                            .value(),
-                        SpreadsheetExpressionReference.class
                     ),
                     context
                 );
@@ -190,10 +186,8 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
                 cellOrLabels = SpreadsheetSelection.ALL_CELLS;
                 break;
             case 2:
-                cellOrLabels = context.convertOrFail(
+                cellOrLabels = parseExpressionReference(
                     names.get(1)
-                        .value(),
-                    SpreadsheetExpressionReference.class
                 );
                 break;
             default:
@@ -220,6 +214,12 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
     }
 
     private final SpreadsheetEngine engine;
+
+    private static SpreadsheetExpressionReference parseExpressionReference(final StorageName name) {
+        return SpreadsheetSelection.parseExpressionReference(
+            name.value()
+        );
+    }
 
     // Object...........................................................................................................
 
