@@ -152,7 +152,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
     }
 
     /**
-     * Supports listing using the provided {@link walkingkooka.spreadsheet.SpreadsheetName} pattern.
+     * Supports listing using the provided {@link walkingkooka.spreadsheet.meta.SpreadsheetName} pattern.
      */
     @Override
     List<StorageValueInfo> listNonNull(final StoragePath path,
