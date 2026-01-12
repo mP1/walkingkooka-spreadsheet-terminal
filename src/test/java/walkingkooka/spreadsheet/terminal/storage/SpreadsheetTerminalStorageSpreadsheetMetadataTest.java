@@ -57,6 +57,7 @@ import walkingkooka.storage.StoragePath;
 import walkingkooka.storage.StorageTesting;
 import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
+import walkingkooka.storage.Storages;
 import walkingkooka.terminal.TerminalContext;
 import walkingkooka.terminal.TerminalContextDelegator;
 import walkingkooka.text.LineEnding;
@@ -436,7 +437,10 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
             final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
             metadataStore.save(metadata);
 
-            final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(metadataStore);
+            final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(
+                metadataStore,
+                Storages.fake()
+            );
 
             return SpreadsheetEngineContexts.spreadsheetContext(
                 SpreadsheetMetadataMode.SCRIPTING,
