@@ -24,6 +24,7 @@ import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStore;
 import walkingkooka.spreadsheet.net.SpreadsheetMediaTypes;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StorageName;
 import walkingkooka.storage.StoragePath;
@@ -61,7 +62,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
      */
     @Override
     Optional<StorageValue> loadNonNull(final StoragePath path,
-                                       final SpreadsheetTerminalStorageContext context) {
+                                       final SpreadsheetStorageContext context) {
         final List<StorageName> storageNames = path.namesList();
 
         final Optional<StorageValue> loaded;
@@ -92,7 +93,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
 
     @Override
     StorageValue saveNonNull(final StorageValue value,
-                             final SpreadsheetTerminalStorageContext context) {
+                             final SpreadsheetStorageContext context) {
         final StoragePath path = value.path();
         final List<StorageName> storageNames = path.namesList();
 
@@ -129,7 +130,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
      */
     @Override
     void deleteNonNull(final StoragePath path,
-                       final SpreadsheetTerminalStorageContext context) {
+                       final SpreadsheetStorageContext context) {
         final List<StorageName> names = path.namesList();
         switch (names.size()) {
             case 0:
@@ -154,7 +155,7 @@ final class SpreadsheetTerminalStorageSpreadsheetMetadata extends SpreadsheetTer
     List<StorageValueInfo> listNonNull(final StoragePath path,
                                        final int offset,
                                        final int count,
-                                       final SpreadsheetTerminalStorageContext context) {
+                                       final SpreadsheetStorageContext context) {
         final List<StorageName> names = path.namesList();
 
         final String name;

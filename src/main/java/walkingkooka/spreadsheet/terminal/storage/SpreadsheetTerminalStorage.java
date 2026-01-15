@@ -17,6 +17,7 @@
 
 package walkingkooka.spreadsheet.terminal.storage;
 
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StoragePath;
 import walkingkooka.storage.StorageValue;
@@ -30,7 +31,7 @@ import java.util.Optional;
 /**
  * Base class for all {@link Storage} implementations, using an abstract template class that handles null parameter checking.
  */
-abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminalStorageContext> {
+abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetStorageContext> {
 
     SpreadsheetTerminalStorage() {
         super();
@@ -38,7 +39,7 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
 
     @Override
     public final Optional<StorageValue> load(final StoragePath path,
-                                             final SpreadsheetTerminalStorageContext context) {
+                                             final SpreadsheetStorageContext context) {
         Objects.requireNonNull(path, "path");
         Objects.requireNonNull(context, "context");
 
@@ -49,11 +50,11 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
     }
 
     abstract Optional<StorageValue> loadNonNull(final StoragePath path,
-                                                final SpreadsheetTerminalStorageContext context);
+                                                final SpreadsheetStorageContext context);
 
     @Override
     public final StorageValue save(final StorageValue value,
-                                   final SpreadsheetTerminalStorageContext context) {
+                                   final SpreadsheetStorageContext context) {
         Objects.requireNonNull(value, "value");
         Objects.requireNonNull(context, "context");
 
@@ -64,11 +65,11 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
     }
 
     abstract StorageValue saveNonNull(final StorageValue value,
-                                      final SpreadsheetTerminalStorageContext context);
+                                      final SpreadsheetStorageContext context);
 
     @Override
     public final void delete(final StoragePath path,
-                             final SpreadsheetTerminalStorageContext context) {
+                             final SpreadsheetStorageContext context) {
         Objects.requireNonNull(path, "path");
         Objects.requireNonNull(context, "context");
 
@@ -79,13 +80,13 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
     }
 
     abstract void deleteNonNull(final StoragePath path,
-                                final SpreadsheetTerminalStorageContext context);
+                                final SpreadsheetStorageContext context);
 
     @Override
     public final List<StorageValueInfo> list(final StoragePath path,
                                              final int offset,
                                              final int count,
-                                             final SpreadsheetTerminalStorageContext context) {
+                                             final SpreadsheetStorageContext context) {
         Objects.requireNonNull(path, "path");
         Store.checkOffsetAndCount(offset, count);
         Objects.requireNonNull(context, "context");
@@ -101,5 +102,5 @@ abstract class SpreadsheetTerminalStorage implements Storage<SpreadsheetTerminal
     abstract List<StorageValueInfo> listNonNull(final StoragePath path,
                                                 final int offset,
                                                 final int count,
-                                                final SpreadsheetTerminalStorageContext context);
+                                                final SpreadsheetStorageContext context);
 }

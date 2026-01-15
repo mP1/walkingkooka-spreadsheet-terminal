@@ -21,6 +21,7 @@ import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContextFactory;
 import walkingkooka.spreadsheet.meta.SpreadsheetId;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StorageName;
 import walkingkooka.storage.StoragePath;
@@ -56,10 +57,10 @@ import java.util.function.BiFunction;
  */
 final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage {
 
-    static SpreadsheetTerminalStorageRouter with(final Storage<SpreadsheetTerminalStorageContext> cells,
-                                                 final Storage<SpreadsheetTerminalStorageContext> labels,
-                                                 final Storage<SpreadsheetTerminalStorageContext> metadatas,
-                                                 final Storage<SpreadsheetTerminalStorageContext> other) {
+    static SpreadsheetTerminalStorageRouter with(final Storage<SpreadsheetStorageContext> cells,
+                                                 final Storage<SpreadsheetStorageContext> labels,
+                                                 final Storage<SpreadsheetStorageContext> metadatas,
+                                                 final Storage<SpreadsheetStorageContext> other) {
         return new SpreadsheetTerminalStorageRouter(
             Objects.requireNonNull(cells, "cells"),
             Objects.requireNonNull(labels, "labels"),
@@ -68,10 +69,10 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
         );
     }
 
-    private SpreadsheetTerminalStorageRouter(final Storage<SpreadsheetTerminalStorageContext> cells,
-                                             final Storage<SpreadsheetTerminalStorageContext> labels,
-                                             final Storage<SpreadsheetTerminalStorageContext> metadatas,
-                                             final Storage<SpreadsheetTerminalStorageContext> other) {
+    private SpreadsheetTerminalStorageRouter(final Storage<SpreadsheetStorageContext> cells,
+                                             final Storage<SpreadsheetStorageContext> labels,
+                                             final Storage<SpreadsheetStorageContext> metadatas,
+                                             final Storage<SpreadsheetStorageContext> other) {
         super();
 
         this.cells = cells.setPrefix(CELL);
@@ -85,7 +86,7 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
 
     @Override
     Optional<StorageValue> loadNonNull(final StoragePath path,
-                                       final SpreadsheetTerminalStorageContext context) {
+                                       final SpreadsheetStorageContext context) {
         return this.route(
             path,
             context,
@@ -98,7 +99,7 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
 
     @Override
     StorageValue saveNonNull(final StorageValue value,
-                             final SpreadsheetTerminalStorageContext context) {
+                             final SpreadsheetStorageContext context) {
         return this.route(
             value.path(),
             context,
@@ -111,7 +112,7 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
 
     @Override
     void deleteNonNull(final StoragePath path,
-                       final SpreadsheetTerminalStorageContext context) {
+                       final SpreadsheetStorageContext context) {
         this.route(
             path,
             context,
@@ -129,7 +130,7 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
     List<StorageValueInfo> listNonNull(final StoragePath path,
                                        final int offset,
                                        final int count,
-                                       final SpreadsheetTerminalStorageContext context) {
+                                       final SpreadsheetStorageContext context) {
         return this.route(
             path,
             context,
@@ -146,10 +147,10 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
      * If the path is a /cell or /column or /row then add the {@link SpreadsheetEnvironmentContextFactory#SPREADSHEET_ID}.
      */
     private <T> T route(final StoragePath path,
-                        final SpreadsheetTerminalStorageContext context,
-                        final BiFunction<Storage<SpreadsheetTerminalStorageContext>, SpreadsheetTerminalStorageContext, T> execute) {
-        Storage<SpreadsheetTerminalStorageContext> storage;
-        final SpreadsheetTerminalStorageContext executeContext;
+                        final SpreadsheetStorageContext context,
+                        final BiFunction<Storage<SpreadsheetStorageContext>, SpreadsheetStorageContext, T> execute) {
+        Storage<SpreadsheetStorageContext> storage;
+        final SpreadsheetStorageContext executeContext;
 
         final List<StorageName> names = path.namesList();
         final int nameCount = names.size();
@@ -201,11 +202,13 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
                                         )
                                 );
 
-                                executeContext = context.setSpreadsheetId(
-                                    SpreadsheetId.parse(
-                                        spreadsheetIdStorageName.value()
-                                    )
-                                );
+                                // clone saves "restoring" original SpreadsheetId
+                                executeContext = context.cloneEnvironment()
+                                    .setSpreadsheetId(
+                                        SpreadsheetId.parse(
+                                            spreadsheetIdStorageName.value()
+                                        )
+                                    );
 
                                 break;
                         }
@@ -251,16 +254,16 @@ final class SpreadsheetTerminalStorageRouter extends SpreadsheetTerminalStorage 
         StorageName.with(LABEL_STRING)
     );
 
-    private final Storage<SpreadsheetTerminalStorageContext> cells;
+    private final Storage<SpreadsheetStorageContext> cells;
 
-    private final Storage<SpreadsheetTerminalStorageContext> labels;
+    private final Storage<SpreadsheetStorageContext> labels;
 
-    private final Storage<SpreadsheetTerminalStorageContext> metadatas;
+    private final Storage<SpreadsheetStorageContext> metadatas;
 
     /**
      * This storage will provide storage for paths that dont match the cells, labels or metadata.
      */
-    private final Storage<SpreadsheetTerminalStorageContext> other;
+    private final Storage<SpreadsheetStorageContext> other;
 
     // Object...........................................................................................................
 

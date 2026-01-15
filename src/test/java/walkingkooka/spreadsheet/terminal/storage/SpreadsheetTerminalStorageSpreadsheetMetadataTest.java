@@ -18,66 +18,40 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
-import walkingkooka.environment.EnvironmentContext;
-import walkingkooka.environment.EnvironmentContexts;
-import walkingkooka.environment.EnvironmentValueName;
+import walkingkooka.Either;
 import walkingkooka.net.email.EmailAddress;
-import walkingkooka.net.http.server.HttpHandler;
-import walkingkooka.net.http.server.HttpRequestAttribute;
 import walkingkooka.reflect.JavaVisibility;
-import walkingkooka.route.Router;
+import walkingkooka.spreadsheet.SpreadsheetContext;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
-import walkingkooka.spreadsheet.compare.provider.SpreadsheetComparatorAliasSet;
-import walkingkooka.spreadsheet.convert.provider.SpreadsheetConvertersConverterProviders;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
-import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
-import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContext;
-import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContexts;
-import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
-import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
-import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
-import walkingkooka.spreadsheet.importer.provider.SpreadsheetImporterAliasSet;
 import walkingkooka.spreadsheet.meta.SpreadsheetId;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.SpreadsheetName;
-import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStore;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
 import walkingkooka.spreadsheet.net.SpreadsheetMediaTypes;
-import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserAliasSet;
-import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
-import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
+import walkingkooka.spreadsheet.storage.FakeSpreadsheetStorageContext;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContexts;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
-import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
-import walkingkooka.storage.FakeStorageContext;
 import walkingkooka.storage.StoragePath;
 import walkingkooka.storage.StorageTesting;
 import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
-import walkingkooka.terminal.TerminalContext;
-import walkingkooka.terminal.TerminalContextDelegator;
-import walkingkooka.text.LineEnding;
-import walkingkooka.validation.form.provider.FormHandlerAliasSet;
-import walkingkooka.validation.provider.ValidatorAliasSet;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements StorageTesting<SpreadsheetTerminalStorageSpreadsheetMetadata, SpreadsheetTerminalStorageContext>,
+public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements StorageTesting<SpreadsheetTerminalStorageSpreadsheetMetadata, SpreadsheetStorageContext>,
     SpreadsheetMetadataTesting {
 
     @Test
     public void testLoadMissingSpreadsheetMetadata() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final StoragePath path = StoragePath.parse("/404");
 
@@ -90,7 +64,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
     @Test
     public void testLoadMissingSpreadsheetId() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final SpreadsheetMetadata metadata = context.saveMetadata(METADATA_EN_AU);
 
@@ -105,7 +79,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
     @Test
     public void testLoad() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final SpreadsheetMetadata metadata = context.saveMetadata(METADATA_EN_AU);
 
@@ -124,7 +98,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
     @Test
     public void testSaveWithStoragePathIncludingSpreadsheetIdFails() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final IllegalArgumentException thrown = assertThrows(
             IllegalArgumentException.class,
@@ -156,7 +130,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
                             SpreadsheetMetadata.EMPTY
                         )
                     ),
-                    new TestSpreadsheetTerminalStorageContext()
+                    new TestSpreadsheetStorageContext()
                 )
         );
 
@@ -168,7 +142,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
     @Test
     public void testSaveWithStorageValueMissingSpreadsheetMetadataFails() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final IllegalArgumentException thrown = assertThrows(
             IllegalArgumentException.class,
@@ -190,7 +164,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
     @Test
     public void testSave() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final SpreadsheetMetadata metadata = context.saveMetadata(METADATA_EN_AU);
 
@@ -210,7 +184,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
     @Test
     public void testDelete() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final SpreadsheetMetadata metadata = context.saveMetadata(METADATA_EN_AU);
 
@@ -231,7 +205,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
     @Test
     public void testListMissingFilter() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final SpreadsheetTerminalStorageSpreadsheetMetadata storage = this.createStorage();
 
@@ -305,7 +279,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
     @Test
     public void testList() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final TestSpreadsheetStorageContext context = new TestSpreadsheetStorageContext();
 
         final SpreadsheetTerminalStorageSpreadsheetMetadata storage = this.createStorage();
 
@@ -383,131 +357,64 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
     }
 
     @Override
-    public SpreadsheetTerminalStorageContext createContext() {
-        return SpreadsheetTerminalStorageContexts.fake();
+    public SpreadsheetStorageContext createContext() {
+        return SpreadsheetStorageContexts.fake();
     }
 
-    static class TestSpreadsheetTerminalStorageContext extends FakeStorageContext implements SpreadsheetTerminalStorageContext,
-        SpreadsheetEngineContextDelegator,
-        TerminalContextDelegator {
+    final static class TestSpreadsheetStorageContext extends FakeSpreadsheetStorageContext {
 
         @Override
-        public SpreadsheetEngineContext spreadsheetEngineContext() {
-            return this.engineContext;
+        public <T> Either<T, String> convert(final Object value,
+                                             final Class<T> target) {
+            return this.successfulConversion(
+                target.cast(value),
+                target
+            );
         }
 
-        private final SpreadsheetEngineContext engineContext = createSpreadsheetEngineContext();
+        @Override
+        public Optional<SpreadsheetMetadata> loadMetadata(final SpreadsheetId id) {
+            return this.spreadsheetContext.loadMetadata(id);
+        }
 
-        private SpreadsheetEngineContext createSpreadsheetEngineContext() {
-            final SpreadsheetId id = SpreadsheetId.with(1);
-            final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
-                SpreadsheetMetadataPropertyName.LOCALE,
-                SpreadsheetTerminalStorageSpreadsheetMetadataTest.LOCALE
-            ).set(
-                SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
-                id
-            ).set(
-                SpreadsheetMetadataPropertyName.COMPARATORS,
-                SpreadsheetComparatorAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.CONVERTERS,
-                SpreadsheetConvertersConverterProviders.ALL.aliasSet()
-            ).set(
-                SpreadsheetMetadataPropertyName.EXPORTERS,
-                SpreadsheetExporterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FORM_HANDLERS,
-                FormHandlerAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FORMATTERS,
-                SpreadsheetFormatterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FUNCTIONS,
-                SpreadsheetExpressionFunctions.EMPTY_ALIAS_SET
-            ).set(
-                SpreadsheetMetadataPropertyName.IMPORTERS,
-                SpreadsheetImporterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.PARSERS,
-                SpreadsheetParserAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.VALIDATORS,
-                ValidatorAliasSet.EMPTY
+        @Override
+        public SpreadsheetMetadata saveMetadata(final SpreadsheetMetadata metadata) {
+            return this.spreadsheetContext.saveMetadata(metadata);
+        }
+
+        @Override
+        public void deleteMetadata(final SpreadsheetId id) {
+            this.spreadsheetContext.deleteMetadata(id);
+        }
+
+        @Override
+        public List<SpreadsheetMetadata> findMetadataBySpreadsheetName(final String name,
+                                                                       final int offset,
+                                                                       final int count) {
+            return this.spreadsheetContext.findMetadataBySpreadsheetName(
+                name,
+                offset,
+                count
             );
-            final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
-            metadataStore.save(metadata);
+        }
 
-            final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(
-                metadataStore,
+        private final SpreadsheetContext spreadsheetContext = SpreadsheetContexts.fixedSpreadsheetId(
+            SpreadsheetStoreRepositories.treeMap(
+                SpreadsheetMetadataStores.treeMap(),
                 Storages.fake()
-            );
-
-            return SpreadsheetEngineContexts.spreadsheetContext(
-                SpreadsheetMetadataMode.SCRIPTING,
-                SpreadsheetContexts.fixedSpreadsheetId(
-                    repo,
-                    (c) -> SpreadsheetEngineContexts.spreadsheetContext(
-                        SpreadsheetMetadataMode.FORMULA,
-                        c,
-                        TERMINAL_CONTEXT
-                    ),
-                    (SpreadsheetEngineContext c) -> new Router<>() {
-                        @Override
-                        public Optional<HttpHandler> route(final Map<HttpRequestAttribute<?>, Object> parameters) {
-                            throw new UnsupportedOperationException();
-                        }
-                    },
-                    SpreadsheetEnvironmentContexts.basic(
-                        EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
-                            .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SPREADSHEET_ID,
-                                id
-                            )
-                    ),
-                    LOCALE_CONTEXT,
-                    SPREADSHEET_PROVIDER,
-                    PROVIDER_CONTEXT
-                ),
-                SpreadsheetMetadataTesting.TERMINAL_CONTEXT
-            );
-        }
-
-        @Override
-        public SpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext cloneEnvironment() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext setEnvironmentContext(final EnvironmentContext environmentContext) {
-            Objects.requireNonNull(environmentContext, "environmentContext");
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public <T> TestSpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
-                                                                             final T value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext setLocale(final Locale locale) {
-            throw new UnsupportedOperationException();
-        }
+            ),
+            (c) -> {
+                throw new UnsupportedOperationException();
+            }, // Function<SpreadsheetContext, SpreadsheetEngineContext> spreadsheetEngineContextFactory
+            (c) -> {
+                throw new UnsupportedOperationException();
+            }, // Function<SpreadsheetEngineContext, Router<HttpRequestAttribute<?>, HttpHandler>> httpRouterFactory
+            SPREADSHEET_ENVIRONMENT_CONTEXT.cloneEnvironment()
+                .setSpreadsheetId(SpreadsheetId.with(1)),
+            LOCALE_CONTEXT,
+            SPREADSHEET_PROVIDER,
+            PROVIDER_CONTEXT
+        );
 
         @Override
         public LocalDateTime now() {
@@ -516,38 +423,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetMetadataTest implements 
 
         @Override
         public Optional<EmailAddress> user() {
-            return this.spreadsheetEngineContext()
-                .user();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public EnvironmentContext environmentContext() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Optional<SpreadsheetSelection> resolveLabel(final SpreadsheetLabelName label) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TerminalContext terminalContext() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext exitTerminal() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Object evaluate(final String expression) {
-            throw new UnsupportedOperationException();
+            return Optional.of(SpreadsheetMetadataTesting.USER);
         }
     }
 
