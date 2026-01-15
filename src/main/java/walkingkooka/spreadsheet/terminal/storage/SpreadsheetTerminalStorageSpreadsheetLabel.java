@@ -19,12 +19,11 @@ package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.collect.list.ImmutableList;
 import walkingkooka.net.header.MediaType;
-import walkingkooka.spreadsheet.engine.SpreadsheetDelta;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
 import walkingkooka.spreadsheet.net.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
 import walkingkooka.spreadsheet.store.SpreadsheetCellStore;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StorageName;
@@ -33,9 +32,7 @@ import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * A {@link Storage} that maps {@link SpreadsheetLabelMapping} to a {@link Storage}, for the current spreadsheet.
@@ -46,21 +43,20 @@ import java.util.Set;
  */
 final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTerminalStorage {
 
-    static SpreadsheetTerminalStorageSpreadsheetLabel with(final SpreadsheetEngine engine) {
-        return new SpreadsheetTerminalStorageSpreadsheetLabel(engine);
-    }
+    /**
+     * Singleton
+     */
+    final static SpreadsheetTerminalStorageSpreadsheetLabel INSTANCE = new SpreadsheetTerminalStorageSpreadsheetLabel();
 
     private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.MEMORY_LABEL;
 
-    private SpreadsheetTerminalStorageSpreadsheetLabel(final SpreadsheetEngine engine) {
+    private SpreadsheetTerminalStorageSpreadsheetLabel() {
         super();
-
-        this.engine = Objects.requireNonNull(engine, "engine");
     }
 
     @Override
     Optional<StorageValue> loadNonNull(final StoragePath path,
-                                       final SpreadsheetTerminalStorageContext context) {
+                                       final SpreadsheetStorageContext context) {
         StorageValue value = null;
 
         final List<StorageName> names = path.namesList();
@@ -78,19 +74,14 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
         }
 
         if (null != labelName) {
-            final SpreadsheetDelta delta = this.engine.loadLabel(
-                labelName,
-                context
-            );
+            final SpreadsheetLabelMapping mapping = context.loadLabel(labelName)
+                .orElse(null);
 
-            final Set<SpreadsheetLabelMapping> mappings = delta.labels();
-
-            if (false == mappings.isEmpty()) {
+            if (null != mapping) {
                 value = StorageValue.with(
                     path,
                     Optional.of(
-                        mappings.iterator()
-                                .next()
+                        mapping
                     )
                 ).setContentType(MEDIA_TYPE);
             }
@@ -101,7 +92,7 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
 
     @Override
     StorageValue saveNonNull(final StorageValue value,
-                             final SpreadsheetTerminalStorageContext context) {
+                             final SpreadsheetStorageContext context) {
         final List<StorageName> names = value.path()
             .namesList();
         switch (names.size()) {
@@ -115,18 +106,10 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
                     SpreadsheetLabelMapping.class
                 );
 
-                final Set<SpreadsheetLabelMapping> saved = this.engine.saveLabel(
-                    labelMapping,
-                    context
-                ).labels();
+                final SpreadsheetLabelMapping saved = context.saveLabel(labelMapping);
 
                 return value.setValue(
-                    Optional.ofNullable(
-                        saved.isEmpty() ?
-                            null :
-                            saved.iterator()
-                                .next()
-                    )
+                    Optional.of(saved)
                 ).setContentType(MEDIA_TYPE);
             default:
                 throw new IllegalArgumentException("Invalid path after label");
@@ -135,18 +118,17 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
 
     @Override
     void deleteNonNull(final StoragePath path,
-                       final SpreadsheetTerminalStorageContext context) {
+                       final SpreadsheetStorageContext context) {
         final List<StorageName> names = path.namesList();
         switch (names.size()) {
             case 0:
             case 1:
                 throw new IllegalArgumentException("Missing label");
             case 2:
-                this.engine.deleteLabel(
+                context.deleteLabel(
                     parseLabel(
                         names.get(1)
-                    ),
-                    context
+                    )
                 );
                 break;
             default:
@@ -158,7 +140,7 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
     List<StorageValueInfo> listNonNull(final StoragePath path,
                                        final int offset,
                                        final int count,
-                                       final SpreadsheetTerminalStorageContext context) {
+                                       final SpreadsheetStorageContext context) {
         final List<StorageName> names = path.namesList();
 
         final String labelName;
@@ -176,29 +158,22 @@ final class SpreadsheetTerminalStorageSpreadsheetLabel extends SpreadsheetTermin
                 throw new IllegalArgumentException("Invalid path after label");
         }
 
-        final SpreadsheetDelta delta = this.engine.findLabelsByName(
-            labelName,
-            offset,
-            count,
-            context
-        );
-
-        return delta.labels()
-            .stream()
+        return context.findLabelsByName(
+                labelName,
+                offset,
+                count
+            ).stream()
             .map(
-                (SpreadsheetLabelMapping m) -> StorageValueInfo.with(
+                (SpreadsheetLabelName l) -> StorageValueInfo.with(
                     StoragePath.ROOT.append(
                         StorageName.with(
-                            m.label()
-                                .text()
+                            l.text()
                         )
                     ),
                     context.createdAuditInfo()
                 )
             ).collect(ImmutableList.collector());
     }
-
-    private final SpreadsheetEngine engine;
 
     private static SpreadsheetLabelName parseLabel(final StorageName name) {
         return SpreadsheetSelection.labelName(

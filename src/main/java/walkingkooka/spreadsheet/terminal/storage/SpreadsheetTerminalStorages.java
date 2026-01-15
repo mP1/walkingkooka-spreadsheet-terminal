@@ -18,7 +18,7 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import walkingkooka.reflect.PublicStaticHelper;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
 import walkingkooka.storage.Storage;
 
 /**
@@ -29,31 +29,31 @@ public final class SpreadsheetTerminalStorages implements PublicStaticHelper {
     /**
      * {@see SpreadsheetTerminalStorageSpreadsheetCell}
      */
-    public static Storage<SpreadsheetTerminalStorageContext> cell(final SpreadsheetEngine engine) {
-        return SpreadsheetTerminalStorageSpreadsheetCell.with(engine);
+    public static Storage<SpreadsheetStorageContext> cell() {
+        return SpreadsheetTerminalStorageSpreadsheetCell.INSTANCE;
     }
 
     /**
      * {@see SpreadsheetTerminalStorageSpreadsheetLabel}
      */
-    public static Storage<SpreadsheetTerminalStorageContext> label(final SpreadsheetEngine engine) {
-        return SpreadsheetTerminalStorageSpreadsheetLabel.with(engine);
+    public static Storage<SpreadsheetStorageContext> label() {
+        return SpreadsheetTerminalStorageSpreadsheetLabel.INSTANCE;
     }
 
     /**
      * {@see SpreadsheetTerminalStorageSpreadsheetMetadata}
      */
-    public static Storage<SpreadsheetTerminalStorageContext> metadata() {
+    public static Storage<SpreadsheetStorageContext> metadata() {
         return SpreadsheetTerminalStorageSpreadsheetMetadata.INSTANCE;
     }
 
     /**
      * {@see SpreadsheetTerminalStorageRouter}
      */
-    public static Storage<SpreadsheetTerminalStorageContext> router(final Storage<SpreadsheetTerminalStorageContext> cells,
-                                                                    final Storage<SpreadsheetTerminalStorageContext> labels,
-                                                                    final Storage<SpreadsheetTerminalStorageContext> metadatas,
-                                                                    final Storage<SpreadsheetTerminalStorageContext> other) {
+    public static Storage<SpreadsheetStorageContext> router(final Storage<SpreadsheetStorageContext> cells,
+                                                            final Storage<SpreadsheetStorageContext> labels,
+                                                            final Storage<SpreadsheetStorageContext> metadatas,
+                                                            final Storage<SpreadsheetStorageContext> other) {
         return SpreadsheetTerminalStorageRouter.with(
             cells,
             labels,

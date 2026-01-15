@@ -21,19 +21,12 @@ import org.junit.jupiter.api.Test;
 import walkingkooka.ToStringTesting;
 import walkingkooka.collect.map.Maps;
 import walkingkooka.environment.AuditInfo;
-import walkingkooka.environment.EnvironmentContext;
-import walkingkooka.environment.EnvironmentValueName;
 import walkingkooka.net.email.EmailAddress;
-import walkingkooka.net.http.server.HttpHandler;
-import walkingkooka.net.http.server.HttpRequestAttribute;
 import walkingkooka.reflect.JavaVisibility;
-import walkingkooka.route.Router;
+import walkingkooka.spreadsheet.SpreadsheetContext;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
 import walkingkooka.spreadsheet.compare.provider.SpreadsheetComparatorAliasSet;
 import walkingkooka.spreadsheet.convert.provider.SpreadsheetConvertersConverterProviders;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
 import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
@@ -46,6 +39,7 @@ import walkingkooka.spreadsheet.formula.SpreadsheetFormula;
 import walkingkooka.spreadsheet.importer.provider.SpreadsheetImporterAliasSet;
 import walkingkooka.spreadsheet.meta.SpreadsheetId;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
+import walkingkooka.spreadsheet.meta.SpreadsheetMetadataContexts;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.SpreadsheetName;
@@ -57,33 +51,30 @@ import walkingkooka.spreadsheet.reference.SpreadsheetCellReference;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContextTesting;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContexts;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
 import walkingkooka.spreadsheet.value.SpreadsheetCell;
-import walkingkooka.storage.FakeStorageContext;
 import walkingkooka.storage.Storage;
 import walkingkooka.storage.StoragePath;
 import walkingkooka.storage.StorageTesting;
 import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
-import walkingkooka.terminal.TerminalContext;
-import walkingkooka.terminal.TerminalContextDelegator;
-import walkingkooka.text.LineEnding;
+import walkingkooka.terminal.TerminalContexts;
 import walkingkooka.tree.text.TextNode;
 import walkingkooka.validation.form.provider.FormHandlerAliasSet;
 import walkingkooka.validation.provider.ValidatorAliasSet;
 
-import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class SpreadsheetTerminalStorageRouterTest implements StorageTesting<SpreadsheetTerminalStorageRouter, SpreadsheetTerminalStorageContext>,
+public final class SpreadsheetTerminalStorageRouterTest implements StorageTesting<SpreadsheetTerminalStorageRouter, SpreadsheetStorageContext>,
+    SpreadsheetStorageContextTesting,
     ToStringTesting<SpreadsheetTerminalStorageRouter>,
     SpreadsheetMetadataTesting {
 
@@ -137,10 +128,10 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
         SpreadsheetName.with("Spreadsheet222")
     );
 
-    private final Storage<SpreadsheetTerminalStorageContext> CELLS = Storages.fake();
-    private final Storage<SpreadsheetTerminalStorageContext> LABELS = Storages.fake();
-    private final Storage<SpreadsheetTerminalStorageContext> METADATAS = Storages.fake();
-    private final Storage<SpreadsheetTerminalStorageContext> OTHER = Storages.fake();
+    private final Storage<SpreadsheetStorageContext> CELLS = Storages.fake();
+    private final Storage<SpreadsheetStorageContext> LABELS = Storages.fake();
+    private final Storage<SpreadsheetStorageContext> METADATAS = Storages.fake();
+    private final Storage<SpreadsheetStorageContext> OTHER = Storages.fake();
 
     private final static SpreadsheetCell CELL1 = SpreadsheetSelection.A1.setFormula(
         SpreadsheetFormula.EMPTY.setValue(
@@ -480,7 +471,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
     @Test
     public void testSaveWithSpreadsheetId() {
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final SpreadsheetId spreadsheetId = SpreadsheetId.with(0x333);
 
@@ -515,7 +506,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
     @Test
     public void testSaveWithCell() {
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/cell");
 
@@ -532,17 +523,17 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
             ).setContentType(SpreadsheetMediaTypes.MEMORY_CELL)
         );
 
-        this.checkEquals(
-            Optional.of(DIFFERENT_FORMATTED_CELL),
-            context.spreadsheetIdSpreadsheetStoreRepository.apply(SPREADSHEET_ID1)
-                .cells()
-                .load(DIFFERENT_CELL_REFERENCE)
+        this.loadCellsAndCheck(
+            context,
+            DIFFERENT_CELL_REFERENCE,
+            DIFFERENT_FORMATTED_CELL
         );
     }
 
     @Test
     public void testSaveWithLabel() {
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetContext spreadsheetContext = this.createSpreadsheetContext();
+        final SpreadsheetStorageContext storageContext = this.createContext(spreadsheetContext);
 
         final StoragePath path = StoragePath.parse("/label/DifferentLabel");
 
@@ -552,7 +543,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
                 path,
                 Optional.of(DIFFERENT_MAPPING)
             ),
-            context,
+            storageContext,
             StorageValue.with(
                 path,
                 Optional.of(DIFFERENT_MAPPING)
@@ -561,7 +552,8 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
         this.checkEquals(
             Optional.of(DIFFERENT_MAPPING),
-            context.spreadsheetIdSpreadsheetStoreRepository.apply(SPREADSHEET_ID1)
+            spreadsheetContext.setSpreadsheetId(SPREADSHEET_ID1)
+                .storeRepository()
                 .labels()
                 .load(DIFFERENT_MAPPING.label())
         );
@@ -569,7 +561,8 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
     @Test
     public void testSaveWithSpreadsheetIdAndCell() {
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetContext spreadsheetContext = this.createSpreadsheetContext();
+        final SpreadsheetStorageContext storageContext = this.createContext(spreadsheetContext);
 
         final StoragePath path = StoragePath.parse("/spreadsheet/111/cell");
 
@@ -579,7 +572,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
                 path,
                 Optional.of(DIFFERENT_UNFORMATTED_CELL)
             ),
-            context,
+            storageContext,
             StorageValue.with(
                 path,
                 Optional.of(DIFFERENT_FORMATTED_CELL)
@@ -588,7 +581,8 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
         this.checkEquals(
             Optional.of(DIFFERENT_FORMATTED_CELL),
-            context.spreadsheetIdSpreadsheetStoreRepository.apply(SPREADSHEET_ID1)
+            spreadsheetContext.setSpreadsheetId(SPREADSHEET_ID1)
+                .storeRepository()
                 .cells()
                 .load(DIFFERENT_CELL_REFERENCE)
         );
@@ -596,7 +590,8 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
     @Test
     public void testSaveWithSpreadsheetIdAndCell2() {
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetContext spreadsheetContext = this.createSpreadsheetContext();
+        final SpreadsheetStorageContext storageContext = this.createContext(spreadsheetContext);
 
         final StoragePath path = StoragePath.parse("/spreadsheet/222/cell");
 
@@ -606,7 +601,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
                 path,
                 Optional.of(DIFFERENT_UNFORMATTED_CELL)
             ),
-            context,
+            storageContext,
             StorageValue.with(
                 path,
                 Optional.of(DIFFERENT_FORMATTED_CELL)
@@ -615,7 +610,16 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
         this.checkEquals(
             Optional.of(DIFFERENT_FORMATTED_CELL),
-            context.spreadsheetIdSpreadsheetStoreRepository.apply(SPREADSHEET_ID2)
+            spreadsheetContext.setSpreadsheetId(SPREADSHEET_ID2)
+                .storeRepository()
+                .cells()
+                .load(DIFFERENT_CELL_REFERENCE)
+        );
+
+        this.checkEquals(
+            Optional.empty(),
+            spreadsheetContext.setSpreadsheetId(SPREADSHEET_ID1)
+                .storeRepository()
                 .cells()
                 .load(DIFFERENT_CELL_REFERENCE)
         );
@@ -623,7 +627,8 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
     @Test
     public void testSaveWithSpreadsheetIdLabel1() {
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetContext spreadsheetContext = this.createSpreadsheetContext();
+        final SpreadsheetStorageContext storageContext = this.createContext(spreadsheetContext);
 
         final StoragePath path = StoragePath.parse("/spreadsheet/111/label/DifferentLabel");
 
@@ -633,7 +638,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
                 path,
                 Optional.of(DIFFERENT_MAPPING)
             ),
-            context,
+            storageContext,
             StorageValue.with(
                 path,
                 Optional.of(DIFFERENT_MAPPING)
@@ -642,7 +647,16 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
         this.checkEquals(
             Optional.of(DIFFERENT_MAPPING),
-            context.setSpreadsheetId(SPREADSHEET_ID1)
+            spreadsheetContext.setSpreadsheetId(SPREADSHEET_ID1)
+                .spreadsheetEngineContext()
+                .storeRepository()
+                .labels()
+                .load(DIFFERENT_MAPPING.label())
+        );
+
+        this.checkEquals(
+            Optional.empty(),
+            spreadsheetContext.setSpreadsheetId(SPREADSHEET_ID2)
                 .spreadsheetEngineContext()
                 .storeRepository()
                 .labels()
@@ -652,7 +666,8 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
     @Test
     public void testSaveWithSpreadsheetIdLabel2() {
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetContext spreadsheetContext = this.createSpreadsheetContext();
+        final SpreadsheetStorageContext storageContext = this.createContext(spreadsheetContext);
 
         final StoragePath path = StoragePath.parse("/spreadsheet/222/label/DifferentLabel");
 
@@ -662,7 +677,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
                 path,
                 Optional.of(DIFFERENT_MAPPING)
             ),
-            context,
+            storageContext,
             StorageValue.with(
                 path,
                 Optional.of(DIFFERENT_MAPPING)
@@ -671,7 +686,16 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
         this.checkEquals(
             Optional.of(DIFFERENT_MAPPING),
-            context.setSpreadsheetId(SPREADSHEET_ID2)
+            spreadsheetContext.setSpreadsheetId(SPREADSHEET_ID2)
+                .spreadsheetEngineContext()
+                .storeRepository()
+                .labels()
+                .load(DIFFERENT_MAPPING.label())
+        );
+
+        this.checkEquals(
+            Optional.empty(),
+            spreadsheetContext.setSpreadsheetId(SPREADSHEET_ID1)
                 .spreadsheetEngineContext()
                 .storeRepository()
                 .labels()
@@ -682,7 +706,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testSaveOther() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/other");
         final String value = "value123";
@@ -704,7 +728,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testSaveOtherAndLoad() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/other");
         final String value = "value123";
@@ -736,7 +760,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testSaveOtherDeleteAndLoad() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/other");
         final String value = "value123";
@@ -780,7 +804,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testDeleteWithSpreadsheetId() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         // must delete spreadsheet/222 because context is for spreadsheet/111
         final StoragePath path = StoragePath.parse("/spreadsheet/222");
@@ -809,7 +833,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testDeleteWithCell() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/cell/A1");
 
@@ -828,7 +852,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testDeleteWithLabel() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/label/Label111");
 
@@ -847,7 +871,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testDeleteWithSpreadsheetIdAndCell() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         storage.delete(
             StoragePath.parse("/spreadsheet/111/cell/A1"),
@@ -864,7 +888,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testDeleteWithSpreadsheetIdAndCell2() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/spreadsheet/222/cell/B2");
 
@@ -883,7 +907,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testDeleteWithSpreadsheetIdAndLabel() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/spreadsheet/111/label/Label111");
 
@@ -902,7 +926,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testDeleteWithSpreadsheetIdAndLabel2() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/spreadsheet/222/label/Label222");
 
@@ -923,7 +947,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithSpreadsheet() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -939,7 +963,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithSpreadsheetAndOffset() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -954,7 +978,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithSpreadsheetAndOffset2() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -968,7 +992,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithSpreadsheetAndSize() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -983,7 +1007,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithCell() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -1001,7 +1025,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithLabel() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -1019,7 +1043,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithSpreadsheetIdCell1() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -1037,7 +1061,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithSpreadsheetIdCell2() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -1055,7 +1079,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithSpreadsheetIdLabel1() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -1073,7 +1097,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithSpreadsheetIdLabel2() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         this.listAndCheck(
             storage,
@@ -1091,7 +1115,7 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
     @Test
     public void testListWithOther() {
         final SpreadsheetTerminalStorageRouter storage = this.createStorage();
-        final TestSpreadsheetTerminalStorageContext context = this.createContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path1 = StoragePath.parse("/other/1.txt");
         final String value1 = "value123";
@@ -1156,18 +1180,29 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
 
     @Override
     public SpreadsheetTerminalStorageRouter createStorage() {
-        final SpreadsheetEngine engine = SpreadsheetEngines.basic();
-
         return SpreadsheetTerminalStorageRouter.with(
-            SpreadsheetTerminalStorages.cell(engine),
-            SpreadsheetTerminalStorages.label(engine),
+            SpreadsheetTerminalStorages.cell(),
+            SpreadsheetTerminalStorages.label(),
             SpreadsheetTerminalStorages.metadata(),
             Storages.tree()
         );
     }
 
     @Override
-    public TestSpreadsheetTerminalStorageContext createContext() {
+    public SpreadsheetStorageContext createContext() {
+        return this.createContext(
+            this.createSpreadsheetContext()
+        );
+    }
+
+    private SpreadsheetStorageContext createContext(final SpreadsheetContext context) {
+        return SpreadsheetStorageContexts.basic(
+            SpreadsheetEngines.basic(),
+            context
+        );
+    }
+
+    private SpreadsheetContext createSpreadsheetContext() {
         final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
         metadataStore.save(METADATA1);
         metadataStore.save(METADATA2);
@@ -1208,163 +1243,40 @@ public final class SpreadsheetTerminalStorageRouterTest implements StorageTestin
             );
         }
 
-        return new TestSpreadsheetTerminalStorageContext(
-            SPREADSHEET_ID1,
+        return SpreadsheetContexts.mutableSpreadsheetId(
             (final SpreadsheetId id) -> {
                 final SpreadsheetStoreRepository repo = spreadsheetIdSpreadsheetStoreRepository.get(id);
                 if (null == repo) {
                     throw new IllegalArgumentException("SpreadsheetStoreRepository: Missing for SpreadsheetId " + id);
                 }
                 return repo;
-            }
+            }, // spreadsheetIdToStoreRepository
+            SpreadsheetMetadataContexts.basic(
+                (u, dl) -> {
+                    throw new UnsupportedOperationException();
+                },
+                metadataStore
+            ),
+            (SpreadsheetContext c) -> SpreadsheetEngineContexts.spreadsheetContext(
+                SpreadsheetMetadataMode.FORMULA,
+                c,
+                TerminalContexts.fake()
+            ),
+            SpreadsheetEnvironmentContexts.basic(
+                SPREADSHEET_ENVIRONMENT_CONTEXT.cloneEnvironment()
+                    .setEnvironmentValue(
+                        SpreadsheetEnvironmentContext.SPREADSHEET_ID,
+                        SPREADSHEET_ID1
+                    ).setUser(
+                        Optional.of(
+                            EmailAddress.parse("user@example.com")
+                        )
+                    )
+            ),
+            LOCALE_CONTEXT,
+            SPREADSHEET_PROVIDER,
+            PROVIDER_CONTEXT
         );
-    }
-
-    final static class TestSpreadsheetTerminalStorageContext extends FakeStorageContext implements SpreadsheetTerminalStorageContext,
-        SpreadsheetEngineContextDelegator,
-        TerminalContextDelegator {
-
-        TestSpreadsheetTerminalStorageContext(final SpreadsheetId spreadsheetId,
-                                              final Function<SpreadsheetId, SpreadsheetStoreRepository> spreadsheetIdSpreadsheetStoreRepository) {
-            this.spreadsheetId = spreadsheetId;
-            this.spreadsheetIdSpreadsheetStoreRepository = spreadsheetIdSpreadsheetStoreRepository;
-
-            this.spreadsheetEngineContext = SpreadsheetEngineContexts.spreadsheetContext(
-                SpreadsheetMetadataMode.SCRIPTING,
-                SpreadsheetContexts.fixedSpreadsheetId(
-                    spreadsheetIdSpreadsheetStoreRepository.apply(spreadsheetId),
-                    (c) -> SpreadsheetEngineContexts.spreadsheetContext(
-                        SpreadsheetMetadataMode.FORMULA,
-                        c,
-                        TERMINAL_CONTEXT
-                    ),
-                    (SpreadsheetEngineContext c) ->
-                        new Router<>() {
-                            @Override
-                            public Optional<HttpHandler> route(final Map<HttpRequestAttribute<?>, Object> parameters) {
-                                throw new UnsupportedOperationException();
-                            }
-                        },
-                    SpreadsheetEnvironmentContexts.basic(
-                        SPREADSHEET_ENVIRONMENT_CONTEXT.cloneEnvironment()
-                            .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SPREADSHEET_ID,
-                                spreadsheetId
-                            ).setUser(
-                                Optional.of(
-                                    EmailAddress.parse("user@example.com")
-                                )
-                            )
-                    ),
-                    LOCALE_CONTEXT,
-                    SPREADSHEET_PROVIDER,
-                    PROVIDER_CONTEXT
-                ),
-                SpreadsheetMetadataTesting.TERMINAL_CONTEXT
-            );
-        }
-
-        @Override
-        public SpreadsheetId spreadsheetId() {
-            return this.spreadsheetId;
-        }
-
-        private final SpreadsheetId spreadsheetId;
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext setSpreadsheetId(final SpreadsheetId spreadsheetId) {
-            Objects.requireNonNull(spreadsheetId, "spreadsheetId");
-
-            return this.spreadsheetId.equals(spreadsheetId) ?
-                this :
-                new TestSpreadsheetTerminalStorageContext(
-                    spreadsheetId,
-                    this.spreadsheetIdSpreadsheetStoreRepository
-                );
-        }
-
-        private final Function<SpreadsheetId, SpreadsheetStoreRepository> spreadsheetIdSpreadsheetStoreRepository;
-
-        @Override
-        public SpreadsheetEngineContext spreadsheetEngineContext() {
-            return this.spreadsheetEngineContext;
-        }
-
-        private final SpreadsheetEngineContext spreadsheetEngineContext;
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext cloneEnvironment() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public SpreadsheetTerminalStorageContext setEnvironmentContext(final EnvironmentContext environmentContext) {
-            Objects.requireNonNull(environmentContext, "environmentContext");
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public <T> TestSpreadsheetTerminalStorageContext setEnvironmentValue(final EnvironmentValueName<T> name,
-                                                                             final T value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext removeEnvironmentValue(final EnvironmentValueName<?> name) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext setLineEnding(final LineEnding lineEnding) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext setLocale(final Locale locale) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public LocalDateTime now() {
-            return HAS_NOW.now();
-        }
-
-        @Override
-        public Optional<EmailAddress> user() {
-            return this.spreadsheetEngineContext()
-                .user();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext setUser(final Optional<EmailAddress> user) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Optional<SpreadsheetSelection> resolveLabel(final SpreadsheetLabelName label) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public EnvironmentContext environmentContext() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TerminalContext terminalContext() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TestSpreadsheetTerminalStorageContext exitTerminal() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Object evaluate(final String expression) {
-            Objects.requireNonNull(expression, "expression");
-            throw new UnsupportedOperationException();
-        }
     }
 
     // toString.........................................................................................................

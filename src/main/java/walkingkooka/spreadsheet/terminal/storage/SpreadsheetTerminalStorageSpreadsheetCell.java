@@ -20,14 +20,12 @@ package walkingkooka.spreadsheet.terminal.storage;
 import walkingkooka.collect.list.ImmutableList;
 import walkingkooka.collect.set.Sets;
 import walkingkooka.net.header.MediaType;
-import walkingkooka.spreadsheet.engine.SpreadsheetDelta;
 import walkingkooka.spreadsheet.engine.SpreadsheetDeltaProperties;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngine;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineEvaluation;
 import walkingkooka.spreadsheet.engine.collection.SpreadsheetCellSet;
 import walkingkooka.spreadsheet.net.SpreadsheetMediaTypes;
 import walkingkooka.spreadsheet.reference.SpreadsheetExpressionReference;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
 import walkingkooka.spreadsheet.store.SpreadsheetCellStore;
 import walkingkooka.spreadsheet.value.SpreadsheetCell;
 import walkingkooka.storage.Storage;
@@ -37,7 +35,6 @@ import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,33 +42,30 @@ import java.util.Set;
  * A {@link Storage} that maps cells to a {@link Storage}, for the current spreadsheet.
  * <pre>
  * /cell/SpreadsheetExpressionReference
- * /cell/SpreadsheetExpressionReference/compute-if-necessary
  * </pre>
  * for the {@link StorageValue}.
  */
 final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTerminalStorage {
 
-    static SpreadsheetTerminalStorageSpreadsheetCell with(final SpreadsheetEngine engine) {
-        return new SpreadsheetTerminalStorageSpreadsheetCell(engine);
-    }
+    /**
+     * Singleton
+     */
+    final static SpreadsheetTerminalStorageSpreadsheetCell INSTANCE = new SpreadsheetTerminalStorageSpreadsheetCell();
 
     private final static MediaType MEDIA_TYPE = SpreadsheetMediaTypes.MEMORY_CELL;
 
-    private SpreadsheetTerminalStorageSpreadsheetCell(final SpreadsheetEngine engine) {
+    private SpreadsheetTerminalStorageSpreadsheetCell() {
         super();
-
-        this.engine = Objects.requireNonNull(engine, "engine");
     }
 
     @Override
     Optional<StorageValue> loadNonNull(final StoragePath path,
-                                       final SpreadsheetTerminalStorageContext context) {
+                                       final SpreadsheetStorageContext context) {
         StorageValue value = null;
 
         final List<StorageName> names = path.namesList();
 
-        SpreadsheetExpressionReference cellOrLabels = null;
-        SpreadsheetEngineEvaluation evaluation = SpreadsheetEngineEvaluation.COMPUTE_IF_NECESSARY;
+        final SpreadsheetExpressionReference cellOrLabels;
 
         // SLASH A1 compute-if-necessary
         switch (names.size()) {
@@ -82,25 +76,12 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
                 );
                 break;
             default:
+                cellOrLabels = null;
                 break;
         }
 
-        if (3 == names.size()) {
-            evaluation = SpreadsheetEngineEvaluation.parse(
-                names.get(2)
-                    .value()
-            );
-        }
-
         if (null != cellOrLabels) {
-            final SpreadsheetDelta delta = this.engine.loadCells(
-                cellOrLabels,
-                evaluation,
-                CELLS_ONLY,
-                context
-            );
-
-            final Set<SpreadsheetCell> cells = delta.cells();
+            final Set<SpreadsheetCell> cells = context.loadCells(cellOrLabels);
             if (false == cells.isEmpty()) {
                 value = StorageValue.with(
                     path,
@@ -119,7 +100,7 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
 
     @Override
     StorageValue saveNonNull(final StorageValue value,
-                             final SpreadsheetTerminalStorageContext context) {
+                             final SpreadsheetStorageContext context) {
         switch (value.path()
             .namesList()
             .size()) {
@@ -138,10 +119,7 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
 
         return value.setValue(
             Optional.of(
-                this.engine.saveCells(
-                    cells,
-                    context
-                ).cells()
+                context.saveCells(cells)
             )
         ).setContentType(MEDIA_TYPE);
     }
@@ -152,18 +130,17 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
      */
     @Override
     void deleteNonNull(final StoragePath path,
-                       final SpreadsheetTerminalStorageContext context) {
+                       final SpreadsheetStorageContext context) {
         final List<StorageName> names = path.namesList();
         switch (names.size()) {
             case 0:
             case 1:
                 throw new IllegalArgumentException("Missing selection");
             case 2:
-                this.engine.deleteCells(
+                context.deleteCells(
                     parseExpressionReference(
                         names.get(1)
-                    ),
-                    context
+                    )
                 );
                 break;
             default:
@@ -175,7 +152,7 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
     List<StorageValueInfo> listNonNull(final StoragePath path,
                                        final int offset,
                                        final int count,
-                                       final SpreadsheetTerminalStorageContext context) {
+                                       final SpreadsheetStorageContext context) {
         final List<StorageName> names = path.namesList();
 
         final SpreadsheetExpressionReference cellOrLabels;
@@ -194,14 +171,7 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
                 throw new IllegalArgumentException("Invalid path after selection");
         }
 
-        final SpreadsheetDelta delta = this.engine.loadCells(
-            cellOrLabels,
-            SpreadsheetEngineEvaluation.SKIP_EVALUATE,
-            CELLS_ONLY,
-            context
-        );
-
-        return delta.cells()
+        return context.loadCells(cellOrLabels)
             .stream()
             .map(
                 (SpreadsheetCell c) -> StorageValueInfo.with(
@@ -212,8 +182,6 @@ final class SpreadsheetTerminalStorageSpreadsheetCell extends SpreadsheetTermina
                 )
             ).collect(ImmutableList.collector());
     }
-
-    private final SpreadsheetEngine engine;
 
     private static SpreadsheetExpressionReference parseExpressionReference(final StorageName name) {
         return SpreadsheetSelection.parseExpressionReference(

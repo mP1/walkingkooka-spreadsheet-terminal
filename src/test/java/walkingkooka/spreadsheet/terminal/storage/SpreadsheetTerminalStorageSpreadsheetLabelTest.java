@@ -18,27 +18,29 @@
 package walkingkooka.spreadsheet.terminal.storage;
 
 import org.junit.jupiter.api.Test;
-import walkingkooka.Either;
+import walkingkooka.convert.Converters;
+import walkingkooka.environment.AuditInfo;
 import walkingkooka.environment.EnvironmentContexts;
+import walkingkooka.locale.LocaleContext;
+import walkingkooka.locale.LocaleContexts;
+import walkingkooka.net.Url;
 import walkingkooka.net.email.EmailAddress;
-import walkingkooka.net.http.server.HttpHandler;
-import walkingkooka.net.http.server.HttpRequestAttribute;
+import walkingkooka.plugin.ProviderContext;
+import walkingkooka.plugin.ProviderContexts;
 import walkingkooka.reflect.JavaVisibility;
-import walkingkooka.route.Router;
+import walkingkooka.spreadsheet.SpreadsheetContext;
 import walkingkooka.spreadsheet.SpreadsheetContexts;
-import walkingkooka.spreadsheet.compare.provider.SpreadsheetComparatorAliasSet;
+import walkingkooka.spreadsheet.compare.provider.SpreadsheetComparatorProviders;
 import walkingkooka.spreadsheet.convert.provider.SpreadsheetConvertersConverterProviders;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContext;
-import walkingkooka.spreadsheet.engine.SpreadsheetEngineContextDelegator;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngineContexts;
 import walkingkooka.spreadsheet.engine.SpreadsheetEngines;
 import walkingkooka.spreadsheet.engine.SpreadsheetMetadataMode;
 import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContext;
 import walkingkooka.spreadsheet.environment.SpreadsheetEnvironmentContexts;
-import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterAliasSet;
+import walkingkooka.spreadsheet.export.provider.SpreadsheetExporterProviders;
 import walkingkooka.spreadsheet.expression.SpreadsheetExpressionFunctions;
-import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterAliasSet;
-import walkingkooka.spreadsheet.importer.provider.SpreadsheetImporterAliasSet;
+import walkingkooka.spreadsheet.format.provider.SpreadsheetFormatterProviders;
+import walkingkooka.spreadsheet.importer.provider.SpreadsheetImporterProviders;
 import walkingkooka.spreadsheet.meta.SpreadsheetId;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadata;
 import walkingkooka.spreadsheet.meta.SpreadsheetMetadataPropertyName;
@@ -46,27 +48,31 @@ import walkingkooka.spreadsheet.meta.SpreadsheetMetadataTesting;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStore;
 import walkingkooka.spreadsheet.meta.store.SpreadsheetMetadataStores;
 import walkingkooka.spreadsheet.net.SpreadsheetMediaTypes;
-import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserAliasSet;
+import walkingkooka.spreadsheet.parser.provider.SpreadsheetParserProviders;
+import walkingkooka.spreadsheet.provider.SpreadsheetProviders;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelMapping;
 import walkingkooka.spreadsheet.reference.SpreadsheetLabelName;
 import walkingkooka.spreadsheet.reference.SpreadsheetSelection;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContext;
+import walkingkooka.spreadsheet.storage.SpreadsheetStorageContexts;
 import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepositories;
-import walkingkooka.spreadsheet.store.repo.SpreadsheetStoreRepository;
 import walkingkooka.storage.StoragePath;
 import walkingkooka.storage.StorageTesting;
 import walkingkooka.storage.StorageValue;
 import walkingkooka.storage.StorageValueInfo;
 import walkingkooka.storage.Storages;
-import walkingkooka.validation.form.provider.FormHandlerAliasSet;
-import walkingkooka.validation.provider.ValidatorAliasSet;
+import walkingkooka.terminal.TerminalContexts;
+import walkingkooka.text.LineEnding;
+import walkingkooka.tree.expression.function.provider.ExpressionFunctionProviders;
+import walkingkooka.validation.form.provider.FormHandlerProviders;
+import walkingkooka.validation.provider.ValidatorProviders;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements StorageTesting<SpreadsheetTerminalStorageSpreadsheetLabel, SpreadsheetTerminalStorageContext>,
+public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements StorageTesting<SpreadsheetTerminalStorageSpreadsheetLabel, SpreadsheetStorageContext>,
     SpreadsheetMetadataTesting {
 
     private final static SpreadsheetLabelName LABEL1 = SpreadsheetSelection.labelName("Label111");
@@ -101,21 +107,13 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
     );
 
     @Test
-    public void testWithNullSpreadsheetEngineFails() {
-        assertThrows(
-            NullPointerException.class,
-            () -> SpreadsheetTerminalStorageSpreadsheetLabel.with(null)
-        );
-    }
-
-    @Test
     public void testLoadWithExtraPathFails() {
         final IllegalArgumentException thrown = assertThrows(
             IllegalArgumentException.class,
             () -> this.createStorage()
                 .load(
                     StoragePath.parse("/" + LABEL1 + "/extra"),
-                    new TestSpreadsheetTerminalStorageContext()
+                    this.createContext()
                 )
         );
 
@@ -127,7 +125,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Test
     public void testLoadMissingLabel() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/" + LABEL1);
 
@@ -140,13 +138,15 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Test
     public void testLoad() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final SpreadsheetContext spreadsheetContext = this.createSpreadsheetContext();
 
         SpreadsheetEngines.basic()
             .saveLabel(
                 MAPPING1,
-                context
+                spreadsheetContext.spreadsheetEngineContext()
             );
+        final SpreadsheetStorageContext context = this.createContext(spreadsheetContext);
+
 
         final StoragePath path = StoragePath.parse("/" + LABEL1);
 
@@ -156,11 +156,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             context,
             StorageValue.with(
                 path,
-                Optional.of(
-                    context.storeRepository()
-                        .labels()
-                        .loadOrFail(LABEL1)
-                )
+                Optional.of(MAPPING1)
             ).setContentType(SpreadsheetMediaTypes.MEMORY_LABEL)
         );
     }
@@ -175,7 +171,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
                         StoragePath.parse("/" + LABEL1 + "/extra"),
                         Optional.of(MAPPING1)
                     ),
-                    new TestSpreadsheetTerminalStorageContext()
+                    this.createContext()
                 )
         );
 
@@ -195,7 +191,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
                         StoragePath.parse("/" + LABEL1),
                         Optional.empty()
                     ),
-                    new TestSpreadsheetTerminalStorageContext()
+                    this.createContext()
                 )
         );
 
@@ -207,7 +203,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Test
     public void testSave() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
         final StoragePath path = StoragePath.parse("/" + LABEL1);
 
@@ -232,7 +228,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             () -> this.createStorage()
                 .delete(
                     StoragePath.ROOT,
-                    new TestSpreadsheetTerminalStorageContext()
+                    this.createContext()
                 )
         );
 
@@ -249,7 +245,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
             () -> this.createStorage()
                 .delete(
                     StoragePath.parse("/" + LABEL1 + "/extra"),
-                    new TestSpreadsheetTerminalStorageContext()
+                    this.createContext()
                 )
         );
 
@@ -261,13 +257,9 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Test
     public void testDelete() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING1,
-                context
-            );
+        context.saveLabel(MAPPING1);
 
         final StoragePath path = StoragePath.parse("/" + LABEL1);
 
@@ -293,7 +285,7 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
                     StoragePath.parse("/" + LABEL1 + "/extra"),
                     0,
                     1,
-                    new TestSpreadsheetTerminalStorageContext()
+                    this.createContext()
                 )
         );
 
@@ -305,25 +297,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Test
     public void testListMissingLabel() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING1,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING2,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING3,
-                context
-            );
+        context.saveLabel(MAPPING1);
+        context.saveLabel(MAPPING2);
+        context.saveLabel(MAPPING3);
 
         this.listAndCheck(
             this.createStorage(),
@@ -339,25 +317,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Test
     public void testListMissingLabelWithOffset() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING1,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING2,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING3,
-                context
-            );
+        context.saveLabel(MAPPING1);
+        context.saveLabel(MAPPING2);
+        context.saveLabel(MAPPING3);
 
         this.listAndCheck(
             this.createStorage(),
@@ -372,25 +336,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Test
     public void testListMissingLabelWithCount() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING1,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING2,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING3,
-                context
-            );
+        context.saveLabel(MAPPING1);
+        context.saveLabel(MAPPING2);
+        context.saveLabel(MAPPING3);
 
         this.listAndCheck(
             this.createStorage(),
@@ -405,31 +355,11 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Test
     public void testListWithPrefix() {
-        final TestSpreadsheetTerminalStorageContext context = new TestSpreadsheetTerminalStorageContext();
+        final SpreadsheetStorageContext context = this.createContext();
 
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING1,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING2,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING3,
-                context
-            );
-
-        SpreadsheetEngines.basic()
-            .saveLabel(
-                MAPPING1,
-                context
-            );
+        context.saveLabel(MAPPING1);
+        context.saveLabel(MAPPING2);
+        context.saveLabel(MAPPING3);
 
         this.listAndCheck(
             this.createStorage(),
@@ -444,136 +374,95 @@ public final class SpreadsheetTerminalStorageSpreadsheetLabelTest implements Sto
 
     @Override
     public SpreadsheetTerminalStorageSpreadsheetLabel createStorage() {
-        return SpreadsheetTerminalStorageSpreadsheetLabel.with(SpreadsheetEngines.basic());
+        return SpreadsheetTerminalStorageSpreadsheetLabel.INSTANCE;
     }
 
     @Override
-    public SpreadsheetTerminalStorageContext createContext() {
-        return SpreadsheetTerminalStorageContexts.fake();
+    public SpreadsheetStorageContext createContext() {
+        return this.createContext(
+            this.createSpreadsheetContext()
+        );
     }
 
-    static class TestSpreadsheetTerminalStorageContext extends FakeSpreadsheetTerminalStorageContext implements SpreadsheetEngineContextDelegator {
+    private SpreadsheetStorageContext createContext(final SpreadsheetContext spreadsheetContext) {
+        return SpreadsheetStorageContexts.basic(
+            SpreadsheetEngines.basic(),
+            spreadsheetContext
+        );
+    }
 
-        @Override
-        public SpreadsheetEngineContext setSpreadsheetMetadataMode(final SpreadsheetMetadataMode mode) {
-            this.engineContext.setSpreadsheetMetadataMode(mode);
-            return this;
-        }
+    private SpreadsheetContext createSpreadsheetContext() {
+        final SpreadsheetId spreadsheetId = SpreadsheetId.with(1);
 
-        @Override
-        public SpreadsheetStoreRepository storeRepository() {
-            return this.engineContext.storeRepository();
-        }
+        final LocaleContext localeContext = LocaleContexts.jre(LOCALE);
 
-        @Override
-        public SpreadsheetMetadata spreadsheetMetadata() {
-            return this.engineContext.spreadsheetMetadata();
-        }
+        final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
 
-        @Override
-        public <T> Either<T, String> convert(Object o, Class<T> aClass) {
-            return this.engineContext.convert(o, aClass);
-        }
+        metadataStore.save(
+            SpreadsheetMetadata.EMPTY.set(
+                    SpreadsheetMetadataPropertyName.LOCALE,
+                    LOCALE
+                ).loadFromLocale(localeContext)
+                .set(
+                    SpreadsheetMetadataPropertyName.AUDIT_INFO,
+                    AuditInfo.create(
+                        EmailAddress.parse("user@example.com"),
+                        LocalDateTime.MIN
+                    )
+                ).setDefaults(
+                    SpreadsheetMetadata.NON_LOCALE_DEFAULTS
+                )
+        );
 
-        @Override
-        public boolean canConvert(final Object value,
-                                  final Class<?> type) {
-            return this.engineContext.canConvert(
-                value,
-                type
-            );
-        }
-
-        @Override
-        public LocalDateTime now() {
-            return this.engineContext.now();
-        }
-
-        @Override
-        public Optional<EmailAddress> user() {
-            return this.engineContext.user();
-        }
-
-        @Override
-        public SpreadsheetEngineContext spreadsheetEngineContext() {
-            return this.engineContext;
-        }
-
-        private final SpreadsheetEngineContext engineContext = createSpreadsheetEngineContext();
-
-        private SpreadsheetEngineContext createSpreadsheetEngineContext() {
-            final SpreadsheetId id = SpreadsheetId.with(1);
-            final SpreadsheetMetadata metadata = METADATA_EN_AU.set(
-                SpreadsheetMetadataPropertyName.LOCALE,
-                SpreadsheetTerminalStorageSpreadsheetLabelTest.LOCALE
-            ).set(
-                SpreadsheetMetadataPropertyName.SPREADSHEET_ID,
-                id
-            ).set(
-                SpreadsheetMetadataPropertyName.COMPARATORS,
-                SpreadsheetComparatorAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.CONVERTERS,
-                SpreadsheetConvertersConverterProviders.ALL.aliasSet()
-            ).set(
-                SpreadsheetMetadataPropertyName.EXPORTERS,
-                SpreadsheetExporterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FORM_HANDLERS,
-                FormHandlerAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FORMATTERS,
-                SpreadsheetFormatterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.FUNCTIONS,
-                SpreadsheetExpressionFunctions.EMPTY_ALIAS_SET
-            ).set(
-                SpreadsheetMetadataPropertyName.IMPORTERS,
-                SpreadsheetImporterAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.PARSERS,
-                SpreadsheetParserAliasSet.EMPTY
-            ).set(
-                SpreadsheetMetadataPropertyName.VALIDATORS,
-                ValidatorAliasSet.EMPTY
-            );
-            final SpreadsheetMetadataStore metadataStore = SpreadsheetMetadataStores.treeMap();
-            metadataStore.save(metadata);
-
-            final SpreadsheetStoreRepository repo = SpreadsheetStoreRepositories.treeMap(
+        return SpreadsheetContexts.fixedSpreadsheetId(
+            SpreadsheetStoreRepositories.treeMap(
                 metadataStore,
-                Storages.fake()
-            );
-
-            return SpreadsheetEngineContexts.spreadsheetContext(
-                SpreadsheetMetadataMode.SCRIPTING,
-                SpreadsheetContexts.fixedSpreadsheetId(
-                    repo,
-                    (c) -> SpreadsheetEngineContexts.spreadsheetContext(
-                        SpreadsheetMetadataMode.FORMULA,
-                        c,
-                        TERMINAL_CONTEXT
-                    ),
-                    (SpreadsheetEngineContext c) -> new Router<>() {
-                        @Override
-                        public Optional<HttpHandler> route(final Map<HttpRequestAttribute<?>, Object> parameters) {
-                            throw new UnsupportedOperationException();
-                        }
-                    },
-                    SpreadsheetEnvironmentContexts.basic(
-                        EnvironmentContexts.map(SPREADSHEET_ENVIRONMENT_CONTEXT)
-                            .setEnvironmentValue(
-                                SpreadsheetEnvironmentContext.SPREADSHEET_ID,
-                                id
-                            )
-                    ),
-                    LOCALE_CONTEXT,
-                    SPREADSHEET_PROVIDER,
-                    PROVIDER_CONTEXT
+                Storages.tree()
+            ), // SpreadsheetStoreRepository
+            (c) -> SpreadsheetEngineContexts.spreadsheetContext(
+                SpreadsheetMetadataMode.FORMULA,
+                c,
+                TerminalContexts.fake()
+            ), // SpreadsheetEngineContext factory
+            (c) -> {
+                throw new UnsupportedOperationException();
+            }, // HttpRouter
+            SpreadsheetEnvironmentContexts.basic(
+                EnvironmentContexts.map(
+                    EnvironmentContexts.empty(
+                        LineEnding.NL,
+                        LOCALE,
+                        HAS_NOW,
+                        Optional.of(
+                            EmailAddress.parse("user@example.com")
+                        )
+                    )
+                ).setEnvironmentValue(
+                    SpreadsheetEnvironmentContext.SPREADSHEET_ID,
+                    spreadsheetId
+                ).setEnvironmentValue(
+                    SpreadsheetEnvironmentContext.SERVER_URL,
+                    Url.parseAbsolute("https://example.com")
+                )
+            ),
+            localeContext,
+            SpreadsheetProviders.basic(
+                SpreadsheetConvertersConverterProviders.spreadsheetConverters(
+                    (ProviderContext p) -> Converters.never()
                 ),
-                SpreadsheetMetadataTesting.TERMINAL_CONTEXT
-            );
-        }
+                ExpressionFunctionProviders.empty(
+                    SpreadsheetExpressionFunctions.NAME_CASE_SENSITIVITY
+                ),
+                SpreadsheetComparatorProviders.empty(),
+                SpreadsheetExporterProviders.empty(),
+                SpreadsheetFormatterProviders.spreadsheetFormatters(),
+                FormHandlerProviders.empty(),
+                SpreadsheetImporterProviders.empty(),
+                SpreadsheetParserProviders.empty(),
+                ValidatorProviders.empty()
+            ),
+            ProviderContexts.fake()
+        );
     }
 
     // class............................................................................................................
